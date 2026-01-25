@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { displayService } from '../../services/displayService'
-import { Clock, FileImage, Type, TrendingUp, Calendar, DollarSign } from 'lucide-react'
+import { FileImage, Type, Calendar, CreditCard, MessageSquare } from 'lucide-react'
 
 export default function Dashboard() {
   const { data: settings } = useQuery({
@@ -18,9 +18,14 @@ export default function Dashboard() {
     queryFn: displayService.getActiveRunningTexts,
   })
 
-  const { data: financialSummary } = useQuery({
-    queryKey: ['financialSummary'],
-    queryFn: displayService.getFinancialSummary,
+  const { data: events } = useQuery({
+    queryKey: ['upcomingEvents'],
+    queryFn: displayService.getUpcomingEvents,
+  })
+
+  const { data: donations } = useQuery({
+    queryKey: ['activeDonations'],
+    queryFn: displayService.getActiveDonations,
   })
 
   const today = new Date()
@@ -32,28 +37,28 @@ export default function Dashboard() {
       iconClass: 'green',
       value: contents?.length || 0,
       label: 'Konten Aktif',
-      description: 'Poster & Video',
+      description: 'Poster & Video tayang',
     },
     {
-      icon: Type,
+      icon: MessageSquare,
       iconClass: 'blue',
       value: runningTexts?.length || 0,
       label: 'Running Text',
-      description: 'Pengumuman berjalan',
-    },
-    {
-      icon: DollarSign,
-      iconClass: 'amber',
-      value: `Rp ${(financialSummary?.saldo_kas || 0).toLocaleString('id-ID')}`,
-      label: 'Saldo Kas',
-      description: 'Total infaq tersedia',
+      description: 'Pesan berjalan aktif',
     },
     {
       icon: Calendar,
       iconClass: 'purple',
-      value: today.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }),
-      label: 'Hari Ini',
-      description: today.toLocaleDateString('id-ID', { weekday: 'long' }),
+      value: events?.length || 0,
+      label: 'Agenda',
+      description: 'Kegiatan mendatang',
+    },
+    {
+      icon: CreditCard,
+      iconClass: 'amber',
+      value: donations?.length || 0,
+      label: 'Rekening',
+      description: 'Donasi aktif',
     },
   ]
 
@@ -61,7 +66,7 @@ export default function Dashboard() {
     <div className="animate-fade-in">
       {/* Header */}
       <div className="admin-header">
-        <h1>{greeting} 👋</h1>
+        <h1 className="text-[var(--primary-700)]">{greeting} 👋</h1>
         <p>Selamat datang di panel admin {settings?.mosque_name || 'Digital Signage'}</p>
       </div>
 
@@ -69,7 +74,14 @@ export default function Dashboard() {
       <div className="stats-grid">
         {stats.map((stat, idx) => (
           <div key={idx} className="stat-card">
-            <div className={`icon ${stat.iconClass}`}>
+            <div className={`icon ${stat.iconClass}`} style={{ 
+               backgroundColor: idx === 0 ? 'var(--primary-100)' : 
+                              idx === 1 ? 'var(--primary-50)' : 
+                              idx === 2 ? '#f3e8ff' : '#fef3c7',
+               color: idx === 0 ? 'var(--primary-600)' : 
+                      idx === 1 ? 'var(--primary-500)' : 
+                      idx === 2 ? '#9333ea' : '#d97706'
+            }}>
               <stat.icon size={24} />
             </div>
             <div className="info">
@@ -89,48 +101,44 @@ export default function Dashboard() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
           <a href="/admin/contents" className="btn btn-secondary" style={{ textDecoration: 'none', justifyContent: 'flex-start' }}>
             <FileImage size={20} />
-            Upload Konten Baru
+            Upload Konten
+          </a>
+          <a href="/admin/events" className="btn btn-secondary" style={{ textDecoration: 'none', justifyContent: 'flex-start' }}>
+            <Calendar size={20} />
+            Tambah Agenda
           </a>
           <a href="/admin/running-texts" className="btn btn-secondary" style={{ textDecoration: 'none', justifyContent: 'flex-start' }}>
             <Type size={20} />
-            Tambah Running Text
+            Tulis Pengumuman
           </a>
-          <a href="/admin/prayer-settings" className="btn btn-secondary" style={{ textDecoration: 'none', justifyContent: 'flex-start' }}>
-            <Clock size={20} />
-            Atur Jadwal Shalat
-          </a>
-          <a href="/admin/financials" className="btn btn-secondary" style={{ textDecoration: 'none', justifyContent: 'flex-start' }}>
-            <TrendingUp size={20} />
-            Input Keuangan
+          <a href="/admin/donations" className="btn btn-secondary" style={{ textDecoration: 'none', justifyContent: 'flex-start' }}>
+            <CreditCard size={20} />
+            Kelola Donasi
           </a>
         </div>
       </div>
 
       {/* Info Cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
         {/* Mosque Info */}
         <div className="admin-card">
           <div className="admin-card-header">
-            <h2 className="admin-card-title">🕌 Informasi Masjid</h2>
+            <h2 className="admin-card-title">🕌 Detail Masjid</h2>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.5rem 0', borderBottom: '1px solid #f1f5f9' }}>
-              <span style={{ color: '#64748b' }}>Nama Masjid</span>
-              <span style={{ fontWeight: 600 }}>{settings?.mosque_name || '-'}</span>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div className="flex justify-between border-b border-slate-100 pb-2">
+              <span className="text-slate-500">Nama</span>
+              <span className="font-semibold">{settings?.mosque_name || '-'}</span>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.5rem 0', borderBottom: '1px solid #f1f5f9' }}>
-              <span style={{ color: '#64748b' }}>Kota</span>
-              <span style={{ fontWeight: 600 }}>{settings?.city || '-'}</span>
+            <div className="flex justify-between border-b border-slate-100 pb-2">
+              <span className="text-slate-500">Alamat</span>
+              <span className="font-semibold text-right" style={{ maxWidth: '60%' }}>{settings?.mosque_address || '-'}</span>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.5rem 0', borderBottom: '1px solid #f1f5f9' }}>
-              <span style={{ color: '#64748b' }}>Koordinat</span>
-              <span style={{ fontWeight: 600, fontSize: '0.9rem' }}>
-                {settings?.latitude?.toFixed(4)}, {settings?.longitude?.toFixed(4)}
-              </span>
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.5rem 0' }}>
-              <span style={{ color: '#64748b' }}>Metode Hitung</span>
-              <span className="badge badge-success">Kemenag RI</span>
+            <div className="flex justify-between items-center">
+               <span className="text-slate-500">Jadwal Shalat</span>
+               <a href="/admin/prayer-settings" className="text-[var(--primary-600)] text-sm font-semibold hover:underline">
+                 Atur Jadwal &rarr;
+               </a>
             </div>
           </div>
         </div>
@@ -142,20 +150,16 @@ export default function Dashboard() {
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.5rem 0', borderBottom: '1px solid #f1f5f9' }}>
-              <span style={{ color: '#64748b' }}>Display Mode</span>
+              <span className="text-slate-500">Display</span>
               <span className="badge badge-success">● Online</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.5rem 0', borderBottom: '1px solid #f1f5f9' }}>
-              <span style={{ color: '#64748b' }}>API Status</span>
-              <span className="badge badge-success">● Connected</span>
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.5rem 0', borderBottom: '1px solid #f1f5f9' }}>
-              <span style={{ color: '#64748b' }}>Prayer Times</span>
-              <span className="badge badge-success">● Synced</span>
+              <span className="text-slate-500">Waktu Server</span>
+              <span className="font-mono">{new Date().toLocaleTimeString('id-ID')}</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.5rem 0' }}>
-              <span style={{ color: '#64748b' }}>Last Update</span>
-              <span style={{ fontWeight: 500, fontSize: '0.875rem' }}>{new Date().toLocaleTimeString('id-ID')}</span>
+               <span className="text-slate-500">Versi</span>
+               <span className="text-xs text-slate-400">v1.2.0 (Al-Azhar Edition)</span>
             </div>
           </div>
         </div>

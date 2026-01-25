@@ -6,21 +6,30 @@
    ============================================= */
 
 :root {
-  /* Primary Colors - Vibrant Green */
-  --primary-50: #ecfdf5;
-  --primary-100: #d1fae5;
-  --primary-200: #a7f3d0;
-  --primary-300: #6ee7b7;
-  --primary-400: #34d399;
-  --primary-500: #10b981;
-  --primary-600: #059669;
-  --primary-700: #047857;
-  --primary-800: #065f46;
-  --primary-900: #064e3b;
+  /* Primary Colors - YPI Green (#00b060) */
+  --primary-50: #f0fdf4;
+  --primary-100: #dcfce7;
+  --primary-200: #bbf7d0;
+  --primary-300: #86efac;
+  --primary-400: #4ade80;
+  --primary-500: #00b060; /* YPI Main Green */
+  --primary-600: #16a34a;
+  --primary-700: #15803d;
+  --primary-800: #166534;
+  --primary-900: #14532d;
 
-  /* Accent Gold */
-  --gold-400: #fbbf24;
-  --gold-500: #f59e0b;
+  /* Accent Colors */
+  --ypi-blue-400: #60a5fa;
+  --ypi-blue-500: #3b82f6; 
+  --ypi-blue-600: #2563eb;
+
+  --ypi-yellow-400: #facc15;
+  --ypi-yellow-500: #FECE00; /* YPI Yellow */
+  --ypi-yellow-600: #eab308;
+
+  /* Alias for existing components relying on 'gold' */
+  --gold-400: var(--ypi-yellow-400);
+  --gold-500: var(--ypi-yellow-500);
 
   /* Neutral */
   --slate-50: #f8fafc;
@@ -37,21 +46,31 @@
   /* Gradients */
   --gradient-primary: linear-gradient(
     135deg,
-    #10b981 0%,
-    #34d399 50%,
-    #6ee7b7 100%
+    #00b060 0%,
+    #22c55e 50%,
+    #4ade80 100%
   );
+  
+  /* Green Hero Gradient (was Blue) */
   --gradient-hero: linear-gradient(
     160deg,
-    #059669 0%,
-    #10b981 40%,
-    #34d399 100%
+    #14532d 0%,
+    #15803d 40%,
+    #16a34a 100%
   );
+
   --gradient-dark: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
   --gradient-glass: linear-gradient(
     135deg,
     rgba(255, 255, 255, 0.1) 0%,
     rgba(255, 255, 255, 0.05) 100%
+  );
+
+  /* YPI Gradient combining Dark Green and Light Green */
+  --gradient-ypi: linear-gradient(
+    135deg,
+    #00b060 0%,
+    #15803d 100%
   );
 
   /* Shadows */
@@ -61,7 +80,7 @@
     0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
   --shadow-xl:
     0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-  --shadow-glow: 0 0 40px rgba(16, 185, 129, 0.15);
+  --shadow-glow: 0 0 40px rgba(0, 176, 96, 0.25);
 }
 
 * {
@@ -97,7 +116,7 @@ body {
 .display-container {
   position: fixed;
   inset: 0;
-  background: linear-gradient(180deg, #f0fdf4 0%, #ecfdf5 50%, #d1fae5 100%);
+  background: linear-gradient(180deg, #f0fdf4 0%, #dcfce7 50%, #bbf7d0 100%);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -110,7 +129,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 4px 30px rgba(16, 185, 129, 0.3);
+  box-shadow: 0 4px 30px rgba(0, 176, 96, 0.3);
   position: relative;
   z-index: 10;
   flex-shrink: 0;
@@ -181,7 +200,7 @@ body {
   border-radius: 20px;
   box-shadow: var(--shadow-lg);
   overflow: hidden;
-  border: 1px solid rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(0, 176, 96, 0.1);
 }
 
 .date-card {
@@ -211,7 +230,7 @@ body {
   padding: 1rem;
   text-align: center;
   box-shadow: var(--shadow-xl);
-  border: 1px solid rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(0, 176, 96, 0.15);
 }
 
 .clock-time {
@@ -221,7 +240,7 @@ body {
   color: var(--primary-600);
   line-height: 1;
   letter-spacing: -0.02em;
-  text-shadow: 0 4px 20px rgba(16, 185, 129, 0.2);
+  text-shadow: 0 4px 20px rgba(0, 176, 96, 0.2);
 }
 
 .clock-seconds {
@@ -343,7 +362,7 @@ body {
   justify-content: space-around;
   align-items: stretch;
   gap: 0.25rem;
-  box-shadow: 0 -4px 30px rgba(16, 185, 129, 0.2);
+  box-shadow: 0 -4px 30px rgba(0, 176, 96, 0.2);
   flex-shrink: 0;
 }
 
@@ -702,7 +721,7 @@ body {
   outline: none;
   border-color: var(--primary-500);
   background: white;
-  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+  box-shadow: 0 0 0 4px rgba(0, 176, 96, 0.1);
 }
 
 /* Buttons */
@@ -728,7 +747,7 @@ body {
 
 .btn-primary:hover {
   transform: translateY(-1px);
-  box-shadow: 0 0 50px rgba(16, 185, 129, 0.25);
+  box-shadow: 0 0 50px rgba(0, 176, 96, 0.25);
 }
 
 .btn-secondary {
