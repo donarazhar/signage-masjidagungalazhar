@@ -12,6 +12,8 @@ class Content extends Model
         'title',
         'type',
         'file_path',
+        'youtube_url',
+        'youtube_id',
         'duration',
         'priority',
         'is_enabled',
@@ -27,6 +29,8 @@ class Content extends Model
         'start_date' => 'date',
         'end_date' => 'date',
     ];
+
+    protected $appends = ['file_url', 'youtube_embed_url', 'youtube_thumbnail'];
 
     public function uploader(): BelongsTo
     {
@@ -61,8 +65,33 @@ class Content extends Model
     /**
      * Get full URL for the file
      */
-    public function getFileUrlAttribute(): string
+    public function getFileUrlAttribute(): ?string
     {
+        if (!$this->file_path) {
+            return null;
+        }
         return asset('storage/' . $this->file_path);
+    }
+
+    /**
+     * Get YouTube embed URL
+     */
+    public function getYoutubeEmbedUrlAttribute(): ?string
+    {
+        if (!$this->youtube_id) {
+            return null;
+        }
+        return "https://www.youtube.com/embed/{$this->youtube_id}?autoplay=1&mute=1&controls=0&loop=1&playlist={$this->youtube_id}";
+    }
+
+    /**
+     * Get YouTube thumbnail URL
+     */
+    public function getYoutubeThumbnailAttribute(): ?string
+    {
+        if (!$this->youtube_id) {
+            return null;
+        }
+        return "https://img.youtube.com/vi/{$this->youtube_id}/maxresdefault.jpg";
     }
 }

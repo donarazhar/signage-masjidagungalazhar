@@ -9,20 +9,15 @@ interface ContentCarouselProps {
 
 export default function ContentCarousel({ contents, duration, mosqueName }: ContentCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
-  const videoRef = useRef<HTMLVideoElement>(null)
+  const iframeRef = useRef<HTMLIFrameElement>(null)
 
   useEffect(() => {
     if (contents.length === 0) return
     const currentContent = contents[currentIndex]
-    const isVideo = currentContent?.type === 'video'
-    const slideDuration = isVideo ? (currentContent.duration || duration) : duration
+    const slideDuration = currentContent?.duration || duration
     const timer = setTimeout(() => setCurrentIndex((prev) => (prev + 1) % contents.length), slideDuration * 1000)
     return () => clearTimeout(timer)
   }, [currentIndex, contents, duration])
-
-  useEffect(() => {
-    if (videoRef.current) videoRef.current.play().catch(() => {})
-  }, [currentIndex])
 
   if (contents.length === 0) {
     return (
@@ -35,38 +30,46 @@ export default function ContentCarousel({ contents, duration, mosqueName }: Cont
     )
   }
 
+  const currentContent = contents[currentIndex]
+
   return (
-    <div style={{ width: '100%', height: '100%', position: 'relative', overflow: 'hidden', background: '#f8fafc' }}>
+    <div style={{ width: '100%', height: '100%', position: 'relative', overflow: 'hidden', background: '#0f172a' }}>
       {contents.map((content, index) => (
         <div
           key={content.id}
           style={{
             position: 'absolute',
             inset: 0,
-            transition: 'opacity 0.7s ease-in-out, transform 0.7s ease-in-out',
+            transition: 'opacity 0.7s ease-in-out',
             opacity: index === currentIndex ? 1 : 0,
-            transform: index === currentIndex ? 'scale(1)' : 'scale(1.02)',
+            pointerEvents: index === currentIndex ? 'auto' : 'none',
           }}
         >
-          {content.type === 'image' ? (
+          {content.type === 'youtube' ? (
+            // YouTube Embed
+            <iframe
+              ref={index === currentIndex ? iframeRef : undefined}
+              src={index === currentIndex && content.youtube_embed_url ? content.youtube_embed_url : undefined}
+              style={{
+                width: '100%',
+                height: '100%',
+                border: 'none',
+              }}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          ) : (
+            // Image
             <img
               src={content.file_url || `/storage/${content.file_path}`}
               alt={content.title}
               style={{ width: '100%', height: '100%', objectFit: 'contain' }}
             />
-          ) : (
-            <video
-              ref={index === currentIndex ? videoRef : undefined}
-              src={content.file_url || `/storage/${content.file_path}`}
-              style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-              muted
-              playsInline
-            />
           )}
         </div>
       ))}
 
-      {/* Dots */}
+      {/* Progress Dots */}
       {contents.length > 1 && (
         <div style={{
           position: 'absolute',
@@ -75,6 +78,7 @@ export default function ContentCarousel({ contents, duration, mosqueName }: Cont
           transform: 'translateX(-50%)',
           display: 'flex',
           gap: '0.5rem',
+          zIndex: 10,
         }}>
           {contents.map((_, idx) => (
             <div
@@ -83,11 +87,30 @@ export default function ContentCarousel({ contents, duration, mosqueName }: Cont
                 width: idx === currentIndex ? '2rem' : '0.5rem',
                 height: '0.5rem',
                 borderRadius: '100px',
-                background: idx === currentIndex ? '#10b981' : '#cbd5e1',
+                background: idx === currentIndex ? '#10b981' : 'rgba(255,255,255,0.5)',
                 transition: 'all 0.3s',
               }}
             />
           ))}
+        </div>
+      )}
+
+      {/* Content Title Overlay */}
+      {currentContent && (
+        <div style={{
+          position: 'absolute',
+          bottom: '4rem',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          background: 'rgba(0,0,0,0.6)',
+          color: 'white',
+          padding: '0.5rem 1.5rem',
+          borderRadius: '100px',
+          fontSize: '0.875rem',
+          fontWeight: 500,
+          zIndex: 10,
+        }}>
+          {currentContent.title}
         </div>
       )}
     </div>

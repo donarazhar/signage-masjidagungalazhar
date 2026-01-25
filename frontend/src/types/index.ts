@@ -71,9 +71,13 @@ export type PrayerName = 'fajr' | 'sunrise' | 'dhuhr' | 'asr' | 'maghrib' | 'ish
 export interface Content {
   id: number
   title: string
-  type: 'image' | 'video'
-  file_path: string
-  file_url: string
+  type: 'image' | 'video' | 'youtube'
+  file_path: string | null
+  file_url: string | null
+  youtube_url: string | null
+  youtube_id: string | null
+  youtube_embed_url: string | null
+  youtube_thumbnail: string | null
   duration: number
   priority: number
   is_enabled: boolean
