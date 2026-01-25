@@ -1,195 +1,378 @@
 @import "tailwindcss";
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
 
-/* Green Theme - Matching Reference */
+/* =============================================
+   MODERN PREMIUM THEME - AL AZHAR
+   ============================================= */
+
 :root {
-  --primary-green: #16a34a;
-  --primary-green-dark: #15803d;
-  --primary-green-light: #22c55e;
-  --accent-yellow: #facc15;
-  --bg-light: #f0fdf4;
-  --bg-green-gradient: linear-gradient(
-    135deg,
-    #22c55e 0%,
-    #4ade80 50%,
-    #86efac 100%
-  );
-  --text-dark: #14532d;
-  --text-white: #ffffff;
-  --text-muted: #166534;
+  /* Primary Colors - Vibrant Green */
+  --primary-50: #ecfdf5;
+  --primary-100: #d1fae5;
+  --primary-200: #a7f3d0;
+  --primary-300: #6ee7b7;
+  --primary-400: #34d399;
+  --primary-500: #10b981;
+  --primary-600: #059669;
+  --primary-700: #047857;
+  --primary-800: #065f46;
+  --primary-900: #064e3b;
+
+  /* Accent Gold */
+  --gold-400: #fbbf24;
+  --gold-500: #f59e0b;
+
+  /* Neutral */
+  --slate-50: #f8fafc;
+  --slate-100: #f1f5f9;
+  --slate-200: #e2e8f0;
+  --slate-300: #cbd5e1;
+  --slate-400: #94a3b8;
+  --slate-500: #64748b;
+  --slate-600: #475569;
+  --slate-700: #334155;
+  --slate-800: #1e293b;
+  --slate-900: #0f172a;
+
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, #10b981 0%, #34d399 50%, #6ee7b7 100%);
+  --gradient-hero: linear-gradient(160deg, #059669 0%, #10b981 40%, #34d399 100%);
+  --gradient-dark: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+  --gradient-glass: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --shadow-glow: 0 0 40px rgba(16, 185, 129, 0.15);
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
-html,
-body,
-#root {
+html, body, #root {
   height: 100%;
   width: 100%;
 }
 
 body {
-  font-family:
-    "Inter",
-    "Segoe UI",
-    system-ui,
-    -apple-system,
-    sans-serif;
-  background: var(--bg-light);
-  color: var(--text-dark);
-  overflow: hidden;
+  font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif;
+  background: var(--slate-50);
+  color: var(--slate-800);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 
-.font-clock {
-  font-family: "Outfit", "Arial Black", sans-serif;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.02em;
-  font-weight: 800;
-}
+/* =============================================
+   DISPLAY MODE STYLES
+   ============================================= */
 
-/* Main Display Container */
 .display-container {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: var(--bg-light);
+  inset: 0;
+  background: linear-gradient(180deg, #f0fdf4 0%, #ecfdf5 50%, #d1fae5 100%);
   display: flex;
   flex-direction: column;
-}
-
-/* Header with Green Gradient */
-.header-bar {
-  background: var(--bg-green-gradient);
-  padding: 0.75rem 2rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 1rem;
-  box-shadow: 0 4px 20px rgba(22, 163, 74, 0.3);
-}
-
-/* Main Content Area */
-.main-content {
-  flex: 1;
-  display: flex;
-  padding: 1.5rem;
-  gap: 1.5rem;
   overflow: hidden;
 }
 
-/* Left Sidebar - Clock & Info */
+/* Header */
+.header-bar {
+  background: var(--gradient-hero);
+  padding: 1rem 2.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 30px rgba(16, 185, 129, 0.3);
+  position: relative;
+  z-index: 10;
+}
+
+.header-bar::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+}
+
+.logo-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.logo-section img {
+  height: 56px;
+  width: auto;
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.2));
+}
+
+.mosque-info h1 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: white;
+  letter-spacing: -0.02em;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.mosque-info p {
+  font-size: 0.875rem;
+  color: rgba(255,255,255,0.85);
+  font-weight: 500;
+}
+
+/* Main Content */
+.main-content {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 1.5rem;
+  padding: 1.5rem 2rem;
+  overflow: hidden;
+}
+
+/* Left Sidebar */
 .left-sidebar {
-  width: 280px;
   display: flex;
   flex-direction: column;
   gap: 1rem;
+}
+
+/* Cards */
+.glass-card {
+  background: white;
+  border-radius: 20px;
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  border: 1px solid rgba(16, 185, 129, 0.1);
 }
 
 .date-card {
   background: white;
   border-radius: 16px;
-  padding: 1.25rem;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-  border-left: 4px solid var(--primary-green);
+  padding: 1.25rem 1.5rem;
+  box-shadow: var(--shadow-md);
+  border-left: 4px solid var(--primary-500);
+}
+
+.date-card .gregorian {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--primary-700);
+}
+
+.date-card .hijri {
+  font-size: 0.85rem;
+  color: var(--gold-500);
+  font-weight: 600;
+  margin-top: 0.25rem;
 }
 
 .clock-card {
-  background: white;
-  border-radius: 20px;
-  padding: 1.5rem;
+  background: linear-gradient(145deg, white, var(--slate-50));
+  border-radius: 24px;
+  padding: 2rem;
   text-align: center;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-xl);
+  border: 1px solid rgba(16, 185, 129, 0.15);
+}
+
+.clock-time {
+  font-family: 'Outfit', monospace;
+  font-size: 5rem;
+  font-weight: 800;
+  color: var(--primary-600);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-shadow: 0 4px 20px rgba(16, 185, 129, 0.2);
+}
+
+.clock-seconds {
+  font-family: 'Outfit', monospace;
+  font-size: 2rem;
+  color: var(--slate-400);
+  font-weight: 600;
+  margin-left: 0.25rem;
 }
 
 .countdown-card {
-  background: linear-gradient(135deg, #22c55e, #4ade80);
+  background: var(--gradient-primary);
   border-radius: 16px;
-  padding: 1.25rem;
+  padding: 1.25rem 1.5rem;
   color: white;
-  box-shadow: 0 4px 20px rgba(22, 163, 74, 0.3);
+  box-shadow: var(--shadow-glow);
+}
+
+.countdown-card .label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  opacity: 0.9;
+  margin-bottom: 0.5rem;
+}
+
+.countdown-card .time {
+  font-family: 'Outfit', monospace;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.countdown-card .prayer-name {
+  font-weight: 700;
+  font-size: 1.1rem;
 }
 
 .info-card {
   background: white;
   border-radius: 16px;
-  padding: 1rem;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-  font-size: 0.9rem;
-  color: var(--text-muted);
-  line-height: 1.6;
+  padding: 1.25rem;
+  box-shadow: var(--shadow-sm);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
-/* Center - Carousel */
+.info-card .quote {
+  font-size: 0.95rem;
+  color: var(--slate-600);
+  line-height: 1.7;
+  font-style: italic;
+}
+
+.info-card .source {
+  font-size: 0.8rem;
+  color: var(--primary-600);
+  margin-top: auto;
+  font-weight: 600;
+}
+
+/* Carousel */
 .carousel-area {
-  flex: 1;
   background: white;
   border-radius: 24px;
   overflow: hidden;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-xl);
   position: relative;
 }
 
-/* Bottom Prayer Times Bar */
-.prayer-bar {
-  background: var(--bg-green-gradient);
-  padding: 1rem 2rem;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  box-shadow: 0 -4px 20px rgba(22, 163, 74, 0.3);
-}
-
-.prayer-item {
+.carousel-placeholder {
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.25rem;
-  padding: 0.5rem 1.5rem;
-  border-radius: 12px;
-  transition: all 0.3s;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--primary-50), white);
+  padding: 3rem;
+  text-align: center;
+}
+
+.carousel-placeholder img {
+  height: 100px;
+  margin-bottom: 1.5rem;
+  opacity: 0.9;
+}
+
+.carousel-placeholder h2 {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--primary-700);
+  margin-bottom: 0.5rem;
+}
+
+.carousel-placeholder p {
+  color: var(--slate-500);
+  font-size: 1.1rem;
+}
+
+.carousel-placeholder .welcome {
+  margin-top: 2rem;
+  padding: 1rem 2rem;
+  background: var(--gradient-primary);
+  color: white;
+  border-radius: 100px;
+  font-weight: 600;
+  box-shadow: var(--shadow-glow);
+}
+
+/* Prayer Bar */
+.prayer-bar {
+  background: var(--gradient-hero);
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-around;
+  align-items: stretch;
+  gap: 0.5rem;
+  box-shadow: 0 -4px 30px rgba(16, 185, 129, 0.2);
+}
+
+.prayer-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1rem;
+  border-radius: 16px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: transparent;
+}
+
+.prayer-item:hover {
+  background: rgba(255,255,255,0.1);
 }
 
 .prayer-item.active {
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(255,255,255,0.25);
   transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(255,255,255,0.2);
 }
 
-.prayer-item .prayer-name {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.9);
+.prayer-item.next {
+  background: rgba(251, 191, 36, 0.2);
+  border: 2px solid rgba(251, 191, 36, 0.5);
+}
+
+.prayer-name {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.9);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.25rem;
 }
 
-.prayer-item .prayer-time {
-  font-size: 1.75rem;
+.prayer-time {
+  font-family: 'Outfit', monospace;
+  font-size: 1.5rem;
   font-weight: 800;
   color: white;
-  font-family: "Outfit", sans-serif;
 }
 
-/* Running Text Ticker */
+/* Ticker */
 .ticker-bar {
-  background: linear-gradient(90deg, #16a34a, #22c55e, #16a34a);
-  padding: 0.75rem 0;
+  background: linear-gradient(90deg, var(--primary-800), var(--primary-700), var(--primary-800));
+  padding: 0.875rem 0;
   overflow: hidden;
-  border-top: 2px solid rgba(255, 255, 255, 0.2);
+  position: relative;
+}
+
+.ticker-bar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
 }
 
 @keyframes scroll-left {
-  0% {
-    transform: translateX(100%);
-  }
-  100% {
-    transform: translateX(-100%);
-  }
+  from { transform: translateX(100%); }
+  to { transform: translateX(-100%); }
 }
 
 .running-text {
@@ -208,17 +391,21 @@ body {
 .ticker-item {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
 }
 
-/* Iqamah Overlay */
+.ticker-item .icon {
+  color: var(--gold-400);
+}
+
+/* =============================================
+   IQAMAH & PRAYER MODES
+   ============================================= */
+
 .iqamah-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: linear-gradient(160deg, #16a34a 0%, #22c55e 50%, #4ade80 100%);
+  inset: 0;
+  background: var(--gradient-hero);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -226,13 +413,18 @@ body {
   z-index: 100;
 }
 
-/* Prayer In Progress Mode */
+.iqamah-overlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: 
+    radial-gradient(circle at 30% 20%, rgba(255,255,255,0.1) 0%, transparent 50%),
+    radial-gradient(circle at 70% 80%, rgba(251, 191, 36, 0.1) 0%, transparent 50%);
+}
+
 .prayer-mode {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
+  inset: 0;
   background: #000;
   display: flex;
   align-items: center;
@@ -240,84 +432,239 @@ body {
   z-index: 100;
 }
 
-/* Admin Styles */
+/* =============================================
+   ADMIN PANEL STYLES
+   ============================================= */
+
 .admin-sidebar {
   width: 280px;
-  background: linear-gradient(180deg, #16a34a, #22c55e);
-  border-right: none;
+  background: var(--gradient-dark);
   height: 100vh;
   position: fixed;
   left: 0;
   top: 0;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid rgba(255,255,255,0.05);
+}
+
+.admin-sidebar .logo-area {
+  padding: 1.5rem;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+}
+
+.admin-sidebar .logo-area img {
+  height: 44px;
+}
+
+.admin-sidebar .logo-area .title {
+  color: white;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.admin-sidebar .logo-area .subtitle {
+  color: var(--slate-400);
+  font-size: 0.75rem;
+}
+
+.admin-sidebar nav {
+  flex: 1;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+.admin-sidebar .nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  border-radius: 12px;
+  color: var(--slate-400);
+  text-decoration: none;
+  transition: all 0.2s;
+  margin-bottom: 0.25rem;
+  font-weight: 500;
+}
+
+.admin-sidebar .nav-item:hover {
+  background: rgba(255,255,255,0.05);
+  color: white;
+}
+
+.admin-sidebar .nav-item.active {
+  background: var(--gradient-primary);
+  color: white;
+  box-shadow: var(--shadow-glow);
 }
 
 .admin-content {
   margin-left: 280px;
   padding: 2rem;
   min-height: 100vh;
-  background: #f0fdf4;
+  background: var(--slate-50);
 }
 
+.admin-header {
+  margin-bottom: 2rem;
+}
+
+.admin-header h1 {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--slate-800);
+  letter-spacing: -0.02em;
+}
+
+.admin-header p {
+  color: var(--slate-500);
+  margin-top: 0.25rem;
+}
+
+/* Admin Cards */
 .admin-card {
   background: white;
-  border: 1px solid #dcfce7;
   border-radius: 16px;
   padding: 1.5rem;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--slate-100);
 }
 
-.form-input {
-  width: 100%;
-  padding: 0.875rem 1.25rem;
+.admin-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--slate-100);
+}
+
+.admin-card-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--slate-800);
+}
+
+/* Stats Cards */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
   background: white;
-  border: 2px solid #dcfce7;
-  border-radius: 12px;
-  color: var(--text-dark);
-  font-size: 0.95rem;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-md);
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
   transition: all 0.3s;
+  border: 1px solid var(--slate-100);
 }
 
-.form-input:focus {
-  outline: none;
-  border-color: var(--primary-green);
-  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.stat-card .icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.stat-card .icon.green { background: var(--primary-100); color: var(--primary-600); }
+.stat-card .icon.blue { background: #dbeafe; color: #2563eb; }
+.stat-card .icon.purple { background: #ede9fe; color: #7c3aed; }
+.stat-card .icon.amber { background: #fef3c7; color: #d97706; }
+
+.stat-card .info .value {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--slate-800);
+  line-height: 1.2;
+}
+
+.stat-card .info .label {
+  font-size: 0.875rem;
+  color: var(--slate-500);
+  margin-top: 0.25rem;
+}
+
+/* Form Styles */
+.form-group {
+  margin-bottom: 1.25rem;
 }
 
 .form-label {
   display: block;
   margin-bottom: 0.5rem;
-  color: var(--text-muted);
   font-size: 0.875rem;
   font-weight: 600;
+  color: var(--slate-700);
 }
 
+.form-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: var(--slate-50);
+  border: 2px solid var(--slate-200);
+  border-radius: 12px;
+  font-size: 0.95rem;
+  color: var(--slate-800);
+  transition: all 0.2s;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--primary-500);
+  background: white;
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+}
+
+/* Buttons */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  padding: 0.875rem 1.75rem;
+  padding: 0.75rem 1.5rem;
   border-radius: 12px;
   font-weight: 600;
+  font-size: 0.95rem;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.2s;
   border: none;
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #16a34a, #15803d);
+  background: var(--gradient-primary);
   color: white;
-  box-shadow: 0 4px 15px rgba(22, 163, 74, 0.3);
+  box-shadow: var(--shadow-glow);
 }
 
 .btn-primary:hover {
-  background: linear-gradient(135deg, #22c55e, #16a34a);
-  transform: translateY(-2px);
+  transform: translateY(-1px);
+  box-shadow: 0 0 50px rgba(16, 185, 129, 0.25);
 }
 
-.btn-success {
-  background: linear-gradient(135deg, #16a34a, #15803d);
-  color: white;
+.btn-secondary {
+  background: var(--slate-100);
+  color: var(--slate-700);
+}
+
+.btn-secondary:hover {
+  background: var(--slate-200);
 }
 
 .btn-danger {
@@ -325,53 +672,52 @@ body {
   color: white;
 }
 
-.btn-secondary {
-  background: #f0fdf4;
-  color: var(--text-dark);
-  border: 2px solid #dcfce7;
-}
-
+/* Table */
 .table {
   width: 100%;
   border-collapse: collapse;
 }
 
-.table th,
-.table td {
-  padding: 1rem;
+.table th {
   text-align: left;
-  border-bottom: 1px solid #dcfce7;
+  padding: 0.875rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--slate-500);
+  background: var(--slate-50);
+  border-bottom: 2px solid var(--slate-100);
 }
 
-.table th {
-  background: #f0fdf4;
-  color: var(--text-muted);
-  font-weight: 600;
-  font-size: 0.8rem;
-  text-transform: uppercase;
+.table td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--slate-100);
+  color: var(--slate-700);
 }
 
 .table tbody tr:hover {
-  background: #f0fdf4;
+  background: var(--slate-50);
 }
 
+/* Badges */
 .badge {
   display: inline-flex;
   align-items: center;
-  padding: 0.35rem 0.85rem;
-  border-radius: 20px;
+  padding: 0.35rem 0.75rem;
+  border-radius: 100px;
   font-size: 0.75rem;
   font-weight: 600;
 }
 
 .badge-success {
-  background: #dcfce7;
-  color: #16a34a;
+  background: var(--primary-100);
+  color: var(--primary-700);
 }
 
 .badge-warning {
-  background: #fef9c3;
-  color: #ca8a04;
+  background: #fef3c7;
+  color: #b45309;
 }
 
 .badge-danger {
@@ -379,20 +725,24 @@ body {
   color: #dc2626;
 }
 
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+/* Scrollbar */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--slate-100); }
+::-webkit-scrollbar-thumb { background: var(--slate-300); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--slate-400); }
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-::-webkit-scrollbar-track {
-  background: #f0fdf4;
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out;
 }
 
-::-webkit-scrollbar-thumb {
-  background: #86efac;
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #22c55e;
+/* Font helpers */
+.font-clock {
+  font-family: 'Outfit', monospace;
+  font-variant-numeric: tabular-nums;
 }

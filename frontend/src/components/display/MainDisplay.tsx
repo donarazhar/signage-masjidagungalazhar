@@ -7,287 +7,196 @@ import IqamahMode from './IqamahMode'
 import PrayerInProgressMode from './PrayerInProgressMode'
 import type { DisplayMode, PrayerName, PrayerTimes } from '../../types'
 
-const PRAYER_NAMES: Record<string, string> = {
-  imsak: 'IMSAK',
-  fajr: 'SHUBUH',
-  sunrise: 'SYURUQ',
-  dhuhr: 'DZUHUR',
-  asr: 'ASHAR',
-  maghrib: 'MAGHRIB',
-  isha: 'ISYA',
+const PRAYER_DISPLAY: Array<{ key: string; name: string; showIqamah?: boolean }> = [
+  { key: 'imsak', name: 'IMSAK' },
+  { key: 'fajr', name: 'SHUBUH', showIqamah: true },
+  { key: 'sunrise', name: 'SYURUQ' },
+  { key: 'dhuha', name: 'DHUHA' },
+  { key: 'dhuhr', name: 'DZUHUR', showIqamah: true },
+  { key: 'asr', name: 'ASHAR', showIqamah: true },
+  { key: 'maghrib', name: 'MAGHRIB', showIqamah: true },
+  { key: 'isha', name: 'ISYA', showIqamah: true },
+]
+
+const PRAYER_NAMES_ID: Record<string, string> = {
+  fajr: 'Shubuh', dhuhr: 'Dzuhur', asr: 'Ashar', maghrib: 'Maghrib', isha: 'Isya',
+}
+
+const ISLAMIC_DAYS: Record<string, string> = {
+  'Minggu': 'Ahad', 'Senin': 'Senin', 'Selasa': 'Selasa',
+  'Rabu': 'Rabu', 'Kamis': 'Kamis', 'Jumat': "Jum'at", 'Sabtu': 'Sabtu',
 }
 
 function formatTime(timeStr: string): string {
-  return timeStr.replace(/\s*\(.*\)/, '')
+  return timeStr?.replace(/\s*\(.*\)/, '') || '--:--'
 }
 
-function getNextPrayer(prayerTimes: PrayerTimes): { name: string; time: string; minutesLeft: number } | null {
+function getNextPrayer(prayerTimes: PrayerTimes): { key: string; name: string; time: string; minutesLeft: number } | null {
   const now = new Date()
   const currentMinutes = now.getHours() * 60 + now.getMinutes()
-  
   const prayers: Array<{ key: PrayerName; name: string }> = [
-    { key: 'fajr', name: 'Shubuh' },
-    { key: 'dhuhr', name: 'Dzuhur' },
-    { key: 'asr', name: 'Ashar' },
-    { key: 'maghrib', name: 'Maghrib' },
+    { key: 'fajr', name: 'Shubuh' }, { key: 'dhuhr', name: 'Dzuhur' },
+    { key: 'asr', name: 'Ashar' }, { key: 'maghrib', name: 'Maghrib' },
     { key: 'isha', name: 'Isya' },
   ]
-  
   for (const prayer of prayers) {
-    const [hour, minute] = prayerTimes.timings[prayer.key].split(':').map(Number)
-    const prayerMinutes = hour * 60 + minute
-    
-    if (prayerMinutes > currentMinutes) {
-      return {
-        name: prayer.name,
-        time: formatTime(prayerTimes.timings[prayer.key]),
-        minutesLeft: prayerMinutes - currentMinutes,
-      }
+    const [h, m] = prayerTimes.timings[prayer.key].split(':').map(Number)
+    const mins = h * 60 + m
+    if (mins > currentMinutes) {
+      return { key: prayer.key, name: prayer.name, time: formatTime(prayerTimes.timings[prayer.key]), minutesLeft: mins - currentMinutes }
     }
   }
-  
-  // Next day's Fajr
-  const [hour, minute] = prayerTimes.timings.fajr.split(':').map(Number)
-  const fajrMinutes = hour * 60 + minute
-  return {
-    name: 'Shubuh',
-    time: formatTime(prayerTimes.timings.fajr),
-    minutesLeft: (24 * 60 - currentMinutes) + fajrMinutes,
-  }
+  const [h, m] = prayerTimes.timings.fajr.split(':').map(Number)
+  return { key: 'fajr', name: 'Shubuh', time: formatTime(prayerTimes.timings.fajr), minutesLeft: (24 * 60 - currentMinutes) + (h * 60 + m) }
 }
 
 export default function MainDisplay() {
   const [displayMode, setDisplayMode] = useState<DisplayMode>('normal')
   const [currentPrayer, setCurrentPrayer] = useState<PrayerName | null>(null)
   const [currentTime, setCurrentTime] = useState(new Date())
-  
-  const { data: settings } = useQuery({
-    queryKey: ['settings'],
-    queryFn: displayService.getSettings,
-  })
 
-  const { data: prayerTimes } = useQuery({
-    queryKey: ['prayerTimes'],
-    queryFn: displayService.getPrayerTimes,
-    refetchInterval: 1000 * 60 * 30,
-  })
+  const { data: settings } = useQuery({ queryKey: ['settings'], queryFn: displayService.getSettings })
+  const { data: prayerTimes } = useQuery({ queryKey: ['prayerTimes'], queryFn: displayService.getPrayerTimes, refetchInterval: 1000 * 60 * 30 })
+  const { data: contents } = useQuery({ queryKey: ['activeContents'], queryFn: displayService.getActiveContents, refetchInterval: 1000 * 60 * 5 })
+  const { data: runningTexts } = useQuery({ queryKey: ['activeRunningTexts'], queryFn: displayService.getActiveRunningTexts, refetchInterval: 1000 * 60 * 5 })
 
-  const { data: contents } = useQuery({
-    queryKey: ['activeContents'],
-    queryFn: displayService.getActiveContents,
-    refetchInterval: 1000 * 60 * 5,
-  })
-
-  const { data: runningTexts } = useQuery({
-    queryKey: ['activeRunningTexts'],
-    queryFn: displayService.getActiveRunningTexts,
-    refetchInterval: 1000 * 60 * 5,
-  })
-
-  // Update clock every second
   useEffect(() => {
     const interval = setInterval(() => setCurrentTime(new Date()), 1000)
     return () => clearInterval(interval)
   }, [])
 
-  // Check prayer times
   useEffect(() => {
     if (!prayerTimes) return
-
-    const checkPrayerTime = () => {
+    const check = () => {
       const now = new Date()
-      const currentMinutes = now.getHours() * 60 + now.getMinutes()
+      const curr = now.getHours() * 60 + now.getMinutes()
       const prayers: PrayerName[] = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha']
-      
-      for (const prayer of prayers) {
-        const [hour, minute] = prayerTimes.timings[prayer].split(':').map(Number)
-        const prayerMinutes = hour * 60 + minute
-        const iqamahDuration = prayerTimes.iqamah_duration[prayer as keyof typeof prayerTimes.iqamah_duration] || 10
-        const prayerDuration = prayerTimes.prayer_duration || 15
-
-        if (currentMinutes >= prayerMinutes && currentMinutes < prayerMinutes + iqamahDuration) {
-          setDisplayMode('iqamah')
-          setCurrentPrayer(prayer)
-          return
-        }
-
-        if (currentMinutes >= prayerMinutes + iqamahDuration && currentMinutes < prayerMinutes + iqamahDuration + prayerDuration) {
-          setDisplayMode('prayer')
-          setCurrentPrayer(prayer)
-          return
-        }
+      for (const p of prayers) {
+        const [h, m] = prayerTimes.timings[p].split(':').map(Number)
+        const pm = h * 60 + m
+        const iq = prayerTimes.iqamah_duration[p as keyof typeof prayerTimes.iqamah_duration] || 10
+        const pd = prayerTimes.prayer_duration || 15
+        if (curr >= pm && curr < pm + iq) { setDisplayMode('iqamah'); setCurrentPrayer(p); return }
+        if (curr >= pm + iq && curr < pm + iq + pd) { setDisplayMode('prayer'); setCurrentPrayer(p); return }
       }
-
-      setDisplayMode('normal')
-      setCurrentPrayer(null)
+      setDisplayMode('normal'); setCurrentPrayer(null)
     }
-
-    checkPrayerTime()
-    const interval = setInterval(checkPrayerTime, 10000)
+    check()
+    const interval = setInterval(check, 10000)
     return () => clearInterval(interval)
   }, [prayerTimes])
 
-  // Iqamah mode
   if (displayMode === 'iqamah' && currentPrayer && prayerTimes) {
-    const iqamahDuration = prayerTimes.iqamah_duration[currentPrayer as keyof typeof prayerTimes.iqamah_duration] || 10
-    return (
-      <IqamahMode
-        prayerName={PRAYER_NAMES[currentPrayer]}
-        duration={iqamahDuration}
-        onComplete={() => setDisplayMode('prayer')}
-      />
-    )
+    const dur = prayerTimes.iqamah_duration[currentPrayer as keyof typeof prayerTimes.iqamah_duration] || 10
+    return <IqamahMode prayerName={PRAYER_NAMES_ID[currentPrayer]} duration={dur} onComplete={() => setDisplayMode('prayer')} />
   }
-
   if (displayMode === 'prayer' && prayerTimes) {
-    return (
-      <PrayerInProgressMode
-        duration={prayerTimes.prayer_duration || 15}
-        onComplete={() => setDisplayMode('normal')}
-      />
-    )
+    return <PrayerInProgressMode duration={prayerTimes.prayer_duration || 15} onComplete={() => setDisplayMode('normal')} />
   }
 
   const mosqueName = settings?.mosque_name || 'Masjid Agung Al Azhar'
   const mosqueAddress = settings?.mosque_address || 'Jl. Sisingamangaraja, Kebayoran Baru, Jakarta Selatan'
   const nextPrayer = prayerTimes ? getNextPrayer(prayerTimes) : null
-  
-  // Format dates with Islamic day names
-  const ISLAMIC_DAYS: Record<string, string> = {
-    'Minggu': 'Ahad',
-    'Senin': 'Senin',
-    'Selasa': 'Selasa',
-    'Rabu': 'Rabu',
-    'Kamis': 'Kamis',
-    'Jumat': "Jum'at",
-    'Sabtu': 'Sabtu',
-  }
-  
-  const rawDate = currentTime.toLocaleDateString('id-ID', {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  })
-  
-  // Replace weekday name if needed
-  const gregorianDate = Object.entries(ISLAMIC_DAYS).reduce(
-    (date, [original, islamic]) => date.replace(original, islamic),
-    rawDate
-  )
-  
-  const hijriDate = prayerTimes?.date?.hijri
-    ? `${prayerTimes.date.hijri.day} ${prayerTimes.date.hijri.month.ar} ${prayerTimes.date.hijri.year}`
-    : ''
+
+  const rawDate = currentTime.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
+  const gregorianDate = Object.entries(ISLAMIC_DAYS).reduce((d, [o, i]) => d.replace(o, i), rawDate)
+  const hijriDate = prayerTimes?.date?.hijri ? `${prayerTimes.date.hijri.day} ${prayerTimes.date.hijri.month.ar} ${prayerTimes.date.hijri.year} H` : ''
 
   const hours = currentTime.getHours().toString().padStart(2, '0')
   const minutes = currentTime.getMinutes().toString().padStart(2, '0')
   const seconds = currentTime.getSeconds().toString().padStart(2, '0')
 
-  // Format countdown
   const formatCountdown = (totalMinutes: number) => {
-    const hrs = Math.floor(totalMinutes / 60)
-    const mins = totalMinutes % 60
-    const secs = 60 - currentTime.getSeconds()
-    return `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
+    const h = Math.floor(totalMinutes / 60)
+    const m = totalMinutes % 60
+    const s = 60 - currentTime.getSeconds()
+    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${(s % 60).toString().padStart(2, '0')}`
+  }
+
+  const getPrayerTime = (key: string) => {
+    if (key === 'imsak' && prayerTimes) {
+      const [h, m] = prayerTimes.timings.fajr.split(':').map(Number)
+      const im = (h * 60 + m - 10 + 1440) % 1440
+      return `${Math.floor(im / 60).toString().padStart(2, '0')}:${(im % 60).toString().padStart(2, '0')}`
+    }
+    if (key === 'dhuha') return '06:30'
+    return prayerTimes ? formatTime(prayerTimes.timings[key as keyof typeof prayerTimes.timings]) : '--:--'
   }
 
   return (
     <div className="display-container">
-      {/* Header Bar */}
+      {/* Header */}
       <header className="header-bar">
-        <img src="/logo-alazhar.png" alt="Logo" className="h-12 w-auto" />
-        <div className="text-center">
-          <h1 className="text-xl font-bold text-white tracking-wide">{mosqueName}</h1>
-          <p className="text-xs text-white/80">{mosqueAddress}</p>
+        <div className="logo-section">
+          <img src="/logo-alazhar.png" alt="Logo YPI Al Azhar" />
+          <div className="mosque-info">
+            <h1>{mosqueName}</h1>
+            <p>{mosqueAddress}</p>
+          </div>
+        </div>
+        <div className="date-card" style={{ background: 'rgba(255,255,255,0.15)', borderLeft: 'none', color: 'white' }}>
+          <div style={{ color: 'white', fontWeight: 600 }}>{gregorianDate}</div>
+          <div style={{ color: 'rgba(251,191,36,1)', fontWeight: 600, marginTop: 4 }}>{hijriDate}</div>
         </div>
       </header>
 
-      {/* Main Content */}
+      {/* Main */}
       <main className="main-content">
-        {/* Left Sidebar */}
         <aside className="left-sidebar">
-          {/* Date Card */}
-          <div className="date-card">
-            <div className="text-sm font-semibold text-[var(--primary-green)]">{gregorianDate}</div>
-            <div className="text-sm text-[var(--text-muted)] mt-1">{hijriDate}</div>
-          </div>
-
-          {/* Clock Card */}
+          {/* Clock */}
           <div className="clock-card">
-            <div className="font-clock text-7xl text-[var(--primary-green)]">
-              {hours}:{minutes}
+            <div className="clock-time">
+              {hours}<span style={{ color: '#10b981' }}>:</span>{minutes}
+              <span className="clock-seconds">:{seconds}</span>
             </div>
-            <div className="text-2xl text-[var(--text-muted)] font-medium mt-1">:{seconds}</div>
+            <div style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '0.5rem', fontWeight: 500 }}>
+              Waktu Indonesia Barat
+            </div>
           </div>
 
-          {/* Countdown Card */}
+          {/* Countdown */}
           {nextPrayer && (
             <div className="countdown-card">
-              <div className="text-sm font-semibold opacity-90 mb-1">
-                {nextPrayer.name} - {formatCountdown(nextPrayer.minutesLeft)}
-              </div>
-              <div className="text-xs opacity-75">
-                Menuju waktu shalat berikutnya
+              <div className="label">Menuju Waktu Shalat</div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span className="prayer-name">{nextPrayer.name}</span>
+                <span className="time">{formatCountdown(nextPrayer.minutesLeft)}</span>
               </div>
             </div>
           )}
 
-          {/* Info Card */}
-          <div className="info-card flex-1">
-            <div className="text-xs font-semibold text-[var(--primary-green)] uppercase tracking-wider mb-2">
-              Informasi
-            </div>
-            <p className="text-sm leading-relaxed">
-              Amal terbaik adalah yang diberikan di bulan Ramadhan.
+          {/* Quote */}
+          <div className="info-card">
+            <p className="quote">
+              "Sebaik-baik manusia adalah yang paling bermanfaat bagi manusia lainnya."
             </p>
-            <p className="text-xs mt-3 text-[var(--text-muted)]">- Tirmidzi</p>
+            <p className="source">— HR. Ahmad, Thabrani, Daruqutni</p>
           </div>
         </aside>
 
-        {/* Carousel Area */}
+        {/* Carousel */}
         <div className="carousel-area">
-          <ContentCarousel 
-            contents={contents || []} 
-            duration={settings?.carousel_duration || 10}
-            mosqueName={mosqueName}
-          />
+          <ContentCarousel contents={contents || []} duration={settings?.carousel_duration || 10} mosqueName={mosqueName} />
         </div>
       </main>
 
-      {/* Prayer Times Bar */}
+      {/* Prayer Bar */}
       <div className="prayer-bar">
-        {prayerTimes && (
-          <>
-            <PrayerItem name="IMSAK" time={formatTime(prayerTimes.timings.fajr)} isActive={false} />
-            <PrayerItem name="SHUBUH" time={formatTime(prayerTimes.timings.fajr)} isActive={currentPrayer === 'fajr'} />
-            <PrayerItem name="SYURUQ" time={formatTime(prayerTimes.timings.sunrise)} isActive={false} />
-            <PrayerItem name="DHUHA" time="06:30" isActive={false} />
-            <PrayerItem name="DZUHUR" time={formatTime(prayerTimes.timings.dhuhr)} isActive={currentPrayer === 'dhuhr'} />
-            <PrayerItem name="ASHAR" time={formatTime(prayerTimes.timings.asr)} isActive={currentPrayer === 'asr'} />
-            <PrayerItem name="MAGHRIB" time={formatTime(prayerTimes.timings.maghrib)} isActive={currentPrayer === 'maghrib'} />
-            <PrayerItem name="ISYA" time={formatTime(prayerTimes.timings.isha)} isActive={currentPrayer === 'isha'} />
-          </>
-        )}
+        {PRAYER_DISPLAY.map((p) => (
+          <div
+            key={p.key}
+            className={`prayer-item ${currentPrayer === p.key ? 'active' : ''} ${nextPrayer?.key === p.key ? 'next' : ''}`}
+          >
+            <span className="prayer-name">{p.name}</span>
+            <span className="prayer-time">{getPrayerTime(p.key)}</span>
+          </div>
+        ))}
       </div>
 
-      {/* Running Text Ticker */}
+      {/* Ticker */}
       <footer className="ticker-bar">
-        <RunningText 
-          texts={runningTexts || []} 
-          speed={settings?.running_text_speed || 80}
-          mosqueName={mosqueName}
-        />
+        <RunningText texts={runningTexts || []} speed={settings?.running_text_speed || 80} mosqueName={mosqueName} />
       </footer>
-    </div>
-  )
-}
-
-function PrayerItem({ name, time, isActive }: { name: string; time: string; isActive: boolean }) {
-  return (
-    <div className={`prayer-item ${isActive ? 'active' : ''}`}>
-      <span className="prayer-name">{name}</span>
-      <span className="prayer-time">{time}</span>
     </div>
   )
 }

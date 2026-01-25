@@ -12,7 +12,7 @@ import {
 
 const menuItems = [
   { path: '/admin', icon: LayoutDashboard, label: 'Dashboard', end: true },
-  { path: '/admin/prayer-settings', icon: Clock, label: 'Lokasi & Jadwal' },
+  { path: '/admin/prayer-settings', icon: Clock, label: 'Jadwal Shalat' },
   { path: '/admin/contents', icon: Image, label: 'Kelola Konten' },
   { path: '/admin/running-texts', icon: Type, label: 'Running Text' },
   { path: '/admin/financials', icon: DollarSign, label: 'Keuangan' },
@@ -28,79 +28,88 @@ export default function AdminLayout() {
   }
 
   return (
-    <div className="flex min-h-screen bg-[#f0fdf4]">
+    <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--slate-50)' }}>
       {/* Sidebar */}
-      <aside className="admin-sidebar flex flex-col">
+      <aside className="admin-sidebar">
         {/* Logo */}
-        <div className="p-6 border-b border-white/10">
-          <div className="flex items-center gap-3">
-            <img src="/logo-alazhar.png" alt="Logo" className="h-12 w-auto" />
-            <div>
-              <h1 className="font-bold text-white text-sm">Masjid Al Azhar</h1>
-              <p className="text-xs text-white/60">Admin Panel</p>
-            </div>
+        <div className="logo-area">
+          <img src="/logo-alazhar.png" alt="Logo" />
+          <div>
+            <div className="title">Masjid Al Azhar</div>
+            <div className="subtitle">Panel Admin</div>
           </div>
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 p-4">
-          <ul className="space-y-1">
-            {menuItems.map((item) => (
-              <li key={item.path}>
-                <NavLink
-                  to={item.path}
-                  end={item.end}
-                  className={({ isActive }) =>
-                    `flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
-                      isActive
-                        ? 'bg-white text-[var(--primary-green)] shadow-lg'
-                        : 'text-white/80 hover:bg-white/10 hover:text-white'
-                    }`
-                  }
-                >
-                  <item.icon className="w-5 h-5" />
-                  {item.label}
-                </NavLink>
-              </li>
-            ))}
-          </ul>
+        <nav>
+          {menuItems.map((item) => (
+            <NavLink
+              key={item.path}
+              to={item.path}
+              end={item.end}
+              className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+            >
+              <item.icon size={20} />
+              {item.label}
+            </NavLink>
+          ))}
         </nav>
 
-        {/* Display Preview Link */}
-        <div className="p-4 border-t border-white/10">
+        {/* Footer */}
+        <div style={{ padding: '1rem', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+          {/* Display Preview */}
           <a
             href="/"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-3 px-4 py-3 rounded-xl text-white/80 hover:bg-white/10 hover:text-white transition-all"
+            className="nav-item"
+            style={{ marginBottom: '0.5rem' }}
           >
-            <Monitor className="w-5 h-5" />
+            <Monitor size={20} />
             Lihat Display
           </a>
-        </div>
 
-        {/* User Info & Logout */}
-        <div className="p-4 border-t border-white/10">
-          <div className="flex items-center justify-between">
+          {/* User Info */}
+          <div style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'space-between',
+            padding: '0.75rem',
+            background: 'rgba(255,255,255,0.05)',
+            borderRadius: '12px',
+            marginTop: '0.5rem'
+          }}>
             <div>
-              <p className="text-sm font-medium text-white">
+              <div style={{ color: 'white', fontSize: '0.875rem', fontWeight: 600 }}>
                 {user?.name || 'Admin'}
-              </p>
-              <p className="text-xs text-white/60">{user?.email}</p>
+              </div>
+              <div style={{ color: 'var(--slate-400)', fontSize: '0.75rem' }}>
+                {user?.email}
+              </div>
             </div>
             <button
               onClick={handleLogout}
-              className="p-2 rounded-lg hover:bg-white/10 text-white/80 hover:text-red-300 transition-colors"
+              style={{
+                background: 'rgba(239, 68, 68, 0.1)',
+                border: 'none',
+                padding: '0.5rem',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                color: '#ef4444',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
               title="Logout"
             >
-              <LogOut className="w-5 h-5" />
+              <LogOut size={18} />
             </button>
           </div>
         </div>
       </aside>
 
       {/* Main Content */}
-      <main className="admin-content flex-1">
+      <main className="admin-content">
         <Outlet />
       </main>
     </div>

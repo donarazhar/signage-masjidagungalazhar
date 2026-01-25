@@ -13,89 +13,79 @@ export default function ContentCarousel({ contents, duration, mosqueName }: Cont
 
   useEffect(() => {
     if (contents.length === 0) return
-
     const currentContent = contents[currentIndex]
     const isVideo = currentContent?.type === 'video'
     const slideDuration = isVideo ? (currentContent.duration || duration) : duration
-
-    const timer = setTimeout(() => {
-      setCurrentIndex((prev) => (prev + 1) % contents.length)
-    }, slideDuration * 1000)
-
+    const timer = setTimeout(() => setCurrentIndex((prev) => (prev + 1) % contents.length), slideDuration * 1000)
     return () => clearTimeout(timer)
   }, [currentIndex, contents, duration])
 
   useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.play().catch(() => {})
-    }
+    if (videoRef.current) videoRef.current.play().catch(() => {})
   }, [currentIndex])
 
   if (contents.length === 0) {
     return (
-      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-green-50 to-green-100 p-8">
-        <div className="text-center max-w-lg">
-          <img 
-            src="/logo-alazhar.png" 
-            alt="Logo" 
-            className="h-24 w-auto mx-auto mb-6"
-          />
-          <h2 className="text-3xl font-bold text-[var(--primary-green)] mb-3">
-            {mosqueName || 'Masjid Agung Al Azhar'}
-          </h2>
-          <p className="text-lg text-[var(--text-muted)] mb-6">
-            Yayasan Pesantren Islam Al Azhar
-          </p>
-          <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-green-200">
-            <p className="text-[var(--text-muted)] text-center">
-              ✨ Selamat datang di rumah Allah SWT ✨
-            </p>
-          </div>
-        </div>
+      <div className="carousel-placeholder">
+        <img src="/logo-alazhar.png" alt="Logo" />
+        <h2>{mosqueName || 'Masjid Agung Al Azhar'}</h2>
+        <p>Yayasan Pesantren Islam Al Azhar</p>
+        <div className="welcome">✨ Selamat Datang di Rumah Allah ✨</div>
       </div>
     )
   }
 
-
   return (
-    <div className="w-full h-full relative overflow-hidden bg-gray-100">
+    <div style={{ width: '100%', height: '100%', position: 'relative', overflow: 'hidden', background: '#f8fafc' }}>
       {contents.map((content, index) => (
         <div
           key={content.id}
-          className={`absolute inset-0 transition-opacity duration-700 ${
-            index === currentIndex ? 'opacity-100' : 'opacity-0'
-          }`}
+          style={{
+            position: 'absolute',
+            inset: 0,
+            transition: 'opacity 0.7s ease-in-out, transform 0.7s ease-in-out',
+            opacity: index === currentIndex ? 1 : 0,
+            transform: index === currentIndex ? 'scale(1)' : 'scale(1.02)',
+          }}
         >
           {content.type === 'image' ? (
             <img
               src={content.file_url || `/storage/${content.file_path}`}
               alt={content.title}
-              className="w-full h-full object-contain"
+              style={{ width: '100%', height: '100%', objectFit: 'contain' }}
             />
           ) : (
             <video
               ref={index === currentIndex ? videoRef : undefined}
               src={content.file_url || `/storage/${content.file_path}`}
-              className="w-full h-full object-contain"
+              style={{ width: '100%', height: '100%', objectFit: 'contain' }}
               muted
-              loop={false}
               playsInline
             />
           )}
         </div>
       ))}
 
-      {/* Progress Indicators */}
+      {/* Dots */}
       {contents.length > 1 && (
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-          {contents.map((_, index) => (
+        <div style={{
+          position: 'absolute',
+          bottom: '1.5rem',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          display: 'flex',
+          gap: '0.5rem',
+        }}>
+          {contents.map((_, idx) => (
             <div
-              key={index}
-              className={`h-2 rounded-full transition-all duration-300 ${
-                index === currentIndex
-                  ? 'bg-[var(--primary-green)] w-8'
-                  : 'bg-gray-300 w-2'
-              }`}
+              key={idx}
+              style={{
+                width: idx === currentIndex ? '2rem' : '0.5rem',
+                height: '0.5rem',
+                borderRadius: '100px',
+                background: idx === currentIndex ? '#10b981' : '#cbd5e1',
+                transition: 'all 0.3s',
+              }}
             />
           ))}
         </div>

@@ -11,55 +11,80 @@ export default function IqamahMode({ prayerName, duration, onComplete }: IqamahM
 
   return (
     <div className="iqamah-overlay">
-      {/* Decorative circles */}
-      <div className="absolute top-10 left-10 w-40 h-40 bg-white/5 rounded-full"></div>
-      <div className="absolute bottom-10 right-10 w-60 h-60 bg-white/5 rounded-full"></div>
-
-      <div className="relative z-10 text-center">
-        {/* Logo */}
+      {/* Content */}
+      <div style={{ position: 'relative', zIndex: 10, textAlign: 'center' }}>
         <img 
           src="/logo-alazhar.png" 
           alt="Logo" 
-          className="h-24 w-auto mx-auto mb-6"
+          style={{ height: '100px', marginBottom: '2rem', filter: 'drop-shadow(0 4px 20px rgba(0,0,0,0.2))' }}
         />
 
-        {/* Prayer Name */}
-        <h1 className="text-5xl font-bold text-white mb-2 tracking-wide">
+        <h1 style={{ 
+          fontSize: '3.5rem', 
+          fontWeight: 800, 
+          color: 'white', 
+          marginBottom: '0.5rem',
+          textShadow: '0 4px 20px rgba(0,0,0,0.2)'
+        }}>
           Waktu Shalat {prayerName}
         </h1>
 
-        <div className="text-xl text-white/80 mb-8">
+        <div style={{ fontSize: '1.5rem', color: 'rgba(255,255,255,0.9)', marginBottom: '3rem' }}>
           Masjid Agung Al Azhar
         </div>
 
-        {/* Iqamah Label */}
-        <div className="inline-block px-8 py-3 rounded-full bg-yellow-400/20 border-2 border-yellow-400/50 mb-8">
-          <span className="text-xl text-yellow-300 font-bold tracking-wider uppercase">
-            ⏳ Menunggu Iqamah
+        <div style={{
+          display: 'inline-block',
+          padding: '0.75rem 2rem',
+          background: 'rgba(251, 191, 36, 0.2)',
+          border: '2px solid rgba(251, 191, 36, 0.5)',
+          borderRadius: '100px',
+          marginBottom: '2rem'
+        }}>
+          <span style={{ color: '#fbbf24', fontWeight: 700, fontSize: '1.25rem', letterSpacing: '0.1em' }}>
+            ⏳ MENUNGGU IQAMAH
           </span>
         </div>
 
-        {/* Countdown */}
-        <div className="font-clock text-[10rem] font-black text-white leading-none drop-shadow-2xl">
+        <div style={{ 
+          fontFamily: 'Outfit, monospace',
+          fontSize: '12rem',
+          fontWeight: 800,
+          color: 'white',
+          lineHeight: 1,
+          letterSpacing: '-0.02em',
+          textShadow: '0 0 60px rgba(255,255,255,0.3)'
+        }}>
           {countdown.minutes.toString().padStart(2, '0')}
-          <span className="text-yellow-300 animate-pulse">:</span>
+          <span style={{ color: '#fbbf24', animation: 'pulse 1s ease-in-out infinite' }}>:</span>
           {countdown.seconds.toString().padStart(2, '0')}
         </div>
 
-        {/* Messages */}
-        <div className="mt-12 space-y-3">
-          <div className="text-2xl text-white font-semibold flex items-center justify-center gap-3">
-            <span className="text-3xl">📵</span>
+        <div style={{ marginTop: '3rem' }}>
+          <div style={{ 
+            fontSize: '1.5rem', 
+            color: 'white', 
+            fontWeight: 600,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '0.75rem'
+          }}>
+            <span style={{ fontSize: '2rem' }}>📵</span>
             Harap Non-aktifkan Handphone Anda
           </div>
-          <div className="text-lg text-white/70">
+          <div style={{ fontSize: '1.1rem', color: 'rgba(255,255,255,0.7)', marginTop: '0.5rem' }}>
             Persiapkan diri untuk shalat berjamaah
           </div>
         </div>
       </div>
 
-      {/* Bottom line */}
-      <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-yellow-400 to-transparent" />
+      <style>{`
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.5; }
+        }
+      `}</style>
     </div>
   )
 }
