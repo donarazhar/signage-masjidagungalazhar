@@ -79,13 +79,14 @@ body {
 /* Header */
 .header-bar {
   background: var(--gradient-hero);
-  padding: 1rem 2.5rem;
+  padding: 0.5rem 1.5rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
   box-shadow: 0 4px 30px rgba(16, 185, 129, 0.3);
   position: relative;
   z-index: 10;
+  flex-shrink: 0;
 }
 
 .header-bar::after {
@@ -105,13 +106,13 @@ body {
 }
 
 .logo-section img {
-  height: 56px;
+  height: 40px;
   width: auto;
   filter: drop-shadow(0 2px 8px rgba(0,0,0,0.2));
 }
 
 .mosque-info h1 {
-  font-size: 1.5rem;
+  font-size: 1.1rem;
   font-weight: 800;
   color: white;
   letter-spacing: -0.02em;
@@ -119,7 +120,7 @@ body {
 }
 
 .mosque-info p {
-  font-size: 0.875rem;
+  font-size: 0.7rem;
   color: rgba(255,255,255,0.85);
   font-weight: 500;
 }
@@ -128,10 +129,11 @@ body {
 .main-content {
   flex: 1;
   display: grid;
-  grid-template-columns: 320px 1fr;
-  gap: 1.5rem;
-  padding: 1.5rem 2rem;
+  grid-template-columns: 240px 1fr;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
   overflow: hidden;
+  min-height: 0;
 }
 
 /* Left Sidebar */
@@ -173,8 +175,8 @@ body {
 
 .clock-card {
   background: linear-gradient(145deg, white, var(--slate-50));
-  border-radius: 24px;
-  padding: 2rem;
+  border-radius: 16px;
+  padding: 1rem;
   text-align: center;
   box-shadow: var(--shadow-xl);
   border: 1px solid rgba(16, 185, 129, 0.15);
@@ -182,7 +184,7 @@ body {
 
 .clock-time {
   font-family: 'Outfit', monospace;
-  font-size: 5rem;
+  font-size: 3.5rem;
   font-weight: 800;
   color: var(--primary-600);
   line-height: 1;
@@ -192,7 +194,7 @@ body {
 
 .clock-seconds {
   font-family: 'Outfit', monospace;
-  font-size: 2rem;
+  font-size: 1.5rem;
   color: var(--slate-400);
   font-weight: 600;
   margin-left: 0.25rem;
@@ -200,8 +202,8 @@ body {
 
 .countdown-card {
   background: var(--gradient-primary);
-  border-radius: 16px;
-  padding: 1.25rem 1.5rem;
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
   color: white;
   box-shadow: var(--shadow-glow);
 }
@@ -228,19 +230,22 @@ body {
 
 .info-card {
   background: white;
-  border-radius: 16px;
-  padding: 1.25rem;
+  border-radius: 12px;
+  padding: 0.75rem;
   box-shadow: var(--shadow-sm);
   flex: 1;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .info-card .quote {
-  font-size: 0.95rem;
+  font-size: 0.8rem;
   color: var(--slate-600);
-  line-height: 1.7;
+  line-height: 1.5;
   font-style: italic;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .info-card .source {
@@ -301,12 +306,13 @@ body {
 /* Prayer Bar */
 .prayer-bar {
   background: var(--gradient-hero);
-  padding: 1rem 2rem;
+  padding: 0.5rem 1rem;
   display: flex;
   justify-content: space-around;
   align-items: stretch;
-  gap: 0.5rem;
+  gap: 0.25rem;
   box-shadow: 0 -4px 30px rgba(16, 185, 129, 0.2);
+  flex-shrink: 0;
 }
 
 .prayer-item {
@@ -315,8 +321,8 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 0.75rem 1rem;
-  border-radius: 16px;
+  padding: 0.4rem 0.5rem;
+  border-radius: 8px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   background: transparent;
 }
@@ -347,7 +353,7 @@ body {
 
 .prayer-time {
   font-family: 'Outfit', monospace;
-  font-size: 1.5rem;
+  font-size: 1.1rem;
   font-weight: 800;
   color: white;
 }
@@ -355,9 +361,10 @@ body {
 /* Ticker */
 .ticker-bar {
   background: linear-gradient(90deg, var(--primary-800), var(--primary-700), var(--primary-800));
-  padding: 0.875rem 0;
+  padding: 0.5rem 0;
   overflow: hidden;
   position: relative;
+  flex-shrink: 0;
 }
 
 .ticker-bar::before {
