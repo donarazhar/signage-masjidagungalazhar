@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Setting;
 use Illuminate\Http\Request;
-
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 class SettingController extends Controller
 {
@@ -69,12 +69,14 @@ class SettingController extends Controller
             'settings.*.type' => 'sometimes|in:string,json,number,boolean',
         ]);
 
+        $debug = [];
+        $debug['db_connection'] = DB::getDefaultConnection();
+        $debug['updates'] = [];
+
         foreach ($request->settings as $setting) {
             $type = $setting['type'] ?? 'string';
             $key = $setting['key'];
             $value = $setting['value'];
-
-            Log::info("Saving setting: $key", ['value' => $value, 'type' => $type]);
 
             $storedValue = match ($type) {
                 'json' => is_array($value) || is_object($value) ? json_encode($value) : $value,
@@ -82,14 +84,37 @@ class SettingController extends Controller
                 default => (string) $value,
             };
 
-            \Illuminate\Support\Facades\DB::table('settings')->updateOrInsert(
-                ['key' => $key],
-                ['value' => $storedValue, 'type' => $type, 'updated_at' => now()]
-            );
+            // Force update using raw query builder
+            $affected = DB::table('settings')
+                ->where('key', $key)
+                ->update([
+                    'value' => $storedValue,
+                    'type' => $type,
+                    'updated_at' => now()
+                ]);
+
+            if ($affected > 0) {
+                $debug['updates'][$key] = "UPDATED ($affected)";
+            } else {
+                $exists = DB::table('settings')->where('key', $key)->exists();
+                if (!$exists) {
+                    DB::table('settings')->insert([
+                        'key' => $key,
+                        'value' => $storedValue,
+                        'type' => $type,
+                        'created_at' => now(),
+                        'updated_at' => now()
+                    ]);
+                    $debug['updates'][$key] = 'INSERTED';
+                } else {
+                    $debug['updates'][$key] = 'NO CHANGE (identical value)';
+                }
+            }
         }
 
         return response()->json([
             'message' => 'Settings berhasil diperbarui',
+            'debug' => $debug,
             'settings' => Setting::getAllSettings(),
         ]);
     }
