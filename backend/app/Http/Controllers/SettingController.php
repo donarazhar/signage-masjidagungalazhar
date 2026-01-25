@@ -76,7 +76,16 @@ class SettingController extends Controller
 
             Log::info("Saving setting: $key", ['value' => $value, 'type' => $type]);
 
-            Setting::setValue($key, $value, $type);
+            $storedValue = match ($type) {
+                'json' => is_array($value) || is_object($value) ? json_encode($value) : $value,
+                'boolean' => filter_var($value, FILTER_VALIDATE_BOOLEAN) ? 'true' : 'false',
+                default => (string) $value,
+            };
+
+            \Illuminate\Support\Facades\DB::table('settings')->updateOrInsert(
+                ['key' => $key],
+                ['value' => $storedValue, 'type' => $type, 'updated_at' => now()]
+            );
         }
 
         return response()->json([

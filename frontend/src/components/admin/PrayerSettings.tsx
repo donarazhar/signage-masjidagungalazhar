@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { displayService } from '../../services/displayService'
 import { adminService } from '../../services/adminService'
@@ -18,15 +18,7 @@ export default function PrayerSettings() {
   const [formData, setFormData] = useState<Partial<Settings>>({})
 
   // Initialize form data when settings load
-  // Initialize form data when settings load
-  useEffect(() => {
-    if (settings) {
-      setFormData((prev) => ({
-        ...settings,
-        ...prev, // Keep user edits if any (though usually prev is empty here)
-      }))
-    }
-  }, [settings])
+  // Form data holds only user edits. Initial data comes from settings query.
 
   const updateMutation = useMutation({
     mutationFn: (settings: Array<{ key: string; value: unknown; type: string }>) =>
@@ -55,6 +47,10 @@ export default function PrayerSettings() {
       { key: 'carousel_duration', value: formData.carousel_duration ?? settings?.carousel_duration ?? 10, type: 'number' },
       { key: 'running_text_speed', value: formData.running_text_speed ?? settings?.running_text_speed ?? 80, type: 'number' },
     ]
+
+    // DEBUG: Check what we are sending
+    // alert(JSON.stringify(updates, null, 2))
+    console.log('Sending updates:', updates)
 
     try {
       await updateMutation.mutateAsync(updates)
