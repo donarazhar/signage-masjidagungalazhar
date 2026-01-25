@@ -28,16 +28,16 @@ export default function AdminLayout() {
   }
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen bg-[#f0fdf4]">
       {/* Sidebar */}
       <aside className="admin-sidebar flex flex-col">
         {/* Logo */}
-        <div className="p-6 border-b border-[var(--border-color)]">
+        <div className="p-6 border-b border-white/10">
           <div className="flex items-center gap-3">
-            <span className="text-3xl">🕌</span>
+            <img src="/logo-alazhar.png" alt="Logo" className="h-12 w-auto" />
             <div>
-              <h1 className="font-bold text-[var(--text-primary)]">Signage Masjid</h1>
-              <p className="text-xs text-[var(--text-muted)]">Admin Panel</p>
+              <h1 className="font-bold text-white text-sm">Masjid Al Azhar</h1>
+              <p className="text-xs text-white/60">Admin Panel</p>
             </div>
           </div>
         </div>
@@ -51,10 +51,10 @@ export default function AdminLayout() {
                   to={item.path}
                   end={item.end}
                   className={({ isActive }) =>
-                    `flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                    `flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
                       isActive
-                        ? 'bg-[var(--accent-blue)] text-white'
-                        : 'text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)] hover:text-[var(--text-primary)]'
+                        ? 'bg-white text-[var(--primary-green)] shadow-lg'
+                        : 'text-white/80 hover:bg-white/10 hover:text-white'
                     }`
                   }
                 >
@@ -67,12 +67,12 @@ export default function AdminLayout() {
         </nav>
 
         {/* Display Preview Link */}
-        <div className="p-4 border-t border-[var(--border-color)]">
+        <div className="p-4 border-t border-white/10">
           <a
             href="/"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-3 px-4 py-3 rounded-lg text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)] hover:text-[var(--text-primary)] transition-colors"
+            className="flex items-center gap-3 px-4 py-3 rounded-xl text-white/80 hover:bg-white/10 hover:text-white transition-all"
           >
             <Monitor className="w-5 h-5" />
             Lihat Display
@@ -80,17 +80,17 @@ export default function AdminLayout() {
         </div>
 
         {/* User Info & Logout */}
-        <div className="p-4 border-t border-[var(--border-color)]">
+        <div className="p-4 border-t border-white/10">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-[var(--text-primary)]">
+              <p className="text-sm font-medium text-white">
                 {user?.name || 'Admin'}
               </p>
-              <p className="text-xs text-[var(--text-muted)]">{user?.email}</p>
+              <p className="text-xs text-white/60">{user?.email}</p>
             </div>
             <button
               onClick={handleLogout}
-              className="p-2 rounded-lg hover:bg-[var(--bg-tertiary)] text-[var(--text-secondary)] hover:text-[var(--urgent-red)] transition-colors"
+              className="p-2 rounded-lg hover:bg-white/10 text-white/80 hover:text-red-300 transition-colors"
               title="Logout"
             >
               <LogOut className="w-5 h-5" />

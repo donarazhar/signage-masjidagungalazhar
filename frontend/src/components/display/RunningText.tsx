@@ -23,10 +23,9 @@ export default function RunningText({ texts, speed, mosqueName }: RunningTextPro
   }, [texts, speed])
 
   const defaultMessages = [
-    `🕌 Selamat datang di ${mosqueName || 'Masjid Agung Al Azhar'}`,
-    '📵 Harap non-aktifkan ponsel selama shalat',
-    '🚗 Parkir kendaraan dengan tertib',
-    '🤲 Semoga ibadah kita diterima Allah SWT',
+    `🕌 MATIKAN ATAU DISETTING MODE SILENT`,
+    `📵 Harap non-aktifkan ponsel selama shalat`,
+    `🤲 Dukung Program ${mosqueName || 'Masjid Agung Al Azhar'}`,
   ]
 
   const displayTexts = texts.length > 0 
@@ -45,42 +44,22 @@ export default function RunningText({ texts, speed, mosqueName }: RunningTextPro
         updated_at: '',
       }))
 
-  const getTypeStyle = (type: string) => {
-    switch (type) {
-      case 'urgent':
-        return 'text-red-400 font-semibold'
-      case 'berita_duka':
-        return 'bg-gray-900/80 text-white px-4 py-1 rounded-lg border border-gray-700'
-      default:
-        return 'text-[var(--text-secondary)]'
-    }
-  }
-
-  const getTypeIcon = (type: string) => {
-    switch (type) {
-      case 'urgent': return '⚠️'
-      case 'berita_duka': return '🖤'
-      default: return '✦'
-    }
-  }
-
   return (
-    <div ref={containerRef} className="overflow-hidden px-4">
+    <div ref={containerRef} className="overflow-hidden">
       <div
         ref={contentRef}
         className="ticker-content running-text"
         style={{ animationDuration: `${animationDuration}s` }}
       >
         {displayTexts.map((text, idx) => (
-          <span key={`${text.id}-${idx}`} className={`ticker-item ${getTypeStyle(text.type)}`}>
-            <span className="text-[var(--accent-azure)]">{getTypeIcon(text.type)}</span>
+          <span key={`${text.id}-${idx}`} className="ticker-item">
+            <span className="text-yellow-300">★</span>
             {text.content}
           </span>
         ))}
-        {/* Duplicate for seamless loop */}
         {displayTexts.map((text, idx) => (
-          <span key={`dup-${text.id}-${idx}`} className={`ticker-item ${getTypeStyle(text.type)}`}>
-            <span className="text-[var(--accent-azure)]">{getTypeIcon(text.type)}</span>
+          <span key={`dup-${text.id}-${idx}`} className="ticker-item">
+            <span className="text-yellow-300">★</span>
             {text.content}
           </span>
         ))}

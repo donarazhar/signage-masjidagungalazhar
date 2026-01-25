@@ -28,23 +28,26 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[var(--bg-primary)] p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-green-100 p-4">
       <div className="w-full max-w-md">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="text-6xl mb-4">🕌</div>
-          <h1 className="text-2xl font-bold text-[var(--text-primary)]">
-            Digital Signage Masjid
+          <img src="/logo-alazhar.png" alt="Logo" className="h-20 w-auto mx-auto mb-4" />
+          <h1 className="text-2xl font-bold text-[var(--primary-green)]">
+            Digital Signage
           </h1>
-          <p className="text-[var(--text-secondary)] mt-2">
-            Masuk ke panel admin
+          <p className="text-[var(--text-muted)] mt-1">
+            Masjid Agung Al Azhar
           </p>
         </div>
 
         {/* Form Card */}
         <div className="admin-card">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Email */}
+          <h2 className="text-lg font-semibold text-center text-[var(--text-dark)] mb-6">
+            Masuk ke Panel Admin
+          </h2>
+          
+          <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label className="form-label">Email</label>
               <div className="relative">
@@ -60,7 +63,6 @@ export default function Login() {
               </div>
             </div>
 
-            {/* Password */}
             <div>
               <label className="form-label">Password</label>
               <div className="relative">
@@ -76,19 +78,13 @@ export default function Login() {
               </div>
             </div>
 
-            {/* Error Message */}
             {error && (
-              <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
+              <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-red-600 text-sm">
                 {error}
               </div>
             )}
 
-            {/* Submit Button */}
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="btn btn-primary w-full"
-            >
+            <button type="submit" disabled={isLoading} className="btn btn-primary w-full">
               {isLoading ? (
                 <span className="flex items-center gap-2">
                   <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -104,9 +100,8 @@ export default function Login() {
           </form>
         </div>
 
-        {/* Footer */}
         <div className="text-center mt-6 text-[var(--text-muted)] text-sm">
-          <a href="/" className="hover:text-[var(--accent-blue)]">
+          <a href="/" className="hover:text-[var(--primary-green)]">
             ← Kembali ke tampilan display
           </a>
         </div>

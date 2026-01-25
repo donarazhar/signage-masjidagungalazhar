@@ -33,25 +33,23 @@ export default function ContentCarousel({ contents, duration, mosqueName }: Cont
 
   if (contents.length === 0) {
     return (
-      <div className="w-full h-full flex items-center justify-center relative overflow-hidden">
-        {/* Decorative Background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[var(--bg-tertiary)] to-[var(--bg-primary)]"></div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[var(--accent-azure)] opacity-5 rounded-full blur-3xl"></div>
-        
-        <div className="text-center relative z-10 p-8">
+      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-green-50 to-green-100 p-8">
+        <div className="text-center max-w-lg">
           <img 
             src="/logo-alazhar.png" 
             alt="Logo" 
-            className="h-32 w-auto mx-auto mb-6 opacity-80"
+            className="h-24 w-auto mx-auto mb-6"
           />
-          <h2 className="text-3xl font-bold gradient-text mb-3">
+          <h2 className="text-3xl font-bold text-[var(--primary-green)] mb-3">
             {mosqueName || 'Masjid Agung Al Azhar'}
           </h2>
-          <p className="text-lg text-[var(--text-secondary)]">
+          <p className="text-lg text-[var(--text-muted)] mb-6">
             Yayasan Pesantren Islam Al Azhar
           </p>
-          <div className="mt-8 text-sm text-[var(--text-muted)]">
-            ✨ Selamat datang di rumah Allah ✨
+          <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-green-200">
+            <p className="text-[var(--text-muted)] text-center">
+              ✨ Selamat datang di rumah Allah SWT ✨
+            </p>
           </div>
         </div>
       </div>
@@ -61,14 +59,12 @@ export default function ContentCarousel({ contents, duration, mosqueName }: Cont
   const currentContent = contents[currentIndex]
 
   return (
-    <div className="w-full h-full relative overflow-hidden">
+    <div className="w-full h-full relative overflow-hidden bg-gray-100">
       {contents.map((content, index) => (
         <div
           key={content.id}
-          className={`absolute inset-0 transition-all duration-700 ease-in-out ${
-            index === currentIndex 
-              ? 'opacity-100 scale-100' 
-              : 'opacity-0 scale-105'
+          className={`absolute inset-0 transition-opacity duration-700 ${
+            index === currentIndex ? 'opacity-100' : 'opacity-0'
           }`}
         >
           {content.type === 'image' ? (
@@ -90,23 +86,16 @@ export default function ContentCarousel({ contents, duration, mosqueName }: Cont
         </div>
       ))}
 
-      {/* Title Overlay */}
-      {currentContent?.title && (
-        <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
-          <h2 className="text-2xl font-bold text-white drop-shadow-lg">{currentContent.title}</h2>
-        </div>
-      )}
-
       {/* Progress Indicators */}
       {contents.length > 1 && (
-        <div className="absolute bottom-6 right-6 flex gap-2">
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
           {contents.map((_, index) => (
             <div
               key={index}
-              className={`h-1.5 rounded-full transition-all duration-500 ${
+              className={`h-2 rounded-full transition-all duration-300 ${
                 index === currentIndex
-                  ? 'bg-white w-8'
-                  : 'bg-white/30 w-3 hover:bg-white/50'
+                  ? 'bg-[var(--primary-green)] w-8'
+                  : 'bg-gray-300 w-2'
               }`}
             />
           ))}

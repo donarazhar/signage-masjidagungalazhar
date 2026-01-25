@@ -11,19 +11,16 @@ export default function IqamahMode({ prayerName, duration, onComplete }: IqamahM
 
   return (
     <div className="iqamah-overlay">
-      {/* Decorative Elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-20 w-40 h-40 bg-[var(--accent-azure)] opacity-10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-20 right-20 w-60 h-60 bg-[var(--accent-gold)] opacity-10 rounded-full blur-3xl"></div>
-      </div>
+      {/* Decorative circles */}
+      <div className="absolute top-10 left-10 w-40 h-40 bg-white/5 rounded-full"></div>
+      <div className="absolute bottom-10 right-10 w-60 h-60 bg-white/5 rounded-full"></div>
 
-      {/* Content */}
       <div className="relative z-10 text-center">
         {/* Logo */}
         <img 
           src="/logo-alazhar.png" 
           alt="Logo" 
-          className="h-28 w-auto mx-auto mb-8 drop-shadow-2xl"
+          className="h-24 w-auto mx-auto mb-6"
         />
 
         {/* Prayer Name */}
@@ -31,39 +28,38 @@ export default function IqamahMode({ prayerName, duration, onComplete }: IqamahM
           Waktu Shalat {prayerName}
         </h1>
 
-        {/* Subtitle */}
-        <div className="text-2xl text-[var(--accent-azure)] mb-10 font-medium">
+        <div className="text-xl text-white/80 mb-8">
           Masjid Agung Al Azhar
         </div>
 
         {/* Iqamah Label */}
-        <div className="inline-block px-8 py-3 rounded-full bg-[var(--accent-gold)]/20 border border-[var(--accent-gold)]/30 mb-8">
-          <span className="text-xl text-[var(--accent-gold)] font-semibold tracking-wider uppercase">
+        <div className="inline-block px-8 py-3 rounded-full bg-yellow-400/20 border-2 border-yellow-400/50 mb-8">
+          <span className="text-xl text-yellow-300 font-bold tracking-wider uppercase">
             ⏳ Menunggu Iqamah
           </span>
         </div>
 
         {/* Countdown */}
-        <div className="font-clock text-[12rem] font-bold text-white leading-none tracking-wider drop-shadow-2xl">
+        <div className="font-clock text-[10rem] font-black text-white leading-none drop-shadow-2xl">
           {countdown.minutes.toString().padStart(2, '0')}
-          <span className="text-[var(--accent-azure)] animate-pulse">:</span>
+          <span className="text-yellow-300 animate-pulse">:</span>
           {countdown.seconds.toString().padStart(2, '0')}
         </div>
 
         {/* Messages */}
-        <div className="mt-14 space-y-4">
-          <div className="text-2xl text-white/90 font-medium flex items-center justify-center gap-3">
+        <div className="mt-12 space-y-3">
+          <div className="text-2xl text-white font-semibold flex items-center justify-center gap-3">
             <span className="text-3xl">📵</span>
             Harap Non-aktifkan Handphone Anda
           </div>
-          <div className="text-xl text-white/60">
+          <div className="text-lg text-white/70">
             Persiapkan diri untuk shalat berjamaah
           </div>
         </div>
       </div>
 
-      {/* Bottom Gradient Line */}
-      <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[var(--accent-azure)] to-transparent" />
+      {/* Bottom line */}
+      <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-yellow-400 to-transparent" />
     </div>
   )
 }
