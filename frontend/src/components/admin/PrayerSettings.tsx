@@ -25,8 +25,8 @@ export default function PrayerSettings() {
   })
 
   const updateMutation = useMutation({
-    mutationFn: (data: Array<{ key: string; value: unknown; type: string }>) =>
-      adminService.bulkUpdateSettings(data),
+    mutationFn: (settings: Array<{ key: string; value: unknown; type: string }>) =>
+      adminService.bulkUpdateSettings(settings),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['settings'] })
       setSuccessMessage('Pengaturan berhasil disimpan!')
@@ -39,15 +39,17 @@ export default function PrayerSettings() {
     setIsSaving(true)
 
     const updates = [
-      { key: 'mosque_name', value: formData.mosque_name || settings?.mosque_name, type: 'string' },
-      { key: 'mosque_address', value: formData.mosque_address || settings?.mosque_address, type: 'string' },
-      { key: 'latitude', value: formData.latitude || settings?.latitude, type: 'number' },
-      { key: 'longitude', value: formData.longitude || settings?.longitude, type: 'number' },
-      { key: 'city', value: formData.city || settings?.city, type: 'string' },
-      { key: 'calculation_method', value: formData.calculation_method || settings?.calculation_method, type: 'number' },
-      { key: 'prayer_duration', value: formData.prayer_duration || settings?.prayer_duration, type: 'number' },
-      { key: 'countdown_before', value: formData.countdown_before || settings?.countdown_before, type: 'number' },
-      { key: 'iqamah_duration', value: formData.iqamah_duration || settings?.iqamah_duration, type: 'json' },
+      { key: 'mosque_name', value: formData.mosque_name ?? settings?.mosque_name ?? '', type: 'string' },
+      { key: 'mosque_address', value: formData.mosque_address ?? settings?.mosque_address ?? '', type: 'string' },
+      { key: 'latitude', value: formData.latitude ?? settings?.latitude ?? 0, type: 'number' },
+      { key: 'longitude', value: formData.longitude ?? settings?.longitude ?? 0, type: 'number' },
+      { key: 'city', value: formData.city ?? settings?.city ?? '', type: 'string' },
+      { key: 'calculation_method', value: formData.calculation_method ?? settings?.calculation_method ?? 20, type: 'number' },
+      { key: 'prayer_duration', value: formData.prayer_duration ?? settings?.prayer_duration ?? 15, type: 'number' },
+      { key: 'countdown_before', value: formData.countdown_before ?? settings?.countdown_before ?? 10, type: 'number' },
+      { key: 'iqamah_duration', value: formData.iqamah_duration ?? settings?.iqamah_duration ?? { fajr: 10, dhuhr: 10, asr: 10, maghrib: 5, isha: 10 }, type: 'json' },
+      { key: 'carousel_duration', value: formData.carousel_duration ?? settings?.carousel_duration ?? 10, type: 'number' },
+      { key: 'running_text_speed', value: formData.running_text_speed ?? settings?.running_text_speed ?? 80, type: 'number' },
     ]
 
     try {

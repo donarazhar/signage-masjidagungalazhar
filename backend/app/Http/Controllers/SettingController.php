@@ -38,7 +38,7 @@ class SettingController extends Controller
     public function update(Request $request, string $key)
     {
         $request->validate([
-            'value' => 'required',
+            'value' => 'nullable',
             'type' => 'sometimes|in:string,json,number,boolean',
         ]);
 
@@ -61,7 +61,7 @@ class SettingController extends Controller
         $request->validate([
             'settings' => 'required|array',
             'settings.*.key' => 'required|string',
-            'settings.*.value' => 'required',
+            'settings.*.value' => 'nullable',
             'settings.*.type' => 'sometimes|in:string,json,number,boolean',
         ]);
 
