@@ -7,6 +7,7 @@ use App\Http\Controllers\ContentController;
 use App\Http\Controllers\RunningTextController;
 use App\Http\Controllers\FinancialController;
 use App\Http\Controllers\PrayerTimeController;
+use App\Http\Controllers\EventController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,6 +22,7 @@ Route::get('/prayer-times/month', [PrayerTimeController::class, 'month']);
 Route::get('/contents/active', [ContentController::class, 'active']);
 Route::get('/running-texts/active', [RunningTextController::class, 'active']);
 Route::get('/financials/summary', [FinancialController::class, 'summary']);
+Route::get('/events/upcoming', [EventController::class, 'upcoming']);
 
 // Authentication
 Route::post('/login', [AuthController::class, 'login']);
@@ -56,4 +58,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/financials', [FinancialController::class, 'store']);
     Route::put('/financials/{financial}', [FinancialController::class, 'update']);
     Route::delete('/financials/{financial}', [FinancialController::class, 'destroy']);
+
+    // Events
+    Route::get('/events', [EventController::class, 'index']);
+    Route::post('/events', [EventController::class, 'store']);
+    Route::put('/events/{event}', [EventController::class, 'update']);
+    Route::delete('/events/{event}', [EventController::class, 'destroy']);
+    Route::put('/events/{event}/toggle', [EventController::class, 'toggle']);
 });

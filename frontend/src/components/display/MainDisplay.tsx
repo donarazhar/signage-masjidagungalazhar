@@ -5,6 +5,7 @@ import ContentCarousel from './ContentCarousel'
 import RunningText from './RunningText'
 import IqamahMode from './IqamahMode'
 import PrayerInProgressMode from './PrayerInProgressMode'
+import EventsPanel from './EventsPanel'
 import type { DisplayMode, PrayerName, PrayerTimes } from '../../types'
 
 const PRAYER_DISPLAY: Array<{ key: string; name: string; showIqamah?: boolean }> = [
@@ -59,6 +60,7 @@ export default function MainDisplay() {
   const { data: prayerTimes } = useQuery({ queryKey: ['prayerTimes'], queryFn: displayService.getPrayerTimes, refetchInterval: 1000 * 60 * 30 })
   const { data: contents } = useQuery({ queryKey: ['activeContents'], queryFn: displayService.getActiveContents, refetchInterval: 1000 * 60 * 5 })
   const { data: runningTexts } = useQuery({ queryKey: ['activeRunningTexts'], queryFn: displayService.getActiveRunningTexts, refetchInterval: 1000 * 60 * 5 })
+  const { data: events } = useQuery({ queryKey: ['upcomingEvents'], queryFn: displayService.getUpcomingEvents, refetchInterval: 1000 * 60 * 15 })
 
   useEffect(() => {
     const interval = setInterval(() => setCurrentTime(new Date()), 1000)
@@ -178,6 +180,11 @@ export default function MainDisplay() {
         <div className="carousel-area">
           <ContentCarousel contents={contents || []} duration={settings?.carousel_duration || 10} mosqueName={mosqueName} />
         </div>
+
+        {/* Events Sidebar */}
+        <aside className="right-sidebar">
+          <EventsPanel events={events || []} />
+        </aside>
       </main>
 
       {/* Prayer Bar */}

@@ -6,6 +6,7 @@ import PrayerSettings from './components/admin/PrayerSettings'
 import ContentManager from './components/admin/ContentManager'
 import RunningTextManager from './components/admin/RunningTextManager'
 import FinancialManager from './components/admin/FinancialManager'
+import EventManager from './components/admin/EventManager'
 import Login from './components/admin/Login'
 import { useAuth } from './hooks/useAuth'
 
@@ -46,6 +47,7 @@ function App() {
         <Route index element={<Dashboard />} />
         <Route path="prayer-settings" element={<PrayerSettings />} />
         <Route path="contents" element={<ContentManager />} />
+        <Route path="events" element={<EventManager />} />
         <Route path="running-texts" element={<RunningTextManager />} />
         <Route path="financials" element={<FinancialManager />} />
       </Route>

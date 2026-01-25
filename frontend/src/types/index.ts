@@ -136,6 +136,23 @@ export interface WeeklyFinancial {
   }[]
 }
 
+// Event types
+export interface Event {
+  id: number
+  title: string
+  event_date: string
+  event_time: string | null
+  description: string | null
+  location: string | null
+  is_enabled: boolean
+  formatted_date?: string
+  formatted_time?: string
+  created_by: number
+  creator?: { id: number; name: string }
+  created_at: string
+  updated_at: string
+}
+
 // Display mode types
 export type DisplayMode = 'normal' | 'countdown' | 'adzan' | 'iqamah' | 'prayer'
 

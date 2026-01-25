@@ -7,13 +7,15 @@ import {
   Type, 
   DollarSign, 
   LogOut,
-  Monitor
+  Monitor,
+  Calendar
 } from 'lucide-react'
 
 const menuItems = [
   { path: '/admin', icon: LayoutDashboard, label: 'Dashboard', end: true },
   { path: '/admin/prayer-settings', icon: Clock, label: 'Jadwal Shalat' },
   { path: '/admin/contents', icon: Image, label: 'Kelola Konten' },
+  { path: '/admin/events', icon: Calendar, label: 'Agenda Kegiatan' },
   { path: '/admin/running-texts', icon: Type, label: 'Running Text' },
   { path: '/admin/financials', icon: DollarSign, label: 'Keuangan' },
 ]

@@ -1,5 +1,5 @@
 import api from './api'
-import type { Content, RunningText, Financial, FinancialSummary } from '../types'
+import type { Content, RunningText, Financial, FinancialSummary, Event } from '../types'
 
 export const adminService = {
   // Settings
@@ -98,6 +98,32 @@ export const adminService = {
 
   async deleteFinancial(id: number) {
     const response = await api.delete(`/financials/${id}`)
+    return response.data
+  },
+
+  // Events
+  async getEvents(): Promise<Event[]> {
+    const response = await api.get<Event[]>('/events')
+    return response.data
+  },
+
+  async createEvent(data: Partial<Event>) {
+    const response = await api.post('/events', data)
+    return response.data
+  },
+
+  async updateEvent(id: number, data: Partial<Event>) {
+    const response = await api.put(`/events/${id}`, data)
+    return response.data
+  },
+
+  async deleteEvent(id: number) {
+    const response = await api.delete(`/events/${id}`)
+    return response.data
+  },
+
+  async toggleEvent(id: number) {
+    const response = await api.put(`/events/${id}/toggle`)
     return response.data
   },
 }

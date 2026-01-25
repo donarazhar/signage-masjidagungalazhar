@@ -1,0 +1,116 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Event;
+use Illuminate\Http\Request;
+
+class EventController extends Controller
+{
+    /**
+     * List all events
+     */
+    public function index()
+    {
+        $events = Event::with('creator:id,name')
+            ->orderBy('event_date', 'asc')
+            ->orderBy('event_time', 'asc')
+            ->get();
+
+        return response()->json($events);
+    }
+
+    /**
+     * Get upcoming events for display (5 events)
+     */
+    public function upcoming()
+    {
+        $events = Event::upcoming(5)->get();
+
+        return response()->json($events);
+    }
+
+    /**
+     * Store a new event
+     */
+    public function store(Request $request)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'event_date' => 'required|date',
+            'event_time' => 'nullable|date_format:H:i',
+            'description' => 'nullable|string|max:500',
+            'location' => 'nullable|string|max:255',
+            'is_enabled' => 'sometimes|boolean',
+        ]);
+
+        $event = Event::create([
+            'title' => $request->title,
+            'event_date' => $request->event_date,
+            'event_time' => $request->event_time,
+            'description' => $request->description,
+            'location' => $request->location,
+            'is_enabled' => $request->input('is_enabled', true),
+            'created_by' => $request->user()->id,
+        ]);
+
+        return response()->json([
+            'message' => 'Kegiatan berhasil ditambahkan',
+            'event' => $event->load('creator:id,name'),
+        ], 201);
+    }
+
+    /**
+     * Update event
+     */
+    public function update(Request $request, Event $event)
+    {
+        $request->validate([
+            'title' => 'sometimes|string|max:255',
+            'event_date' => 'sometimes|date',
+            'event_time' => 'nullable|date_format:H:i',
+            'description' => 'nullable|string|max:500',
+            'location' => 'nullable|string|max:255',
+            'is_enabled' => 'sometimes|boolean',
+        ]);
+
+        $event->update($request->only([
+            'title',
+            'event_date',
+            'event_time',
+            'description',
+            'location',
+            'is_enabled',
+        ]));
+
+        return response()->json([
+            'message' => 'Kegiatan berhasil diperbarui',
+            'event' => $event->fresh()->load('creator:id,name'),
+        ]);
+    }
+
+    /**
+     * Delete event
+     */
+    public function destroy(Event $event)
+    {
+        $event->delete();
+
+        return response()->json([
+            'message' => 'Kegiatan berhasil dihapus',
+        ]);
+    }
+
+    /**
+     * Toggle event status
+     */
+    public function toggle(Event $event)
+    {
+        $event->update(['is_enabled' => !$event->is_enabled]);
+
+        return response()->json([
+            'message' => $event->is_enabled ? 'Kegiatan diaktifkan' : 'Kegiatan dinonaktifkan',
+            'event' => $event,
+        ]);
+    }
+}

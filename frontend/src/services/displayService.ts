@@ -1,5 +1,5 @@
 import api from './api'
-import type { PrayerTimes, Settings } from '../types'
+import type { PrayerTimes, Settings, Event } from '../types'
 
 export const displayService = {
   // Get all settings (public)
@@ -29,6 +29,12 @@ export const displayService = {
   // Get financial summary (public)
   async getFinancialSummary() {
     const response = await api.get('/financials/summary')
+    return response.data
+  },
+
+  // Get upcoming events (public)
+  async getUpcomingEvents(): Promise<Event[]> {
+    const response = await api.get<Event[]>('/events/upcoming')
     return response.data
   },
 }
