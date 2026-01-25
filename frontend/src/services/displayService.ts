@@ -1,5 +1,5 @@
 import api from './api'
-import type { PrayerTimes, Settings, Event, Donation } from '../types'
+import type { PrayerTimes, Settings, Event, Donation, Hadith } from '../types'
 
 export const displayService = {
   // Get all settings (public)
@@ -41,6 +41,12 @@ export const displayService = {
   // Get active donations (public)
   async getActiveDonations(): Promise<Donation[]> {
     const response = await api.get<Donation[]>('/donations/active')
+    return response.data
+  },
+
+  // Get active hadith (public)
+  async getActiveHadith(): Promise<Hadith | null> {
+    const response = await api.get<Hadith>('/hadiths/active')
     return response.data
   },
 }

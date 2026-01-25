@@ -9,6 +9,7 @@ use App\Http\Controllers\FinancialController;
 use App\Http\Controllers\DonationController;
 use App\Http\Controllers\PrayerTimeController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\HadithController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,6 +26,7 @@ Route::get('/running-texts/active', [RunningTextController::class, 'active']);
 Route::get('/donations/active', [DonationController::class, 'active']);
 Route::get('/financials/summary', [FinancialController::class, 'summary']);
 Route::get('/events/upcoming', [EventController::class, 'upcoming']);
+Route::get('/hadiths/active', [HadithController::class, 'active']);
 
 // Authentication
 Route::post('/login', [AuthController::class, 'login']);
@@ -74,4 +76,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/donations/{donation}', [DonationController::class, 'update']);
     Route::delete('/donations/{donation}', [DonationController::class, 'destroy']);
     Route::put('/donations/{donation}/toggle', [DonationController::class, 'toggle']);
+
+    // Hadiths
+    Route::get('/hadiths', [HadithController::class, 'index']);
+    Route::post('/hadiths', [HadithController::class, 'store']);
+    Route::put('/hadiths/{hadith}', [HadithController::class, 'update']);
+    Route::delete('/hadiths/{hadith}', [HadithController::class, 'destroy']);
+    Route::put('/hadiths/{hadith}/toggle', [HadithController::class, 'toggle']);
 });

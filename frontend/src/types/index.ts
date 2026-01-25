@@ -162,6 +162,15 @@ export interface ApiResponse<T> {
   message?: string
 }
 
+export interface Hadith {
+  id: number
+  content: string
+  source: string
+  is_active: boolean
+  created_at?: string
+  updated_at?: string
+}
+
 // Donation types
 export interface Donation {
   id: number

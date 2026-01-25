@@ -7,6 +7,7 @@ import IqamahMode from './IqamahMode'
 import PrayerInProgressMode from './PrayerInProgressMode'
 import EventsPanel from './EventsPanel'
 import DonationWidget from './DonationWidget'
+import HadithWidget from './HadithWidget'
 import type { DisplayMode, PrayerName, PrayerTimes } from '../../types'
 
 const PRAYER_DISPLAY: Array<{ key: string; name: string; showIqamah?: boolean }> = [
@@ -174,13 +175,8 @@ export default function MainDisplay() {
             </div>
           )}
 
-          {/* Quote */}
-          <div className="info-card">
-            <p className="quote">
-              "Sebaik-baik manusia adalah yang paling bermanfaat bagi manusia lainnya."
-            </p>
-            <p className="source">— HR. Ahmad, Thabrani, Daruqutni</p>
-          </div>
+          {/* Quote / Hadith */}
+          <HadithWidget />
         </aside>
 
         {/* Carousel */}

@@ -8,7 +8,8 @@ import {
   LogOut,
   Monitor,
   Calendar,
-  CreditCard
+  CreditCard,
+  Quote
 } from 'lucide-react'
 
 const menuItems = [
@@ -17,6 +18,7 @@ const menuItems = [
   { path: '/admin/contents', icon: Image, label: 'Kelola Konten' },
   { path: '/admin/events', icon: Calendar, label: 'Agenda Kegiatan' },
   { path: '/admin/running-texts', icon: Type, label: 'Running Text' },
+  { path: '/admin/hadiths', icon: Quote, label: 'Hadits / Mutiara' },
   { path: '/admin/donations', icon: CreditCard, label: 'Donasi' },
 ]
 

@@ -7,6 +7,7 @@ import ContentManager from './components/admin/ContentManager'
 import RunningTextManager from './components/admin/RunningTextManager'
 import DonationManager from './components/admin/DonationManager'
 import EventManager from './components/admin/EventManager'
+import HadithManager from './components/admin/HadithManager'
 import Login from './components/admin/Login'
 import { useAuth } from './hooks/useAuth'
 
@@ -49,6 +50,7 @@ function App() {
         <Route path="contents" element={<ContentManager />} />
         <Route path="events" element={<EventManager />} />
         <Route path="running-texts" element={<RunningTextManager />} />
+        <Route path="hadiths" element={<HadithManager />} />
         <Route path="donations" element={<DonationManager />} />
       </Route>
     </Routes>

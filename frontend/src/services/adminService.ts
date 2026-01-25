@@ -1,5 +1,5 @@
 import api from './api'
-import type { Content, RunningText, Financial, FinancialSummary, Event, Donation } from '../types'
+import type { Content, RunningText, Financial, FinancialSummary, Event, Donation, Hadith } from '../types'
 
 export const adminService = {
   // Settings
@@ -150,6 +150,32 @@ export const adminService = {
 
   async toggleDonation(id: number) {
     const response = await api.put(`/donations/${id}/toggle`)
+    return response.data
+  },
+
+  // Hadiths
+  async getHadiths(): Promise<Hadith[]> {
+    const response = await api.get<Hadith[]>('/hadiths')
+    return response.data
+  },
+
+  async createHadith(data: Partial<Hadith>) {
+    const response = await api.post('/hadiths', data)
+    return response.data
+  },
+
+  async updateHadith(id: number, data: Partial<Hadith>) {
+    const response = await api.put(`/hadiths/${id}`, data)
+    return response.data
+  },
+
+  async deleteHadith(id: number) {
+    const response = await api.delete(`/hadiths/${id}`)
+    return response.data
+  },
+
+  async toggleHadith(id: number) {
+    const response = await api.put(`/hadiths/${id}/toggle`)
     return response.data
   },
 }
