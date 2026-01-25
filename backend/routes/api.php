@@ -34,9 +34,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [AuthController::class, 'user']);
 
     // Settings
+    Route::put('/settings/bulk', [SettingController::class, 'bulkUpdate']);
     Route::get('/settings/{key}', [SettingController::class, 'show']);
     Route::put('/settings/{key}', [SettingController::class, 'update']);
-    Route::put('/settings/bulk', [SettingController::class, 'bulkUpdate']);
 
     // Contents
     Route::get('/contents', [ContentController::class, 'index']);
