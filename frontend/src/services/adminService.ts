@@ -1,0 +1,103 @@
+import api from './api'
+import type { Content, RunningText, Financial, FinancialSummary } from '../types'
+
+export const adminService = {
+  // Settings
+  async updateSetting(key: string, value: unknown, type: string = 'string') {
+    const response = await api.put(`/settings/${key}`, { value, type })
+    return response.data
+  },
+
+  async bulkUpdateSettings(settings: Array<{ key: string; value: unknown; type?: string }>) {
+    const response = await api.put('/settings/bulk', { settings })
+    return response.data
+  },
+
+  // Contents
+  async getContents(): Promise<Content[]> {
+    const response = await api.get<Content[]>('/contents')
+    return response.data
+  },
+
+  async uploadContent(formData: FormData) {
+    const response = await api.post('/contents', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    })
+    return response.data
+  },
+
+  async updateContent(id: number, data: Partial<Content>) {
+    const response = await api.put(`/contents/${id}`, data)
+    return response.data
+  },
+
+  async deleteContent(id: number) {
+    const response = await api.delete(`/contents/${id}`)
+    return response.data
+  },
+
+  async toggleContent(id: number) {
+    const response = await api.put(`/contents/${id}/toggle`)
+    return response.data
+  },
+
+  async reorderContents(orders: Array<{ id: number; priority: number }>) {
+    const response = await api.put('/contents/reorder', { orders })
+    return response.data
+  },
+
+  // Running Texts
+  async getRunningTexts(): Promise<RunningText[]> {
+    const response = await api.get<RunningText[]>('/running-texts')
+    return response.data
+  },
+
+  async createRunningText(data: Partial<RunningText>) {
+    const response = await api.post('/running-texts', data)
+    return response.data
+  },
+
+  async updateRunningText(id: number, data: Partial<RunningText>) {
+    const response = await api.put(`/running-texts/${id}`, data)
+    return response.data
+  },
+
+  async deleteRunningText(id: number) {
+    const response = await api.delete(`/running-texts/${id}`)
+    return response.data
+  },
+
+  async toggleRunningText(id: number) {
+    const response = await api.put(`/running-texts/${id}/toggle`)
+    return response.data
+  },
+
+  // Financials
+  async getFinancials(from?: string, to?: string): Promise<Financial[]> {
+    const params = new URLSearchParams()
+    if (from) params.append('from', from)
+    if (to) params.append('to', to)
+    const response = await api.get<Financial[]>(`/financials?${params}`)
+    return response.data
+  },
+
+  async getFinancialSummary(): Promise<FinancialSummary> {
+    const response = await api.get<FinancialSummary>('/financials/summary')
+    return response.data
+  },
+
+  async createFinancial(data: Partial<Financial>) {
+    const response = await api.post('/financials', data)
+    return response.data
+  },
+
+  async updateFinancial(id: number, data: Partial<Financial>) {
+    const response = await api.put(`/financials/${id}`, data)
+    return response.data
+  },
+
+  async deleteFinancial(id: number) {
+    const response = await api.delete(`/financials/${id}`)
+    return response.data
+  },
+}
