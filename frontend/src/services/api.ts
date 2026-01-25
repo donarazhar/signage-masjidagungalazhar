@@ -1,7 +1,10 @@
 import axios from 'axios'
 
+// Production API URL
+const API_URL = 'https://signageapi.masjidagungalazhar.com/api'
+
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: API_URL,
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
