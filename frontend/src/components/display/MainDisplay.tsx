@@ -152,13 +152,29 @@ export default function MainDisplay() {
   const mosqueAddress = settings?.mosque_address || 'Jl. Sisingamangaraja, Kebayoran Baru, Jakarta Selatan'
   const nextPrayer = prayerTimes ? getNextPrayer(prayerTimes) : null
   
-  // Format dates
-  const gregorianDate = currentTime.toLocaleDateString('id-ID', {
+  // Format dates with Islamic day names
+  const ISLAMIC_DAYS: Record<string, string> = {
+    'Minggu': 'Ahad',
+    'Senin': 'Senin',
+    'Selasa': 'Selasa',
+    'Rabu': 'Rabu',
+    'Kamis': 'Kamis',
+    'Jumat': "Jum'at",
+    'Sabtu': 'Sabtu',
+  }
+  
+  const rawDate = currentTime.toLocaleDateString('id-ID', {
     weekday: 'long',
     day: 'numeric',
     month: 'long',
     year: 'numeric',
   })
+  
+  // Replace weekday name if needed
+  const gregorianDate = Object.entries(ISLAMIC_DAYS).reduce(
+    (date, [original, islamic]) => date.replace(original, islamic),
+    rawDate
+  )
   
   const hijriDate = prayerTimes?.date?.hijri
     ? `${prayerTimes.date.hijri.day} ${prayerTimes.date.hijri.month.ar} ${prayerTimes.date.hijri.year}`

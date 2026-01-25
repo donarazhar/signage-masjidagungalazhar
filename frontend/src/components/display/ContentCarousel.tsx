@@ -56,7 +56,6 @@ export default function ContentCarousel({ contents, duration, mosqueName }: Cont
     )
   }
 
-  const currentContent = contents[currentIndex]
 
   return (
     <div className="w-full h-full relative overflow-hidden bg-gray-100">

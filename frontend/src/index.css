@@ -7,7 +7,7 @@
   --primary-green-light: #22c55e;
   --accent-yellow: #facc15;
   --bg-light: #f0fdf4;
-  --bg-green-gradient: linear-gradient(135deg, #16a34a 0%, #15803d 50%, #14532d 100%);
+  --bg-green-gradient: linear-gradient(135deg, #22c55e 0%, #4ade80 50%, #86efac 100%);
   --text-dark: #14532d;
   --text-white: #ffffff;
   --text-muted: #166534;
@@ -97,7 +97,7 @@ body {
 }
 
 .countdown-card {
-  background: linear-gradient(135deg, var(--primary-green), var(--primary-green-dark));
+  background: linear-gradient(135deg, #22c55e, #4ade80);
   border-radius: 16px;
   padding: 1.25rem;
   color: white;
@@ -166,7 +166,7 @@ body {
 
 /* Running Text Ticker */
 .ticker-bar {
-  background: linear-gradient(90deg, #14532d, #15803d, #14532d);
+  background: linear-gradient(90deg, #16a34a, #22c55e, #16a34a);
   padding: 0.75rem 0;
   overflow: hidden;
   border-top: 2px solid rgba(255,255,255,0.2);
@@ -228,7 +228,7 @@ body {
 /* Admin Styles */
 .admin-sidebar {
   width: 280px;
-  background: linear-gradient(180deg, #14532d, #15803d);
+  background: linear-gradient(180deg, #16a34a, #22c55e);
   border-right: none;
   height: 100vh;
   position: fixed;
