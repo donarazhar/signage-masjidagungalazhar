@@ -5,10 +5,10 @@ import {
   Clock, 
   Image, 
   Type, 
-  DollarSign, 
   LogOut,
   Monitor,
-  Calendar
+  Calendar,
+  CreditCard
 } from 'lucide-react'
 
 const menuItems = [
@@ -17,7 +17,7 @@ const menuItems = [
   { path: '/admin/contents', icon: Image, label: 'Kelola Konten' },
   { path: '/admin/events', icon: Calendar, label: 'Agenda Kegiatan' },
   { path: '/admin/running-texts', icon: Type, label: 'Running Text' },
-  { path: '/admin/financials', icon: DollarSign, label: 'Keuangan' },
+  { path: '/admin/donations', icon: CreditCard, label: 'Donasi' },
 ]
 
 export default function AdminLayout() {

@@ -162,6 +162,19 @@ export interface ApiResponse<T> {
   message?: string
 }
 
+// Donation types
+export interface Donation {
+  id: number
+  bank_name: string
+  account_number: string
+  account_name: string
+  logo_path: string | null
+  is_active: boolean
+  priority: number
+  created_at: string
+  updated_at: string
+}
+
 export interface LoginResponse {
   user: User
   token: string

@@ -6,6 +6,7 @@ import RunningText from './RunningText'
 import IqamahMode from './IqamahMode'
 import PrayerInProgressMode from './PrayerInProgressMode'
 import EventsPanel from './EventsPanel'
+import DonationWidget from './DonationWidget'
 import type { DisplayMode, PrayerName, PrayerTimes } from '../../types'
 
 const PRAYER_DISPLAY: Array<{ key: string; name: string; showIqamah?: boolean }> = [
@@ -136,6 +137,12 @@ export default function MainDisplay() {
             <p>{mosqueAddress}</p>
           </div>
         </div>
+        
+        {/* Donation Widget */}
+        <div style={{ flex: 1, height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+           <DonationWidget />
+        </div>
+
         <div className="date-card" style={{ background: 'rgba(255,255,255,0.15)', borderLeft: 'none', color: 'white' }}>
           <div style={{ color: 'white', fontWeight: 600 }}>{gregorianDate}</div>
           <div style={{ color: 'rgba(251,191,36,1)', fontWeight: 600, marginTop: 4 }}>{hijriDate}</div>

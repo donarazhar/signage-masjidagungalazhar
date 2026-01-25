@@ -6,6 +6,7 @@ use App\Http\Controllers\SettingController;
 use App\Http\Controllers\ContentController;
 use App\Http\Controllers\RunningTextController;
 use App\Http\Controllers\FinancialController;
+use App\Http\Controllers\DonationController;
 use App\Http\Controllers\PrayerTimeController;
 use App\Http\Controllers\EventController;
 
@@ -21,6 +22,7 @@ Route::get('/prayer-times', [PrayerTimeController::class, 'today']);
 Route::get('/prayer-times/month', [PrayerTimeController::class, 'month']);
 Route::get('/contents/active', [ContentController::class, 'active']);
 Route::get('/running-texts/active', [RunningTextController::class, 'active']);
+Route::get('/donations/active', [DonationController::class, 'active']);
 Route::get('/financials/summary', [FinancialController::class, 'summary']);
 Route::get('/events/upcoming', [EventController::class, 'upcoming']);
 
@@ -65,4 +67,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/events/{event}', [EventController::class, 'update']);
     Route::delete('/events/{event}', [EventController::class, 'destroy']);
     Route::put('/events/{event}/toggle', [EventController::class, 'toggle']);
+
+    // Donations
+    Route::get('/donations', [DonationController::class, 'index']);
+    Route::post('/donations', [DonationController::class, 'store']);
+    Route::put('/donations/{donation}', [DonationController::class, 'update']);
+    Route::delete('/donations/{donation}', [DonationController::class, 'destroy']);
+    Route::put('/donations/{donation}/toggle', [DonationController::class, 'toggle']);
 });

@@ -1,13 +1,14 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { adminService } from '../../services/adminService'
-import { Plus, Trash2, Eye, EyeOff, Upload, X, Image, Youtube } from 'lucide-react'
+import { Plus, Trash2, Eye, EyeOff, Upload, X, Image, Youtube, Edit } from 'lucide-react'
 import type { Content } from '../../types'
 
 export default function ContentManager() {
   const queryClient = useQueryClient()
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [contentType, setContentType] = useState<'image' | 'youtube'>('image')
+  const [editingContent, setEditingContent] = useState<Content | null>(null)
+  const [contentType, setContentType] = useState<'image' | 'youtube' | 'video'>('image')
   const [uploadProgress, setUploadProgress] = useState(0)
 
   const { data: contents, isLoading } = useQuery({
@@ -19,9 +20,16 @@ export default function ContentManager() {
     mutationFn: (formData: FormData) => adminService.uploadContent(formData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['contents'] })
-      setIsModalOpen(false)
-      setUploadProgress(0)
-      setContentType('image')
+      closeModal()
+    },
+  })
+
+  const updateMutation = useMutation({
+    mutationFn: ({ id, data }: { id: number; data: Partial<Content> }) => 
+      adminService.updateContent(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['contents'] })
+      closeModal()
     },
   })
 
@@ -35,22 +43,60 @@ export default function ContentManager() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['contents'] }),
   })
 
-  const handleUpload = async (e: React.FormEvent<HTMLFormElement>) => {
+  const closeModal = () => {
+    setIsModalOpen(false)
+    setEditingContent(null)
+    setUploadProgress(0)
+    setContentType('image')
+  }
+
+  const handleEdit = (content: Content) => {
+    setEditingContent(content)
+    setContentType(content.type)
+    setIsModalOpen(true)
+  }
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const form = e.currentTarget
     const formData = new FormData(form)
-    formData.append('content_type', contentType)
     
-    setUploadProgress(10)
-    const progressInterval = setInterval(() => {
-      setUploadProgress(prev => Math.min(prev + 10, 90))
-    }, 200)
+    // For update, we handle fields manually to allow partial updates
+    if (editingContent) {
+      const updates: Partial<Content> = {
+        title: formData.get('title') as string,
+        duration: parseInt(formData.get('duration') as string),
+        priority: parseInt(formData.get('priority') as string),
+        type: contentType,
+      }
 
-    try {
-      await uploadMutation.mutateAsync(formData)
-      setUploadProgress(100)
-    } finally {
-      clearInterval(progressInterval)
+      if (contentType === 'youtube') {
+        updates.youtube_url = formData.get('youtube_url') as string
+      }
+      
+      // Note: File update is not supported in simple edit mode yet 
+      // (would need separate upload or multipart PUT)
+      
+      try {
+        await updateMutation.mutateAsync({ id: editingContent.id, data: updates })
+      } catch (error) {
+        console.error('Update failed:', error)
+      }
+    } else {
+      // Create mode
+      formData.append('content_type', contentType)
+      
+      setUploadProgress(10)
+      const progressInterval = setInterval(() => {
+        setUploadProgress(prev => Math.min(prev + 10, 90))
+      }, 200)
+
+      try {
+        await uploadMutation.mutateAsync(formData)
+        setUploadProgress(100)
+      } finally {
+        clearInterval(progressInterval)
+      }
     }
   }
 
@@ -67,7 +113,7 @@ export default function ContentManager() {
           <h1>Kelola Konten</h1>
           <p>Upload gambar atau tambahkan video YouTube untuk ditampilkan</p>
         </div>
-        <button onClick={() => setIsModalOpen(true)} className="btn btn-primary">
+        <button onClick={() => { setEditingContent(null); setIsModalOpen(true); }} className="btn btn-primary">
           <Plus size={20} />
           Tambah Konten
         </button>
@@ -84,7 +130,7 @@ export default function ContentManager() {
           <p style={{ color: 'var(--slate-500)', marginBottom: '1.5rem' }}>
             Upload gambar atau tambahkan video YouTube
           </p>
-          <button onClick={() => setIsModalOpen(true)} className="btn btn-primary">
+          <button onClick={() => { setEditingContent(null); setIsModalOpen(true); }} className="btn btn-primary">
             <Upload size={20} />
             Upload Konten Pertama
           </button>
@@ -97,37 +143,49 @@ export default function ContentManager() {
               content={content}
               onToggle={() => toggleMutation.mutate(content.id)}
               onDelete={() => handleDelete(content)}
+              onEdit={() => handleEdit(content)}
             />
           ))}
         </div>
       )}
 
-      {/* Upload Modal */}
+      {/* Upload/Edit Modal */}
       {isModalOpen && (
         <div style={{
           position: 'fixed', inset: 0, zIndex: 50,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           background: 'rgba(0,0,0,0.5)', padding: '1rem'
         }}>
-          <div className="admin-card" style={{ width: '100%', maxWidth: '500px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-              <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>Tambah Konten Baru</h2>
-              <button onClick={() => { setIsModalOpen(false); setContentType('image') }} style={{ padding: '0.5rem', cursor: 'pointer', background: 'none', border: 'none' }}>
+          <div className="admin-card" style={{ 
+            width: '100%', 
+            maxWidth: '500px',
+            maxHeight: 'calc(100vh - 2rem)',
+            overflowY: 'auto',
+            display: 'flex',
+            flexDirection: 'column' 
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexShrink: 0 }}>
+              <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>
+                {editingContent ? 'Edit Konten' : 'Tambah Konten Baru'}
+              </h2>
+              <button onClick={closeModal} style={{ padding: '0.5rem', cursor: 'pointer', background: 'none', border: 'none' }}>
                 <X size={24} />
               </button>
             </div>
 
-            {/* Content Type Selector */}
+            {/* Content Type Selector - Disabled in Edit Mode if existing type */}
             <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1.5rem' }}>
               <button
                 type="button"
                 onClick={() => setContentType('image')}
+                disabled={!!editingContent}
                 style={{
-                  flex: 1, padding: '1rem', borderRadius: '12px', cursor: 'pointer',
+                  flex: 1, padding: '1rem', borderRadius: '12px', cursor: editingContent ? 'not-allowed' : 'pointer',
                   display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem',
                   background: contentType === 'image' ? 'var(--primary-100)' : 'var(--slate-50)',
                   border: `2px solid ${contentType === 'image' ? 'var(--primary-500)' : 'var(--slate-200)'}`,
                   color: contentType === 'image' ? 'var(--primary-700)' : 'var(--slate-600)',
+                  opacity: editingContent && contentType !== 'image' ? 0.5 : 1
                 }}
               >
                 <Image size={28} />
@@ -137,12 +195,14 @@ export default function ContentManager() {
               <button
                 type="button"
                 onClick={() => setContentType('youtube')}
+                disabled={!!editingContent}
                 style={{
-                  flex: 1, padding: '1rem', borderRadius: '12px', cursor: 'pointer',
+                  flex: 1, padding: '1rem', borderRadius: '12px', cursor: editingContent ? 'not-allowed' : 'pointer',
                   display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem',
                   background: contentType === 'youtube' ? '#fee2e2' : 'var(--slate-50)',
                   border: `2px solid ${contentType === 'youtube' ? '#ef4444' : 'var(--slate-200)'}`,
                   color: contentType === 'youtube' ? '#b91c1c' : 'var(--slate-600)',
+                  opacity: editingContent && contentType !== 'youtube' ? 0.5 : 1
                 }}
               >
                 <Youtube size={28} />
@@ -151,25 +211,43 @@ export default function ContentManager() {
               </button>
             </div>
 
-            <form onSubmit={handleUpload} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <div className="form-group">
                 <label className="form-label">Judul</label>
-                <input type="text" name="title" className="form-input" placeholder="Nama konten" required />
+                <input 
+                  type="text" 
+                  name="title" 
+                  className="form-input" 
+                  placeholder="Nama konten" 
+                  defaultValue={editingContent?.title}
+                  required 
+                />
               </div>
 
               {contentType === 'image' ? (
                 <div className="form-group">
-                  <label className="form-label">File Gambar</label>
-                  <input
-                    type="file"
-                    name="file"
-                    accept="image/*"
-                    className="form-input"
-                    required
-                  />
-                  <p style={{ fontSize: '0.75rem', color: 'var(--slate-500)', marginTop: '0.25rem' }}>
-                    Format: JPG, PNG, WebP, GIF (Maks 10MB)
-                  </p>
+                  <label className="form-label">File Gambar {editingContent && '(Biarkan kosong jika tidak diubah)'}</label>
+                  {!editingContent && (
+                    <input
+                      type="file"
+                      name="file"
+                      accept="image/*"
+                      className="form-input"
+                      required={!editingContent}
+                    />
+                  )}
+                  {editingContent && (
+                    <div style={{ fontSize: '0.875rem', color: 'var(--slate-500)', fontStyle: 'italic' }}>
+                      File saat ini: {editingContent.file_path}
+                      <br/>
+                      <span className="text-xs text-orange-500">*Edit file gambar belum didukung. Hapus dan buat baru jika ingin mengganti gambar.</span>
+                    </div>
+                  )}
+                  {!editingContent && (
+                    <p style={{ fontSize: '0.75rem', color: 'var(--slate-500)', marginTop: '0.25rem' }}>
+                      Format: JPG, PNG, WebP, GIF (Maks 10MB)
+                    </p>
+                  )}
                 </div>
               ) : (
                 <div className="form-group">
@@ -179,6 +257,7 @@ export default function ContentManager() {
                     name="youtube_url"
                     className="form-input"
                     placeholder="https://www.youtube.com/watch?v=..."
+                    defaultValue={editingContent?.youtube_url || ''}
                     required
                   />
                   <p style={{ fontSize: '0.75rem', color: 'var(--slate-500)', marginTop: '0.25rem' }}>
@@ -194,14 +273,21 @@ export default function ContentManager() {
                   name="duration"
                   min="5"
                   max="300"
-                  defaultValue={contentType === 'youtube' ? 60 : 10}
+                  defaultValue={editingContent?.duration || (contentType === 'youtube' ? 60 : 10)}
                   className="form-input"
                 />
               </div>
 
               <div className="form-group">
                 <label className="form-label">Prioritas</label>
-                <input type="number" name="priority" min="0" max="100" defaultValue="0" className="form-input" />
+                <input 
+                  type="number" 
+                  name="priority" 
+                  min="0" 
+                  max="100" 
+                  defaultValue={editingContent?.priority || 0} 
+                  className="form-input" 
+                />
                 <p style={{ fontSize: '0.75rem', color: 'var(--slate-500)', marginTop: '0.25rem' }}>
                   Semakin tinggi, semakin awal ditampilkan
                 </p>
@@ -222,11 +308,11 @@ export default function ContentManager() {
               )}
 
               <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
-                <button type="button" onClick={() => { setIsModalOpen(false); setContentType('image') }} className="btn btn-secondary">
+                <button type="button" onClick={closeModal} className="btn btn-secondary">
                   Batal
                 </button>
-                <button type="submit" className="btn btn-primary" disabled={uploadMutation.isPending}>
-                  {uploadMutation.isPending ? 'Menyimpan...' : 'Simpan'}
+                <button type="submit" className="btn btn-primary" disabled={uploadMutation.isPending || updateMutation.isPending}>
+                  {uploadMutation.isPending || updateMutation.isPending ? 'Menyimpan...' : 'Simpan'}
                 </button>
               </div>
             </form>
@@ -241,12 +327,14 @@ interface ContentCardProps {
   content: Content
   onToggle: () => void
   onDelete: () => void
+  onEdit: () => void
 }
 
-function ContentCard({ content, onToggle, onDelete }: ContentCardProps) {
+function ContentCard({ content, onToggle, onDelete, onEdit }: ContentCardProps) {
   const getThumbnail = () => {
     if (content.type === 'youtube' && content.youtube_thumbnail) {
-      return content.youtube_thumbnail
+      // Use hqdefault (480x360) instead of maxresdefault (which might 404)
+      return content.youtube_thumbnail.replace('maxresdefault', 'hqdefault')
     }
     return content.file_url || `/storage/${content.file_path}`
   }
@@ -274,7 +362,14 @@ function ContentCard({ content, onToggle, onDelete }: ContentCardProps) {
           alt={content.title}
           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
           onError={(e) => {
-            (e.target as HTMLImageElement).src = '/logo-alazhar.png'
+            const img = e.target as HTMLImageElement
+            // Try HQ default if Max Res fails
+            if (img.src.includes('maxresdefault')) {
+              img.src = img.src.replace('maxresdefault.jpg', 'hqdefault.jpg')
+            } else {
+              // If even HQ fails, fallback to logo
+              img.src = '/logo-alazhar.png'
+            }
           }}
         />
         {content.type === 'youtube' && (
@@ -308,6 +403,9 @@ function ContentCard({ content, onToggle, onDelete }: ContentCardProps) {
         >
           {content.is_enabled ? <Eye size={18} /> : <EyeOff size={18} />}
           {content.is_enabled ? 'Aktif' : 'Nonaktif'}
+        </button>
+        <button onClick={onEdit} className="btn btn-secondary">
+          <Edit size={18} />
         </button>
         <button onClick={onDelete} className="btn btn-danger">
           <Trash2 size={18} />

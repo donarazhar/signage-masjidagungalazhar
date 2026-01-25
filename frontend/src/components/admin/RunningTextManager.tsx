@@ -80,28 +80,87 @@ export default function RunningTextManager() {
       </div>
 
       <div className="admin-card">
-        <table className="table">
-          <thead>
-            <tr><th>Konten</th><th>Tipe</th><th>Status</th><th>Aksi</th></tr>
-          </thead>
-          <tbody>
-            {texts?.map((text) => (
-              <tr key={text.id}>
-                <td className="max-w-md truncate">{text.content}</td>
-                <td><span className="badge badge-success">{text.type}</span></td>
-                <td>
-                  <button onClick={() => toggleMutation.mutate(text.id)} className="badge">
-                    {text.is_enabled ? 'Aktif' : 'Nonaktif'}
-                  </button>
-                </td>
-                <td>
-                  <button onClick={() => openModal(text)} className="p-2"><Edit className="w-4 h-4" /></button>
-                  <button onClick={() => deleteMutation.mutate(text.id)} className="p-2"><Trash2 className="w-4 h-4" /></button>
-                </td>
+        <div style={{ overflowX: 'auto' }}>
+          <table className="table">
+            <thead>
+              <tr>
+                <th style={{ width: '50%' }}>Konten</th>
+                <th style={{ width: '15%' }}>Tipe</th>
+                <th style={{ width: '15%' }}>Status</th>
+                <th style={{ width: '20%' }}>Aksi</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {texts?.map((text) => (
+                <tr key={text.id}>
+                  <td className="max-w-md">
+                    <div style={{ fontWeight: 500, fontSize: '1rem', lineHeight: '1.5' }}>
+                      {text.content}
+                    </div>
+                    {text.priority > 0 && (
+                      <span className="text-xs text-[var(--text-secondary)]">Prioritas: {text.priority}</span>
+                    )}
+                  </td>
+                  <td>
+                    <span 
+                      className={`badge ${
+                        text.type === 'normal' ? 'bg-blue-100 text-blue-800' :
+                        text.type === 'urgent' ? 'bg-red-100 text-red-800' :
+                        'bg-gray-800 text-white'
+                      }`}
+                      style={{ padding: '0.25rem 0.75rem', borderRadius: '999px', fontSize: '0.75rem', fontWeight: 600, textTransform: 'capitalize' }}
+                    >
+                      {text.type.replace('_', ' ')}
+                    </span>
+                  </td>
+                  <td>
+                    <button 
+                      onClick={() => toggleMutation.mutate(text.id)} 
+                      className={`btn-sm ${text.is_enabled ? 'btn-success' : 'btn-secondary'}`}
+                      style={{ 
+                        width: 'auto', 
+                        padding: '0.25rem 0.75rem', 
+                        display: 'inline-flex', 
+                        gap: '0.25rem',
+                        fontSize: '0.875rem' 
+                      }}
+                      title={text.is_enabled ? 'Klik untuk nonaktifkan' : 'Klik untuk aktifkan'}
+                    >
+                      {text.is_enabled ? 'Aktif' : 'Nonaktif'}
+                    </button>
+                  </td>
+                  <td>
+                    <div className="flex gap-2">
+                      <button 
+                        onClick={() => openModal(text)} 
+                        className="btn-icon btn-secondary"
+                        title="Edit"
+                        style={{ padding: '0.5rem' }}
+                      >
+                        <Edit className="w-4 h-4" />
+                      </button>
+                      <button 
+                        onClick={() => deleteMutation.mutate(text.id)} 
+                        className="btn-icon btn-danger"
+                        title="Hapus"
+                        style={{ padding: '0.5rem' }}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+              {texts?.length === 0 && (
+                <tr>
+                  <td colSpan={4} className="text-center py-8 text-[var(--text-muted)]">
+                    Belum ada running text. Klik "Tambah" untuk membuat baru.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {isModalOpen && (

@@ -48,9 +48,7 @@ export default function PrayerSettings() {
       { key: 'running_text_speed', value: formData.running_text_speed ?? settings?.running_text_speed ?? 80, type: 'number' },
     ]
 
-    // DEBUG: Check what we are sending
-    // alert(JSON.stringify(updates, null, 2))
-    console.log('Sending updates:', updates)
+    // console.log('Sending updates:', updates)
 
     try {
       await updateMutation.mutateAsync(updates)

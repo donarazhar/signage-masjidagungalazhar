@@ -1,5 +1,5 @@
 import api from './api'
-import type { Content, RunningText, Financial, FinancialSummary, Event } from '../types'
+import type { Content, RunningText, Financial, FinancialSummary, Event, Donation } from '../types'
 
 export const adminService = {
   // Settings
@@ -124,6 +124,32 @@ export const adminService = {
 
   async toggleEvent(id: number) {
     const response = await api.put(`/events/${id}/toggle`)
+    return response.data
+  },
+
+  // Donations
+  async getDonations(): Promise<Donation[]> {
+    const response = await api.get<Donation[]>('/donations')
+    return response.data
+  },
+
+  async createDonation(data: Partial<Donation>) {
+    const response = await api.post('/donations', data)
+    return response.data
+  },
+
+  async updateDonation(id: number, data: Partial<Donation>) {
+    const response = await api.put(`/donations/${id}`, data)
+    return response.data
+  },
+
+  async deleteDonation(id: number) {
+    const response = await api.delete(`/donations/${id}`)
+    return response.data
+  },
+
+  async toggleDonation(id: number) {
+    const response = await api.put(`/donations/${id}/toggle`)
     return response.data
   },
 }
