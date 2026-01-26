@@ -157,63 +157,209 @@ export default function HadithManager() {
 
       {/* Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl w-full max-w-md p-6 animate-scale-up">
-            <h2 className="text-xl font-bold mb-4">
-              {editingHadith ? 'Edit Hadits' : 'Tambah Hadits Baru'}
-            </h2>
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          background: 'rgba(0,0,0,0.6)',
+          backdropFilter: 'blur(4px)',
+          zIndex: 50,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '1rem'
+        }}>
+          <div style={{
+            background: 'white',
+            borderRadius: '20px',
+            width: '100%',
+            maxWidth: '500px',
+            maxHeight: '90vh',
+            overflow: 'auto',
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
+          }}>
+            {/* Modal Header */}
+            <div style={{
+              padding: '1.5rem 1.5rem 0',
+              textAlign: 'center'
+            }}>
+              <div style={{
+                width: '60px',
+                height: '60px',
+                background: 'linear-gradient(135deg, #dcfce7, #bbf7d0)',
+                borderRadius: '16px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto 1rem'
+              }}>
+                <Quote size={28} style={{ color: '#16a34a' }} />
+              </div>
+              <h2 style={{
+                fontSize: '1.5rem',
+                fontWeight: 700,
+                color: '#0f172a',
+                marginBottom: '0.5rem'
+              }}>
+                {editingHadith ? 'Edit Hadits' : 'Tambah Hadits Baru'}
+              </h2>
+              <p style={{ color: '#64748b', fontSize: '0.9rem' }}>
+                {editingHadith ? 'Perbarui isi kutipan hadits' : 'Masukkan kutipan hadits atau mutiara kata islami'}
+              </p>
+            </div>
             
-            <form onSubmit={handleSubmit}>
-              <div className="form-group">
-                <label className="form-label">Isi Kutipan / Hadits</label>
+            <form onSubmit={handleSubmit} style={{ padding: '1.5rem' }}>
+              {/* Content Field */}
+              <div style={{ marginBottom: '1.25rem' }}>
+                <label style={{
+                  display: 'block',
+                  fontSize: '0.875rem',
+                  fontWeight: 600,
+                  color: '#334155',
+                  marginBottom: '0.5rem'
+                }}>
+                  📜 Isi Kutipan / Hadits
+                </label>
                 <textarea
                   name="content"
                   defaultValue={editingHadith?.content}
-                  className="form-input min-h-[100px]"
-                  placeholder="Contoh: Sebaik-baik manusia adalah..."
+                  placeholder="Contoh: Sebaik-baik manusia adalah yang paling bermanfaat bagi manusia lainnya."
                   required
+                  style={{
+                    width: '100%',
+                    minHeight: '120px',
+                    padding: '0.875rem 1rem',
+                    border: '2px solid #e2e8f0',
+                    borderRadius: '12px',
+                    fontSize: '1rem',
+                    resize: 'vertical',
+                    transition: 'all 0.2s',
+                    outline: 'none',
+                    fontFamily: 'inherit'
+                  }}
+                  onFocus={(e) => e.target.style.borderColor = '#22c55e'}
+                  onBlur={(e) => e.target.style.borderColor = '#e2e8f0'}
                 />
+                <p style={{ marginTop: '0.5rem', fontSize: '0.8rem', color: '#94a3b8' }}>
+                  Tulis kutipan hadits tanpa tanda kutip, akan ditambahkan otomatis
+                </p>
               </div>
 
-              <div className="form-group">
-                <label className="form-label">Sumber / Periwayat</label>
+              {/* Source Field */}
+              <div style={{ marginBottom: '1.25rem' }}>
+                <label style={{
+                  display: 'block',
+                  fontSize: '0.875rem',
+                  fontWeight: 600,
+                  color: '#334155',
+                  marginBottom: '0.5rem'
+                }}>
+                  📖 Sumber / Periwayat
+                </label>
                 <input
                   type="text"
                   name="source"
                   defaultValue={editingHadith?.source}
-                  className="form-input"
-                  placeholder="Contoh: HR. Bukhari"
+                  placeholder="Contoh: HR. Bukhari, HR. Muslim, dsb."
                   required
+                  style={{
+                    width: '100%',
+                    padding: '0.875rem 1rem',
+                    border: '2px solid #e2e8f0',
+                    borderRadius: '12px',
+                    fontSize: '1rem',
+                    transition: 'all 0.2s',
+                    outline: 'none'
+                  }}
+                  onFocus={(e) => e.target.style.borderColor = '#22c55e'}
+                  onBlur={(e) => e.target.style.borderColor = '#e2e8f0'}
                 />
               </div>
 
-              <div className="form-group flex items-center gap-2">
+              {/* Active Toggle */}
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.75rem',
+                padding: '1rem',
+                background: '#f8fafc',
+                borderRadius: '12px',
+                marginBottom: '1.5rem'
+              }}>
                 <input
                   type="checkbox"
                   name="is_active"
                   id="is_active"
                   defaultChecked={editingHadith?.is_active ?? true}
-                  className="w-5 h-5 accent-[var(--primary-600)]"
+                  style={{
+                    width: '20px',
+                    height: '20px',
+                    accentColor: '#16a34a',
+                    cursor: 'pointer'
+                  }}
                 />
-                <label htmlFor="is_active" className="text-slate-700 font-medium cursor-pointer">
-                  Tampilkan di Layar
+                <label htmlFor="is_active" style={{
+                  color: '#334155',
+                  fontWeight: 500,
+                  cursor: 'pointer',
+                  flex: 1
+                }}>
+                  Tampilkan di Layar Display
                 </label>
+                <span style={{
+                  fontSize: '0.75rem',
+                  padding: '0.25rem 0.5rem',
+                  background: '#dcfce7',
+                  color: '#16a34a',
+                  borderRadius: '6px',
+                  fontWeight: 600
+                }}>
+                  Direkomendasikan
+                </span>
               </div>
 
-              <div className="flex gap-3 mt-6">
+              {/* Action Buttons */}
+              <div style={{ display: 'flex', gap: '0.75rem' }}>
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="btn btn-secondary flex-1"
+                  style={{
+                    flex: 1,
+                    padding: '0.875rem 1rem',
+                    background: '#f1f5f9',
+                    color: '#475569',
+                    border: 'none',
+                    borderRadius: '12px',
+                    fontSize: '1rem',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    transition: 'all 0.2s'
+                  }}
+                  onMouseOver={(e) => e.currentTarget.style.background = '#e2e8f0'}
+                  onMouseOut={(e) => e.currentTarget.style.background = '#f1f5f9'}
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
                   disabled={createMutation.isPending || updateMutation.isPending}
-                  className="btn btn-primary flex-1"
+                  style={{
+                    flex: 1,
+                    padding: '0.875rem 1rem',
+                    background: 'linear-gradient(135deg, #16a34a 0%, #22c55e 100%)',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '12px',
+                    fontSize: '1rem',
+                    fontWeight: 600,
+                    cursor: createMutation.isPending || updateMutation.isPending ? 'not-allowed' : 'pointer',
+                    opacity: createMutation.isPending || updateMutation.isPending ? 0.7 : 1,
+                    boxShadow: '0 4px 14px rgba(22, 163, 74, 0.3)',
+                    transition: 'all 0.2s'
+                  }}
+                  onMouseOver={(e) => !createMutation.isPending && !updateMutation.isPending && (e.currentTarget.style.transform = 'translateY(-2px)')}
+                  onMouseOut={(e) => e.currentTarget.style.transform = 'translateY(0)'}
                 >
-                  {createMutation.isPending || updateMutation.isPending ? 'Menyimpan...' : 'Simpan'}
+                  {createMutation.isPending || updateMutation.isPending ? '⏳ Menyimpan...' : '✅ Simpan Hadits'}
                 </button>
               </div>
             </form>
