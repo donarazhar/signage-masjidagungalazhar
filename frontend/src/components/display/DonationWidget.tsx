@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { displayService } from '../../services/displayService'
 import { Landmark, QrCode } from 'lucide-react'
@@ -7,7 +7,7 @@ const API_URL = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://loc
 const ROTATION_INTERVAL = 15000 // 15 seconds
 
 export default function DonationWidget() {
-  const [currentIndex, setCurrentIndex] = useState(0)
+  const [currentPage, setCurrentPage] = useState(0)
   const [isVisible, setIsVisible] = useState(true)
 
   const { data: donations } = useQuery({
@@ -16,29 +16,58 @@ export default function DonationWidget() {
     refetchInterval: 1000 * 60 * 5, // 5 mins
   })
 
+  // Separate rekening and QRIS, create pages
+  const pages = useMemo(() => {
+    if (!donations || donations.length === 0) return []
+
+    const rekenings = donations.filter(d => d.type === 'rekening')
+    const qrisList = donations.filter(d => d.type === 'qris' && d.qris_image)
+    
+    const result: { type: 'rekening' | 'qris'; items: typeof donations }[] = []
+
+    // Add rekening pages (2 per page)
+    for (let i = 0; i < rekenings.length; i += 2) {
+      result.push({
+        type: 'rekening',
+        items: rekenings.slice(i, i + 2)
+      })
+    }
+
+    // Add QRIS pages (1 per page)
+    for (const qris of qrisList) {
+      result.push({
+        type: 'qris',
+        items: [qris]
+      })
+    }
+
+    return result
+  }, [donations])
+
+  const totalPages = pages.length
+
   // Rotation effect
   useEffect(() => {
-    if (!donations || donations.length <= 1) return
+    if (totalPages <= 1) return
 
     const interval = setInterval(() => {
       // Fade out
       setIsVisible(false)
       
       setTimeout(() => {
-        // Change index
-        setCurrentIndex((prev) => (prev + 1) % donations.length)
+        // Change page
+        setCurrentPage((prev) => (prev + 1) % totalPages)
         // Fade in
         setIsVisible(true)
       }, 500) // Wait for fade out animation
     }, ROTATION_INTERVAL)
 
     return () => clearInterval(interval)
-  }, [donations])
+  }, [totalPages])
 
-  if (!donations || donations.length === 0) return null
+  if (!donations || donations.length === 0 || pages.length === 0) return null
 
-  const currentDonation = donations[currentIndex]
-  const isQris = currentDonation.type === 'qris' && currentDonation.qris_image
+  const currentPageData = pages[currentPage]
 
   return (
     <div className="info-card" style={{ 
@@ -49,7 +78,7 @@ export default function DonationWidget() {
       transition: 'opacity 0.5s ease-in-out',
       opacity: isVisible ? 1 : 0
     }}>
-      {isQris ? (
+      {currentPageData.type === 'qris' ? (
         <>
           {/* QRIS Display */}
           <div style={{
@@ -76,7 +105,7 @@ export default function DonationWidget() {
               Scan QRIS
             </div>
             <img 
-              src={`${API_URL}/storage/${currentDonation.qris_image}`}
+              src={`${API_URL}/storage/${currentPageData.items[0].qris_image}`}
               alt="QRIS"
               style={{
                 width: '100%',
@@ -90,7 +119,7 @@ export default function DonationWidget() {
         </>
       ) : (
         <>
-          {/* Rekening Display */}
+          {/* Rekening Display (1 or 2) */}
           <div style={{
             position: 'absolute',
             top: -10,
@@ -115,58 +144,62 @@ export default function DonationWidget() {
               Rekening Donasi
             </div>
 
-            <div style={{
-              background: 'var(--primary-50)',
-              borderRadius: '12px',
-              padding: '0.75rem 1rem',
-              border: '1px solid var(--primary-100)'
-            }}>
-              <div style={{ 
-                fontSize: '0.7rem', 
-                color: 'var(--slate-500)', 
-                textTransform: 'uppercase', 
-                letterSpacing: '0.5px',
-                marginBottom: '0.25rem'
-              }}>
-                {currentDonation.bank_name}
-              </div>
-              <div style={{ 
-                fontFamily: 'monospace', 
-                fontSize: '1.1rem', 
-                fontWeight: 700, 
-                color: 'var(--primary-700)',
-                marginBottom: '0.25rem'
-              }}>
-                {currentDonation.account_number}
-              </div>
-              <div style={{ 
-                fontSize: '0.8rem', 
-                color: 'var(--slate-600)',
-                fontWeight: 500
-              }}>
-                a.n. {currentDonation.account_name}
-              </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              {currentPageData.items.map((donation) => (
+                <div key={donation.id} style={{
+                  background: 'var(--primary-50)',
+                  borderRadius: '12px',
+                  padding: '0.6rem 0.8rem',
+                  border: '1px solid var(--primary-100)'
+                }}>
+                  <div style={{ 
+                    fontSize: '0.65rem', 
+                    color: 'var(--slate-500)', 
+                    textTransform: 'uppercase', 
+                    letterSpacing: '0.5px',
+                    marginBottom: '0.15rem'
+                  }}>
+                    {donation.bank_name}
+                  </div>
+                  <div style={{ 
+                    fontFamily: 'monospace', 
+                    fontSize: '1rem', 
+                    fontWeight: 700, 
+                    color: 'var(--primary-700)',
+                    marginBottom: '0.1rem'
+                  }}>
+                    {donation.account_number}
+                  </div>
+                  <div style={{ 
+                    fontSize: '0.75rem', 
+                    color: 'var(--slate-600)',
+                    fontWeight: 500
+                  }}>
+                    a.n. {donation.account_name}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </>
       )}
 
-      {/* Indicator dots if multiple */}
-      {donations.length > 1 && (
+      {/* Indicator dots if multiple pages */}
+      {totalPages > 1 && (
         <div style={{
           display: 'flex',
           justifyContent: 'center',
           gap: '0.35rem',
           marginTop: '0.75rem'
         }}>
-          {donations.map((_, idx) => (
+          {pages.map((_, idx) => (
             <div
               key={idx}
               style={{
                 width: '6px',
                 height: '6px',
                 borderRadius: '50%',
-                background: idx === currentIndex ? 'var(--primary-500)' : 'var(--primary-200)',
+                background: idx === currentPage ? 'var(--primary-500)' : 'var(--primary-200)',
                 transition: 'background 0.3s'
               }}
             />

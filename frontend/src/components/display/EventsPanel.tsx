@@ -6,7 +6,7 @@ interface EventsPanelProps {
   events: Event[]
 }
 
-const ITEMS_PER_PAGE = 2
+const ITEMS_PER_PAGE = 3
 const ROTATION_INTERVAL = 15000 // 15 seconds
 
 export default function EventsPanel({ events }: EventsPanelProps) {
