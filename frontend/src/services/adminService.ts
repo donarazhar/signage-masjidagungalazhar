@@ -133,13 +133,19 @@ export const adminService = {
     return response.data
   },
 
-  async createDonation(data: Partial<Donation>) {
-    const response = await api.post('/donations', data)
+  async createDonation(data: FormData) {
+    const response = await api.post('/donations', data, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    })
     return response.data
   },
 
-  async updateDonation(id: number, data: Partial<Donation>) {
-    const response = await api.put(`/donations/${id}`, data)
+  async updateDonation(id: number, data: FormData) {
+    // For Laravel, we need to use POST with _method=PUT for FormData
+    data.append('_method', 'PUT')
+    const response = await api.post(`/donations/${id}`, data, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    })
     return response.data
   },
 

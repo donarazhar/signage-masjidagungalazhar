@@ -139,9 +139,9 @@ export default function MainDisplay() {
           </div>
         </div>
         
-        {/* Donation Widget */}
+        {/* Hadith Widget */}
         <div style={{ flex: 1, height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-           <DonationWidget />
+           <HadithWidget />
         </div>
 
         <div className="date-card" style={{ background: 'rgba(255,255,255,0.15)', borderLeft: 'none', color: 'white' }}>
@@ -175,8 +175,8 @@ export default function MainDisplay() {
             </div>
           )}
 
-          {/* Quote / Hadith */}
-          <HadithWidget />
+          {/* Donation Widget */}
+          <DonationWidget />
         </aside>
 
         {/* Carousel */}

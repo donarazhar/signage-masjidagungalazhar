@@ -14,39 +14,43 @@ export default function HadithWidget() {
   const source = hadith?.source || "HR. Ahmad, Thabrani, Daruqutni"
 
   return (
-    <div className="info-card animate-fade-in" style={{ 
-      background: 'linear-gradient(145deg, #ffffff, #f0fdf4)',
-      border: '1px solid var(--primary-100)',
-      position: 'relative',
-      overflow: 'hidden' 
+    <div style={{ 
+      background: 'rgba(255,255,255,0.1)',
+      backdropFilter: 'blur(10px)',
+      borderRadius: '16px',
+      padding: '1rem 1.5rem',
+      display: 'flex',
+      alignItems: 'center',
+      gap: '1rem',
+      maxWidth: '600px',
+      border: '1px solid rgba(255,255,255,0.15)'
     }}>
       <div style={{
-        position: 'absolute',
-        top: -10,
-        right: -10,
-        opacity: 0.1,
-        color: 'var(--primary-600)'
+        background: 'rgba(255,255,255,0.15)',
+        borderRadius: '12px',
+        padding: '0.75rem',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
       }}>
-        <Quote size={64} />
+        <Quote size={24} style={{ color: '#fbbf24' }} />
       </div>
       
-      <div style={{ position: 'relative', zIndex: 1, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-        <p className="quote" style={{ 
-          fontSize: '1rem', 
+      <div style={{ flex: 1 }}>
+        <p style={{ 
+          fontSize: '0.95rem', 
           fontStyle: 'italic',
-          color: 'var(--slate-700)',
-          textAlign: 'center',
-          lineHeight: '1.6',
-          marginBottom: '1rem',
+          color: 'white',
+          lineHeight: '1.5',
+          marginBottom: '0.25rem',
           fontWeight: 500
         }}>
           "{content}"
         </p>
-        <p className="source" style={{ 
-          textAlign: 'center',
-          color: 'var(--primary-600)',
+        <p style={{ 
+          color: '#fbbf24',
           fontWeight: 700,
-          fontSize: '0.9rem'
+          fontSize: '0.8rem'
         }}>
           — {source}
         </p>
@@ -54,3 +58,4 @@ export default function HadithWidget() {
     </div>
   )
 }
+

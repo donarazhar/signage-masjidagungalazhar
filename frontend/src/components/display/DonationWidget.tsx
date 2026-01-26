@@ -1,6 +1,8 @@
 import { useQuery } from '@tanstack/react-query'
 import { displayService } from '../../services/displayService'
-import { CreditCard } from 'lucide-react'
+import { Landmark, QrCode } from 'lucide-react'
+
+const API_URL = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:8000'
 
 export default function DonationWidget() {
   const { data: donations } = useQuery({
@@ -11,66 +13,123 @@ export default function DonationWidget() {
 
   if (!donations || donations.length === 0) return null
 
-  // Take up to 3 active donations
-  const displayDonations = donations.slice(0, 3)
+  // Get first rekening and first QRIS
+  const rekening = donations.find(d => d.type === 'rekening')
+  const qris = donations.find(d => d.type === 'qris')
+
+  // If we have QRIS, show it, otherwise show rekening
+  const showQris = qris && qris.qris_image
 
   return (
-    <div style={{ 
-      display: 'flex', 
-      gap: '1rem',
-      height: '100%',
-      marginRight: 'auto',
-      marginLeft: '1.5rem',
-      alignItems: 'center'
+    <div className="info-card animate-fade-in" style={{ 
+      background: 'linear-gradient(145deg, #ffffff, #f0fdf4)',
+      border: '1px solid var(--primary-100)',
+      position: 'relative',
+      overflow: 'hidden' 
     }}>
-      {displayDonations.map((donation) => (
-        <div key={donation.id} className="donation-card animate-fade-in" style={{ 
-          display: 'flex', 
-          alignItems: 'center', 
-          gap: '0.75rem',
-          background: 'rgba(255,255,255,0.1)',
-          padding: '0.5rem 1rem',
-          borderRadius: '12px',
-          color: 'white',
-          height: 'auto',
-          minWidth: '240px'
-        }}>
-          <div style={{ 
-            background: 'rgba(255,255,255,0.2)', 
-            padding: '0.5rem', 
-            borderRadius: '8px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
+      {showQris ? (
+        <>
+          {/* QRIS Display */}
+          <div style={{
+            position: 'absolute',
+            top: -10,
+            right: -10,
+            opacity: 0.1,
+            color: 'var(--primary-600)'
           }}>
-            <CreditCard size={20} color="var(--gold-500)" />
+            <QrCode size={64} />
           </div>
-          <div>
+
+          <div style={{ position: 'relative', zIndex: 1 }}>
             <div style={{ 
-              fontSize: '0.65rem', 
-              color: 'rgba(255,255,255,0.7)', 
-              textTransform: 'uppercase', 
-              letterSpacing: '0.5px' 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '0.5rem',
+              marginBottom: '0.5rem',
+              color: 'var(--primary-600)',
+              fontWeight: 600,
+              fontSize: '0.85rem'
             }}>
-              {donation.bank_name}
+              <QrCode size={18} />
+              Scan QRIS
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <span style={{ 
-                fontFamily: 'monospace', 
-                fontSize: '1rem', 
-                fontWeight: 600, 
-                lineHeight: 1.2,
-                color: 'var(--gold-500)' 
+            <img 
+              src={`${API_URL}/storage/${qris.qris_image}`}
+              alt="QRIS"
+              style={{
+                width: '100%',
+                maxHeight: '150px',
+                objectFit: 'contain',
+                borderRadius: '8px',
+                background: 'white'
+              }}
+            />
+          </div>
+        </>
+      ) : rekening ? (
+        <>
+          {/* Rekening Display */}
+          <div style={{
+            position: 'absolute',
+            top: -10,
+            right: -10,
+            opacity: 0.1,
+            color: 'var(--primary-600)'
+          }}>
+            <Landmark size={64} />
+          </div>
+
+          <div style={{ position: 'relative', zIndex: 1 }}>
+            <div style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '0.5rem',
+              marginBottom: '0.75rem',
+              color: 'var(--primary-600)',
+              fontWeight: 600,
+              fontSize: '0.85rem'
+            }}>
+              <Landmark size={18} />
+              Rekening Donasi
+            </div>
+
+            <div style={{
+              background: 'var(--primary-50)',
+              borderRadius: '12px',
+              padding: '0.75rem 1rem',
+              border: '1px solid var(--primary-100)'
+            }}>
+              <div style={{ 
+                fontSize: '0.7rem', 
+                color: 'var(--slate-500)', 
+                textTransform: 'uppercase', 
+                letterSpacing: '0.5px',
+                marginBottom: '0.25rem'
               }}>
-                {donation.account_number}
-              </span>
-              <span style={{ fontSize: '0.75rem', opacity: 0.9 }}>
-                {donation.account_name}
-              </span>
+                {rekening.bank_name}
+              </div>
+              <div style={{ 
+                fontFamily: 'monospace', 
+                fontSize: '1.1rem', 
+                fontWeight: 700, 
+                color: 'var(--primary-700)',
+                marginBottom: '0.25rem'
+              }}>
+                {rekening.account_number}
+              </div>
+              <div style={{ 
+                fontSize: '0.8rem', 
+                color: 'var(--slate-600)',
+                fontWeight: 500
+              }}>
+                a.n. {rekening.account_name}
+              </div>
             </div>
           </div>
-        </div>
-      ))}
+        </>
+      ) : null}
     </div>
   )
 }
+
+

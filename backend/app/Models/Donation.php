@@ -10,10 +10,12 @@ class Donation extends Model
     use HasFactory;
 
     protected $fillable = [
+        'type',
         'bank_name',
         'account_number',
         'account_name',
         'logo_path',
+        'qris_image',
         'is_active',
         'priority',
     ];

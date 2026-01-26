@@ -174,10 +174,12 @@ export interface Hadith {
 // Donation types
 export interface Donation {
   id: number
-  bank_name: string
-  account_number: string
-  account_name: string
+  type: 'rekening' | 'qris'
+  bank_name: string | null
+  account_number: string | null
+  account_name: string | null
   logo_path: string | null
+  qris_image: string | null
   is_active: boolean
   priority: number
   created_at: string
