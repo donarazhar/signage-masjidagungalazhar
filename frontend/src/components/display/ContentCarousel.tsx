@@ -59,11 +59,11 @@ export default function ContentCarousel({ contents, duration, mosqueName }: Cont
               allowFullScreen
             />
           ) : (
-            // Image
+            // Image - full fit
             <img
               src={content.file_url || `/storage/${content.file_path}`}
               alt={content.title}
-              style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
             />
           )}
         </div>
