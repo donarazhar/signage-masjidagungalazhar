@@ -44,9 +44,9 @@ export const displayService = {
     return response.data
   },
 
-  // Get active hadith (public)
-  async getActiveHadith(): Promise<Hadith | null> {
-    const response = await api.get<Hadith>('/hadiths/active')
+  // Get active hadiths (public) - returns array for rotation
+  async getActiveHadiths(): Promise<Hadith[]> {
+    const response = await api.get<Hadith[]>('/hadiths/active')
     return response.data
   },
 }

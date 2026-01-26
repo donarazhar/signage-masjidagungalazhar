@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import { Calendar, Clock, MapPin } from 'lucide-react'
 import type { Event } from '../../types'
 
@@ -5,7 +6,40 @@ interface EventsPanelProps {
   events: Event[]
 }
 
+const ITEMS_PER_PAGE = 2
+const ROTATION_INTERVAL = 15000 // 15 seconds
+
 export default function EventsPanel({ events }: EventsPanelProps) {
+  const [currentPage, setCurrentPage] = useState(0)
+  const [isVisible, setIsVisible] = useState(true)
+
+  // Limit to 6 events max
+  const displayEvents = events.slice(0, 6)
+  const totalPages = Math.ceil(displayEvents.length / ITEMS_PER_PAGE)
+
+  // Rotation effect
+  useEffect(() => {
+    if (totalPages <= 1) return
+
+    const interval = setInterval(() => {
+      // Fade out
+      setIsVisible(false)
+      
+      setTimeout(() => {
+        // Change page
+        setCurrentPage((prev) => (prev + 1) % totalPages)
+        // Fade in
+        setIsVisible(true)
+      }, 500) // Wait for fade out animation
+    }, ROTATION_INTERVAL)
+
+    return () => clearInterval(interval)
+  }, [totalPages])
+
+  // Get current page events
+  const startIndex = currentPage * ITEMS_PER_PAGE
+  const currentEvents = displayEvents.slice(startIndex, startIndex + ITEMS_PER_PAGE)
+
   if (events.length === 0) {
     return (
       <div className="events-panel" style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '1rem', color: 'var(--slate-500)' }}>
@@ -21,14 +55,35 @@ export default function EventsPanel({ events }: EventsPanelProps) {
         <div style={{ padding: '0.5rem', background: 'var(--primary-100)', borderRadius: '8px', color: 'var(--primary-600)' }}>
           <Calendar size={20} />
         </div>
-        <div>
+        <div style={{ flex: 1 }}>
           <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--slate-800)', lineHeight: 1.2 }}>Agenda Kegiatan</h3>
           <p style={{ fontSize: '0.75rem', color: 'var(--slate-500)' }}>Masjid Agung Al Azhar</p>
         </div>
+        {/* Page indicator */}
+        {totalPages > 1 && (
+          <div style={{ 
+            fontSize: '0.7rem', 
+            color: 'var(--primary-600)', 
+            background: 'var(--primary-50)', 
+            padding: '0.25rem 0.5rem', 
+            borderRadius: '6px',
+            fontWeight: 600
+          }}>
+            {currentPage + 1}/{totalPages}
+          </div>
+        )}
       </div>
       
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', overflowY: 'hidden' }}>
-        {events.map((event) => (
+      <div style={{ 
+        display: 'flex', 
+        flexDirection: 'column', 
+        gap: '0.75rem', 
+        overflowY: 'hidden',
+        transition: 'opacity 0.5s ease-in-out',
+        opacity: isVisible ? 1 : 0,
+        flex: 1
+      }}>
+        {currentEvents.map((event) => (
           <div key={event.id} className="event-card">
             <div className="event-date-badge">
               <span className="day">{new Date(event.event_date).getDate()}</span>
@@ -60,6 +115,29 @@ export default function EventsPanel({ events }: EventsPanelProps) {
           </div>
         ))}
       </div>
+
+      {/* Indicator dots */}
+      {totalPages > 1 && (
+        <div style={{
+          display: 'flex',
+          justifyContent: 'center',
+          gap: '0.35rem',
+          paddingTop: '0.5rem'
+        }}>
+          {Array.from({ length: totalPages }).map((_, idx) => (
+            <div
+              key={idx}
+              style={{
+                width: '6px',
+                height: '6px',
+                borderRadius: '50%',
+                background: idx === currentPage ? 'var(--primary-500)' : 'var(--primary-200)',
+                transition: 'background 0.3s'
+              }}
+            />
+          ))}
+        </div>
+      )}
     </div>
   )
 }

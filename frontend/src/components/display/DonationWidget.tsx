@@ -1,33 +1,55 @@
+import { useState, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { displayService } from '../../services/displayService'
 import { Landmark, QrCode } from 'lucide-react'
 
 const API_URL = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:8000'
+const ROTATION_INTERVAL = 15000 // 15 seconds
 
 export default function DonationWidget() {
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [isVisible, setIsVisible] = useState(true)
+
   const { data: donations } = useQuery({
     queryKey: ['activeDonations'],
     queryFn: displayService.getActiveDonations,
     refetchInterval: 1000 * 60 * 5, // 5 mins
   })
 
+  // Rotation effect
+  useEffect(() => {
+    if (!donations || donations.length <= 1) return
+
+    const interval = setInterval(() => {
+      // Fade out
+      setIsVisible(false)
+      
+      setTimeout(() => {
+        // Change index
+        setCurrentIndex((prev) => (prev + 1) % donations.length)
+        // Fade in
+        setIsVisible(true)
+      }, 500) // Wait for fade out animation
+    }, ROTATION_INTERVAL)
+
+    return () => clearInterval(interval)
+  }, [donations])
+
   if (!donations || donations.length === 0) return null
 
-  // Get first rekening and first QRIS
-  const rekening = donations.find(d => d.type === 'rekening')
-  const qris = donations.find(d => d.type === 'qris')
-
-  // If we have QRIS, show it, otherwise show rekening
-  const showQris = qris && qris.qris_image
+  const currentDonation = donations[currentIndex]
+  const isQris = currentDonation.type === 'qris' && currentDonation.qris_image
 
   return (
-    <div className="info-card animate-fade-in" style={{ 
+    <div className="info-card" style={{ 
       background: 'linear-gradient(145deg, #ffffff, #f0fdf4)',
       border: '1px solid var(--primary-100)',
       position: 'relative',
-      overflow: 'hidden' 
+      overflow: 'hidden',
+      transition: 'opacity 0.5s ease-in-out',
+      opacity: isVisible ? 1 : 0
     }}>
-      {showQris ? (
+      {isQris ? (
         <>
           {/* QRIS Display */}
           <div style={{
@@ -54,7 +76,7 @@ export default function DonationWidget() {
               Scan QRIS
             </div>
             <img 
-              src={`${API_URL}/storage/${qris.qris_image}`}
+              src={`${API_URL}/storage/${currentDonation.qris_image}`}
               alt="QRIS"
               style={{
                 width: '100%',
@@ -66,7 +88,7 @@ export default function DonationWidget() {
             />
           </div>
         </>
-      ) : rekening ? (
+      ) : (
         <>
           {/* Rekening Display */}
           <div style={{
@@ -106,7 +128,7 @@ export default function DonationWidget() {
                 letterSpacing: '0.5px',
                 marginBottom: '0.25rem'
               }}>
-                {rekening.bank_name}
+                {currentDonation.bank_name}
               </div>
               <div style={{ 
                 fontFamily: 'monospace', 
@@ -115,21 +137,42 @@ export default function DonationWidget() {
                 color: 'var(--primary-700)',
                 marginBottom: '0.25rem'
               }}>
-                {rekening.account_number}
+                {currentDonation.account_number}
               </div>
               <div style={{ 
                 fontSize: '0.8rem', 
                 color: 'var(--slate-600)',
                 fontWeight: 500
               }}>
-                a.n. {rekening.account_name}
+                a.n. {currentDonation.account_name}
               </div>
             </div>
           </div>
         </>
-      ) : null}
+      )}
+
+      {/* Indicator dots if multiple */}
+      {donations.length > 1 && (
+        <div style={{
+          display: 'flex',
+          justifyContent: 'center',
+          gap: '0.35rem',
+          marginTop: '0.75rem'
+        }}>
+          {donations.map((_, idx) => (
+            <div
+              key={idx}
+              style={{
+                width: '6px',
+                height: '6px',
+                borderRadius: '50%',
+                background: idx === currentIndex ? 'var(--primary-500)' : 'var(--primary-200)',
+                transition: 'background 0.3s'
+              }}
+            />
+          ))}
+        </div>
+      )}
     </div>
   )
 }
-
-

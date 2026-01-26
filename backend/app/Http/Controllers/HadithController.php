@@ -15,12 +15,9 @@ class HadithController extends Controller
 
     public function active()
     {
-        // Get one active hadith randomly or latest? 
-        // Let's get "latest active" for now, or random.
-        // User said "manage", implied one might be shown. 
-        // Let's pick random active one to make it dynamic if multiple are active.
-        $hadith = Hadith::where('is_active', true)->inRandomOrder()->first();
-        return response()->json($hadith);
+        // Return all active hadiths for frontend rotation
+        $hadiths = Hadith::where('is_active', true)->orderBy('created_at', 'desc')->get();
+        return response()->json($hadiths);
     }
 
     public function store(Request $request)

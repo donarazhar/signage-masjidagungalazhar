@@ -1,17 +1,43 @@
+import { useState, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { displayService } from '../../services/displayService'
 import { Quote } from 'lucide-react'
 
+const ROTATION_INTERVAL = 15000 // 15 seconds
+
 export default function HadithWidget() {
-  const { data: hadith } = useQuery({
-    queryKey: ['activeHadith'],
-    queryFn: displayService.getActiveHadith,
-    refetchInterval: 1000 * 60 * 60, // 1 hour
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [isVisible, setIsVisible] = useState(true)
+
+  const { data: hadiths } = useQuery({
+    queryKey: ['activeHadiths'],
+    queryFn: displayService.getActiveHadiths,
+    refetchInterval: 1000 * 60 * 5, // Refresh from API every 5 minutes
   })
 
+  // Rotation effect
+  useEffect(() => {
+    if (!hadiths || hadiths.length <= 1) return
+
+    const interval = setInterval(() => {
+      // Fade out
+      setIsVisible(false)
+      
+      setTimeout(() => {
+        // Change index
+        setCurrentIndex((prev) => (prev + 1) % hadiths.length)
+        // Fade in
+        setIsVisible(true)
+      }, 500) // Wait for fade out animation
+    }, ROTATION_INTERVAL)
+
+    return () => clearInterval(interval)
+  }, [hadiths])
+
   // Default Quote if none active
-  const content = hadith?.content || "Sebaik-baik manusia adalah yang paling bermanfaat bagi manusia lainnya."
-  const source = hadith?.source || "HR. Ahmad, Thabrani, Daruqutni"
+  const currentHadith = hadiths?.[currentIndex]
+  const content = currentHadith?.content || "Sebaik-baik manusia adalah yang paling bermanfaat bagi manusia lainnya."
+  const source = currentHadith?.source || "HR. Ahmad, Thabrani, Daruqutni"
 
   return (
     <div style={{ 
@@ -23,7 +49,9 @@ export default function HadithWidget() {
       alignItems: 'center',
       gap: '1rem',
       maxWidth: '600px',
-      border: '1px solid rgba(255,255,255,0.15)'
+      border: '1px solid rgba(255,255,255,0.15)',
+      transition: 'opacity 0.5s ease-in-out',
+      opacity: isVisible ? 1 : 0
     }}>
       <div style={{
         background: 'rgba(255,255,255,0.15)',
@@ -31,19 +59,25 @@ export default function HadithWidget() {
         padding: '0.75rem',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        flexShrink: 0
       }}>
         <Quote size={24} style={{ color: '#fbbf24' }} />
       </div>
       
-      <div style={{ flex: 1 }}>
+      <div style={{ flex: 1, minWidth: 0 }}>
         <p style={{ 
           fontSize: '0.95rem', 
           fontStyle: 'italic',
           color: 'white',
           lineHeight: '1.5',
           marginBottom: '0.25rem',
-          fontWeight: 500
+          fontWeight: 500,
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          display: '-webkit-box',
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: 'vertical'
         }}>
           "{content}"
         </p>
@@ -58,4 +92,3 @@ export default function HadithWidget() {
     </div>
   )
 }
-
