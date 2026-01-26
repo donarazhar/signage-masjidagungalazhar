@@ -70,7 +70,34 @@ php artisan serve
 ```bash
 cd frontend
 npm install
+```
+
+**Konfigurasi API Endpoint:**
+
+Buat file `.env` di folder `frontend/` dengan isi:
+
+```env
+# Untuk development lokal
+VITE_API_URL=http://localhost:8000/api
+
+# Untuk production (sesuaikan dengan domain server)
+# VITE_API_URL=https://your-domain.com/api
+```
+
+> ⚠️ **Penting:** Jika API URL tidak dikonfigurasi, frontend akan menggunakan `http://localhost:8000/api` sebagai default.
+
+Jalankan development server:
+
+```bash
 npm run dev
+```
+
+**Build untuk Production:**
+
+```bash
+npm run build
+# Hasil build ada di folder dist/
+# Upload isi folder dist/ ke server hosting
 ```
 
 ### 5. Open in Browser

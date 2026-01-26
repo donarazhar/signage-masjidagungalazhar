@@ -245,7 +245,8 @@ export default function ContentManager() {
                   )}
                   {!editingContent && (
                     <p style={{ fontSize: '0.75rem', color: 'var(--slate-500)', marginTop: '0.25rem' }}>
-                      Format: JPG, PNG, WebP, GIF (Maks 10MB)
+                      Format: JPG, PNG, WebP, GIF (Maks 10MB)<br/>
+                      <strong style={{ color: 'var(--primary-600)' }}>⚠️ Ukuran gambar wajib: 940 x 788 px</strong>
                     </p>
                   )}
                 </div>
