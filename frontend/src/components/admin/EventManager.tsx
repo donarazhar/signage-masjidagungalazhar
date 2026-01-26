@@ -218,7 +218,7 @@ export default function EventManager() {
                   <input 
                     type="date" 
                     name="event_date" 
-                    defaultValue={editingEvent?.event_date}
+                    defaultValue={editingEvent?.event_date ? editingEvent.event_date.substring(0, 10) : ''}
                     className="form-input" 
                     required 
                   />
