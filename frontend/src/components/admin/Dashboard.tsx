@@ -5,27 +5,27 @@ import { FileImage, Type, Calendar, CreditCard, MessageSquare } from 'lucide-rea
 export default function Dashboard() {
   const { data: settings } = useQuery({
     queryKey: ['settings'],
-    queryFn: displayService.getSettings,
+    queryFn: () => displayService.getSettings(),
   })
 
   const { data: contents } = useQuery({
     queryKey: ['activeContents'],
-    queryFn: displayService.getActiveContents,
+    queryFn: () => displayService.getActiveContents(),
   })
 
   const { data: runningTexts } = useQuery({
     queryKey: ['activeRunningTexts'],
-    queryFn: displayService.getActiveRunningTexts,
+    queryFn: () => displayService.getActiveRunningTexts(),
   })
 
   const { data: events } = useQuery({
     queryKey: ['upcomingEvents'],
-    queryFn: displayService.getUpcomingEvents,
+    queryFn: () => displayService.getUpcomingEvents(),
   })
 
   const { data: donations } = useQuery({
     queryKey: ['activeDonations'],
-    queryFn: displayService.getActiveDonations,
+    queryFn: () => displayService.getActiveDonations(),
   })
 
   const today = new Date()

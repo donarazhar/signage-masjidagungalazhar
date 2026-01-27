@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
+import { useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { displayService } from '../../services/displayService'
 import { Landmark, QrCode } from 'lucide-react'
@@ -7,12 +8,13 @@ const API_URL = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://loc
 const ROTATION_INTERVAL = 15000 // 15 seconds
 
 export default function DonationWidget() {
+  const { mosqueSlug } = useParams<{ mosqueSlug?: string }>()
   const [currentPage, setCurrentPage] = useState(0)
   const [isVisible, setIsVisible] = useState(true)
 
   const { data: donations } = useQuery({
-    queryKey: ['activeDonations'],
-    queryFn: displayService.getActiveDonations,
+    queryKey: ['activeDonations', mosqueSlug],
+    queryFn: () => displayService.getActiveDonations(mosqueSlug),
     refetchInterval: 1000 * 60 * 5, // 5 mins
   })
 

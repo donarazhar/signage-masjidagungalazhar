@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { displayService } from '../../services/displayService'
 import { Quote } from 'lucide-react'
@@ -6,12 +7,13 @@ import { Quote } from 'lucide-react'
 const ROTATION_INTERVAL = 15000 // 15 seconds
 
 export default function HadithWidget() {
+  const { mosqueSlug } = useParams<{ mosqueSlug?: string }>()
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isVisible, setIsVisible] = useState(true)
 
   const { data: hadiths } = useQuery({
-    queryKey: ['activeHadiths'],
-    queryFn: displayService.getActiveHadiths,
+    queryKey: ['activeHadiths', mosqueSlug],
+    queryFn: () => displayService.getActiveHadiths(mosqueSlug),
     refetchInterval: 1000 * 60 * 5, // Refresh from API every 5 minutes
   })
 

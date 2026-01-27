@@ -17,7 +17,7 @@ export default function PrayerSettings() {
 
   const { data: settings, isLoading } = useQuery({
     queryKey: ['settings'],
-    queryFn: displayService.getSettings,
+    queryFn: () => displayService.getSettings(),
   })
 
   const [formData, setFormData] = useState<Partial<Settings>>({})
