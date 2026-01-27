@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Http\Traits\ResolvesMosque;
 use Illuminate\Http\Request;
 
 class EventController extends Controller
 {
+    use ResolvesMosque;
+
     /**
      * List all events
      */
@@ -23,11 +26,16 @@ class EventController extends Controller
     /**
      * Get upcoming events for display (5 events)
      */
-    public function upcoming()
+    public function upcoming(Request $request)
     {
-        $events = Event::upcoming(5)->get();
+        $query = Event::upcoming(5);
 
-        return response()->json($events);
+        $mosqueId = $this->resolveMosqueId($request);
+        if ($mosqueId) {
+            $query->where('mosque_id', $mosqueId);
+        }
+
+        return response()->json($query->get());
     }
 
     /**
@@ -52,6 +60,7 @@ class EventController extends Controller
             'location' => $request->location,
             'is_enabled' => $request->input('is_enabled', true),
             'created_by' => $request->user()->id,
+            'mosque_id' => $request->user()->mosque_id,
         ]);
 
         return response()->json([

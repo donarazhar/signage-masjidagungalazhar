@@ -3,20 +3,26 @@
 namespace App\Http\Controllers;
 
 use App\Models\Setting;
+use App\Models\Mosque;
+use App\Http\Traits\ResolvesMosque;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
 
 class PrayerTimeController extends Controller
 {
+    use ResolvesMosque;
+
     /**
      * Get today's prayer times
      */
-    public function today()
+    public function today(Request $request)
     {
-        $latitude = Setting::getValue('latitude', -6.2088);
-        $longitude = Setting::getValue('longitude', 106.8456);
-        $method = Setting::getValue('calculation_method', 20); // 20 = Kemenag
+        $mosqueId = $this->resolveMosqueId($request);
+
+        $latitude = Setting::getValue('latitude', -6.2088, $mosqueId);
+        $longitude = Setting::getValue('longitude', 106.8456, $mosqueId);
+        $method = Setting::getValue('calculation_method', 20, $mosqueId); // 20 = Kemenag
 
         $cacheKey = "prayer_times_{$latitude}_{$longitude}_{$method}_" . now()->format('Y-m-d');
 
@@ -59,11 +65,11 @@ class PrayerTimeController extends Controller
             'asr' => 10,
             'maghrib' => 5,
             'isha' => 10,
-        ]);
+        ], $mosqueId);
 
         $prayerTimes['iqamah_duration'] = $iqamahDuration;
-        $prayerTimes['prayer_duration'] = Setting::getValue('prayer_duration', 15);
-        $prayerTimes['countdown_before'] = Setting::getValue('countdown_before', 15);
+        $prayerTimes['prayer_duration'] = Setting::getValue('prayer_duration', 15, $mosqueId);
+        $prayerTimes['countdown_before'] = Setting::getValue('countdown_before', 15, $mosqueId);
 
         return response()->json($prayerTimes);
     }

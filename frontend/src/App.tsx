@@ -8,6 +8,11 @@ import RunningTextManager from './components/admin/RunningTextManager'
 import DonationManager from './components/admin/DonationManager'
 import EventManager from './components/admin/EventManager'
 import HadithManager from './components/admin/HadithManager'
+import MosqueManager from './components/admin/superadmin/MosqueManager'
+import UserManager from './components/admin/superadmin/UserManager'
+import ActivityLog from './components/admin/superadmin/ActivityLog'
+import BackupManager from './components/admin/superadmin/BackupManager'
+
 import Login from './components/admin/Login'
 import { useAuth } from './hooks/useAuth'
 
@@ -35,6 +40,8 @@ function App() {
       {/* Display Mode */}
       <Route path="/" element={<MainDisplay />} />
       <Route path="/display" element={<MainDisplay />} />
+      <Route path="/display/:mosqueSlug" element={<MainDisplay />} />
+
       
       {/* Admin Login */}
       <Route path="/admin/login" element={<Login />} />
@@ -46,13 +53,25 @@ function App() {
         </ProtectedRoute>
       }>
         <Route index element={<Dashboard />} />
+        
+        {/* Admin Masjid Routes */}
         <Route path="prayer-settings" element={<PrayerSettings />} />
         <Route path="contents" element={<ContentManager />} />
         <Route path="events" element={<EventManager />} />
         <Route path="running-texts" element={<RunningTextManager />} />
         <Route path="hadiths" element={<HadithManager />} />
         <Route path="donations" element={<DonationManager />} />
+
+        {/* Super Admin Routes */}
+        <Route path="mosques" element={<MosqueManager />} />
+
+        <Route path="users" element={<UserManager />} />
+        <Route path="activity-log" element={<ActivityLog />} />
+        <Route path="backups" element={<BackupManager />} />
       </Route>
+
+      {/* Dynamic Mosque Slug - Must be last */}
+      <Route path="/:mosqueSlug" element={<MainDisplay />} />
     </Routes>
   )
 }

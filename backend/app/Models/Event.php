@@ -16,7 +16,13 @@ class Event extends Model
         'location',
         'is_enabled',
         'created_by',
+        'mosque_id',
     ];
+
+    public function mosque(): BelongsTo
+    {
+        return $this->belongsTo(Mosque::class);
+    }
 
     protected $casts = [
         'event_date' => 'date',

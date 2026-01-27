@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Content;
+use App\Http\Traits\ResolvesMosque;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class ContentController extends Controller
 {
+    use ResolvesMosque;
+
     /**
      * List all contents
      */
@@ -24,11 +27,16 @@ class ContentController extends Controller
     /**
      * Get active contents for display
      */
-    public function active()
+    public function active(Request $request)
     {
-        $contents = Content::active()->get();
+        $query = Content::active();
 
-        return response()->json($contents);
+        $mosqueId = $this->resolveMosqueId($request);
+        if ($mosqueId) {
+            $query->where('mosque_id', $mosqueId);
+        }
+
+        return response()->json($query->get());
     }
 
     /**
@@ -70,6 +78,7 @@ class ContentController extends Controller
                 'start_date' => $request->start_date,
                 'end_date' => $request->end_date,
                 'uploaded_by' => $request->user()->id,
+                'mosque_id' => $request->user()->mosque_id,
             ]);
         } else {
             // Image upload
@@ -98,6 +107,7 @@ class ContentController extends Controller
                 'start_date' => $request->start_date,
                 'end_date' => $request->end_date,
                 'uploaded_by' => $request->user()->id,
+                'mosque_id' => $request->user()->mosque_id,
             ]);
         }
 

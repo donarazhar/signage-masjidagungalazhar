@@ -11,6 +11,9 @@ use App\Http\Controllers\PrayerTimeController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\HadithController;
 
+use App\Http\Controllers\Api\MosqueController;
+use App\Http\Controllers\Api\UserController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -37,10 +40,16 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/user', [AuthController::class, 'user']);
 
+    // Mosques (Super Admin only - permission check in controller or middleware)
+    Route::apiResource('mosques', MosqueController::class);
+    Route::apiResource('users', UserController::class);
+
     // Settings
     Route::put('/settings/bulk', [SettingController::class, 'bulkUpdate']);
     Route::get('/settings/{key}', [SettingController::class, 'show']);
     Route::put('/settings/{key}', [SettingController::class, 'update']);
+    Route::post('/settings/logo', [SettingController::class, 'uploadLogo']);
+    Route::delete('/settings/logo', [SettingController::class, 'deleteLogo']);
 
     // Contents
     Route::get('/contents', [ContentController::class, 'index']);

@@ -13,7 +13,13 @@ class Financial extends Model
         'description',
         'type',
         'recorded_by',
+        'mosque_id',
     ];
+
+    public function mosque(): BelongsTo
+    {
+        return $this->belongsTo(Mosque::class);
+    }
 
     protected $casts = [
         'record_date' => 'date',
@@ -28,13 +34,21 @@ class Financial extends Model
     /**
      * Get weekly summary
      */
-    public static function getWeeklySummary(): array
+    /**
+     * Get weekly summary
+     */
+    public static function getWeeklySummary(?int $mosqueId = null): array
     {
         $startOfWeek = now()->startOfWeek();
         $endOfWeek = now()->endOfWeek();
 
-        return static::whereBetween('record_date', [$startOfWeek, $endOfWeek])
-            ->orderBy('record_date', 'asc')
+        $query = static::whereBetween('record_date', [$startOfWeek, $endOfWeek]);
+
+        if ($mosqueId) {
+            $query->where('mosque_id', $mosqueId);
+        }
+
+        return $query->orderBy('record_date', 'asc')
             ->get()
             ->groupBy(fn($item) => $item->record_date->format('Y-m-d'))
             ->map(fn($items) => [
@@ -52,10 +66,14 @@ class Financial extends Model
     }
 
     /**
-     * Get total balance (sum of all financials)
+     * Get total balance (sum of all financials - expenses logic not implemented yet, currently just sum)
      */
-    public static function getTotalBalance(): float
+    public static function getTotalBalance(?int $mosqueId = null): float
     {
-        return static::sum('amount');
+        $query = static::query();
+        if ($mosqueId) {
+            $query->where('mosque_id', $mosqueId);
+        }
+        return $query->sum('amount');
     }
 }

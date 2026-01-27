@@ -3,19 +3,29 @@
 namespace App\Http\Controllers;
 
 use App\Models\Donation;
+use App\Http\Traits\ResolvesMosque;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class DonationController extends Controller
 {
+    use ResolvesMosque;
+
     public function index()
     {
         return response()->json(Donation::orderBy('priority', 'desc')->get());
     }
 
-    public function active()
+    public function active(Request $request)
     {
-        return response()->json(Donation::where('is_active', true)->orderBy('priority', 'desc')->get());
+        $query = Donation::where('is_active', true)->orderBy('priority', 'desc');
+
+        $mosqueId = $this->resolveMosqueId($request);
+        if ($mosqueId) {
+            $query->where('mosque_id', $mosqueId);
+        }
+
+        return response()->json($query->get());
     }
 
     public function store(Request $request)
@@ -36,6 +46,7 @@ class DonationController extends Controller
             $validated['qris_image'] = $path;
         }
 
+        $validated['mosque_id'] = $request->user()->mosque_id;
         $donation = Donation::create($validated);
         return response()->json($donation, 201);
     }

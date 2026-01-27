@@ -1,14 +1,19 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { displayService } from '../../services/displayService'
 import { adminService } from '../../services/adminService'
-import { Save, MapPin } from 'lucide-react'
+import { Save, MapPin, Upload, Image, Trash2 } from 'lucide-react'
+import { toast } from 'react-hot-toast'
+import api from '../../services/api'
 import type { Settings } from '../../types'
 
 export default function PrayerSettings() {
   const queryClient = useQueryClient()
   const [isSaving, setIsSaving] = useState(false)
   const [successMessage, setSuccessMessage] = useState('')
+  const [isUploadingLogo, setIsUploadingLogo] = useState(false)
+  const [logoPreview, setLogoPreview] = useState<string | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const { data: settings, isLoading } = useQuery({
     queryKey: ['settings'],
@@ -17,8 +22,12 @@ export default function PrayerSettings() {
 
   const [formData, setFormData] = useState<Partial<Settings>>({})
 
-  // Initialize form data when settings load
-  // Form data holds only user edits. Initial data comes from settings query.
+  // Initialize logo preview when settings load
+  useEffect(() => {
+    if (settings?.mosque_logo) {
+      setLogoPreview(settings.mosque_logo)
+    }
+  }, [settings])
 
   const updateMutation = useMutation({
     mutationFn: (settings: Array<{ key: string; value: unknown; type: string }>) =>
@@ -48,8 +57,6 @@ export default function PrayerSettings() {
       { key: 'running_text_speed', value: formData.running_text_speed ?? settings?.running_text_speed ?? 80, type: 'number' },
     ]
 
-    // console.log('Sending updates:', updates)
-
     try {
       await updateMutation.mutateAsync(updates)
     } finally {
@@ -72,6 +79,62 @@ export default function PrayerSettings() {
         [prayer]: value,
       },
     }))
+  }
+
+  const handleLogoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    if (file.size > 2 * 1024 * 1024) {
+      toast.error('Ukuran file maksimum 2MB')
+      return
+    }
+
+    // Show preview immediately
+    const reader = new FileReader()
+    reader.onloadend = () => {
+      setLogoPreview(reader.result as string)
+    }
+    reader.readAsDataURL(file)
+
+    // Upload to server
+    setIsUploadingLogo(true)
+    try {
+      const formData = new FormData()
+      formData.append('logo', file)
+      
+      const response = await api.post('/settings/logo', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      })
+      
+      toast.success('Logo berhasil diupload')
+      setLogoPreview(response.data.logo_url)
+      queryClient.invalidateQueries({ queryKey: ['settings'] })
+    } catch (error) {
+      console.error('Error uploading logo:', error)
+      toast.error('Gagal mengupload logo')
+      // Revert preview
+      setLogoPreview(settings?.mosque_logo || null)
+    } finally {
+      setIsUploadingLogo(false)
+    }
+  }
+
+  const handleDeleteLogo = async () => {
+    if (!confirm('Apakah Anda yakin ingin menghapus logo?')) return
+
+    setIsUploadingLogo(true)
+    try {
+      await api.delete('/settings/logo')
+      toast.success('Logo berhasil dihapus')
+      setLogoPreview(null)
+      queryClient.invalidateQueries({ queryKey: ['settings'] })
+    } catch (error) {
+      console.error('Error deleting logo:', error)
+      toast.error('Gagal menghapus logo')
+    } finally {
+      setIsUploadingLogo(false)
+    }
   }
 
   if (isLoading) {
@@ -102,6 +165,114 @@ export default function PrayerSettings() {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Logo Section */}
+        <div className="admin-card">
+          <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-4 flex items-center gap-2">
+            <Image className="w-5 h-5" />
+            Logo Masjid
+          </h2>
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1.5rem' }}>
+            {/* Logo Preview */}
+            <div 
+              onClick={() => !isUploadingLogo && fileInputRef.current?.click()}
+              style={{
+                width: '120px',
+                height: '120px',
+                borderRadius: '16px',
+                border: '2px dashed var(--slate-300)',
+                background: 'var(--slate-50)',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: isUploadingLogo ? 'wait' : 'pointer',
+                overflow: 'hidden',
+                transition: 'all 0.2s',
+                flexShrink: 0,
+                position: 'relative'
+              }}
+            >
+              {isUploadingLogo && (
+                <div style={{
+                  position: 'absolute',
+                  inset: 0,
+                  background: 'rgba(255,255,255,0.8)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  zIndex: 10
+                }}>
+                  <div style={{ 
+                    width: '24px', 
+                    height: '24px', 
+                    border: '3px solid var(--primary-100)', 
+                    borderTopColor: 'var(--primary-500)',
+                    borderRadius: '50%',
+                    animation: 'spin 1s linear infinite'
+                  }}></div>
+                </div>
+              )}
+              {logoPreview ? (
+                <img 
+                  src={logoPreview} 
+                  alt="Logo Masjid" 
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                />
+              ) : (
+                <>
+                  <Upload size={28} style={{ color: 'var(--slate-400)', marginBottom: '8px' }} />
+                  <span style={{ fontSize: '0.75rem', color: 'var(--slate-400)', textAlign: 'center' }}>
+                    Klik untuk upload
+                  </span>
+                </>
+              )}
+            </div>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/jpeg,image/png,image/jpg,image/gif,image/webp"
+              onChange={handleLogoChange}
+              style={{ display: 'none' }}
+              disabled={isUploadingLogo}
+            />
+            <div style={{ flex: 1 }}>
+              <p style={{ fontSize: '0.9375rem', color: 'var(--text-primary)', fontWeight: 500, marginBottom: '0.5rem' }}>
+                Upload logo masjid Anda
+              </p>
+              <p style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+                Logo akan ditampilkan pada layar display.<br />
+                Format yang didukung: JPG, PNG, WebP, GIF<br />
+                Ukuran maksimum: 2MB<br />
+                Rekomendasi: 200x200 px (persegi)
+              </p>
+              {logoPreview && (
+                <button
+                  type="button"
+                  onClick={handleDeleteLogo}
+                  disabled={isUploadingLogo}
+                  style={{
+                    marginTop: '0.75rem',
+                    padding: '0.5rem 1rem',
+                    fontSize: '0.8125rem',
+                    background: '#fee2e2',
+                    color: '#dc2626',
+                    border: 'none',
+                    borderRadius: '8px',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.375rem',
+                    opacity: isUploadingLogo ? 0.5 : 1
+                  }}
+                >
+                  <Trash2 size={14} />
+                  Hapus Logo
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+
         {/* Mosque Info */}
         <div className="admin-card">
           <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-4">
@@ -274,6 +445,13 @@ export default function PrayerSettings() {
           </button>
         </div>
       </form>
+
+      {/* Keyframes for animations */}
+      <style>{`
+        @keyframes spin {
+          to { transform: rotate(360deg); }
+        }
+      `}</style>
     </div>
   )
 }

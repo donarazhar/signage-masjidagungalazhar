@@ -17,7 +17,13 @@ class RunningText extends Model
         'end_date',
         'show_on_days',
         'created_by',
+        'mosque_id',
     ];
+
+    public function mosque(): BelongsTo
+    {
+        return $this->belongsTo(Mosque::class);
+    }
 
     protected $casts = [
         'is_enabled' => 'boolean',

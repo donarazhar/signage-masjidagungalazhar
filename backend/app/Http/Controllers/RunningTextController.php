@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\RunningText;
+use App\Http\Traits\ResolvesMosque;
 use Illuminate\Http\Request;
 
 class RunningTextController extends Controller
 {
+    use ResolvesMosque;
+
     /**
      * List all running texts
      */
@@ -23,11 +26,16 @@ class RunningTextController extends Controller
     /**
      * Get active running texts for display
      */
-    public function active()
+    public function active(Request $request)
     {
-        $texts = RunningText::active()->get();
+        $query = RunningText::active();
 
-        return response()->json($texts);
+        $mosqueId = $this->resolveMosqueId($request);
+        if ($mosqueId) {
+            $query->where('mosque_id', $mosqueId);
+        }
+
+        return response()->json($query->get());
     }
 
     /**
@@ -55,6 +63,7 @@ class RunningTextController extends Controller
             'end_date' => $request->end_date,
             'show_on_days' => $request->show_on_days,
             'created_by' => $request->user()->id,
+            'mosque_id' => $request->user()->mosque_id,
         ]);
 
         return response()->json([

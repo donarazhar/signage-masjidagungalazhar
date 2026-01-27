@@ -3,26 +3,81 @@
 namespace App\Http\Controllers;
 
 use App\Models\Setting;
+use App\Models\Mosque;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class SettingController extends Controller
 {
     /**
+     * Resolve mosque ID from slug or ID parameter
+     */
+    private function resolveMosqueId($mosqueParam)
+    {
+        if (empty($mosqueParam)) {
+            return null;
+        }
+
+        // If numeric, return as-is
+        if (is_numeric($mosqueParam)) {
+            return (int) $mosqueParam;
+        }
+
+        // Otherwise lookup by slug
+        $mosque = Mosque::where('slug', $mosqueParam)->first();
+        return $mosque?->id;
+    }
+
+    /**
      * Get all settings
      */
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json(Setting::getAllSettings());
+        $user = auth('sanctum')->user();
+        $mosqueId = null;
+        $mosque = null;
+
+        if ($user) {
+            $mosqueId = $user->mosque_id;
+            $mosque = $user->mosque;
+        } else {
+            // Support both mosque_id and m parameter (slug)
+            $mosqueParam = $request->query('mosque_id') ?? $request->query('m');
+            $mosqueId = $this->resolveMosqueId($mosqueParam);
+            if ($mosqueId) {
+                $mosque = Mosque::find($mosqueId);
+            }
+        }
+
+        $settings = Setting::getAllSettings($mosqueId);
+
+        if ($mosque) {
+            // Priority: Mosque Registry > Setting Database
+            $settings['mosque_name'] = $mosque->name;
+            $settings['mosque_address'] = $mosque->address ?? $settings['mosque_address'] ?? '';
+            $settings['city'] = $mosque->city ?? $settings['city'] ?? '';
+            $settings['mosque_logo'] = $mosque->logo_url;
+            $settings['mosque_slug'] = $mosque->slug;
+        }
+
+        return response()->json($settings);
     }
 
     /**
      * Get a single setting by key
      */
-    public function show(string $key)
+    public function show(Request $request, string $key)
     {
-        $value = Setting::getValue($key);
+        $mosqueId = null;
+        if ($request->user()) {
+            $mosqueId = $request->user()->mosque_id;
+        } else {
+            $mosqueId = $request->query('mosque_id');
+        }
+
+        $value = Setting::getValue($key, null, $mosqueId);
 
         if ($value === null) {
             return response()->json(['error' => 'Setting not found'], 404);
@@ -45,13 +100,27 @@ class SettingController extends Controller
         ]);
 
         $type = $request->input('type', 'string');
+        $mosqueId = $request->user()->mosque_id;
 
-        Setting::setValue($key, $request->value, $type);
+        Setting::setValue($key, $request->value, $type, $mosqueId);
+
+        // Sync back to mosques table
+        if ($request->user() && $request->user()->mosque) {
+            if ($key === 'mosque_name') {
+                $request->user()->mosque()->update(['name' => $request->value]);
+            }
+            if ($key === 'mosque_address') {
+                $request->user()->mosque()->update(['address' => $request->value]);
+            }
+            if ($key === 'city') {
+                $request->user()->mosque()->update(['city' => $request->value]);
+            }
+        }
 
         return response()->json([
             'message' => 'Setting berhasil diperbarui',
             'key' => $key,
-            'value' => Setting::getValue($key),
+            'value' => Setting::getValue($key, null, $mosqueId),
         ]);
     }
 
@@ -69,6 +138,8 @@ class SettingController extends Controller
             'settings.*.type' => 'sometimes|in:string,json,number,boolean',
         ]);
 
+        $mosqueId = $request->user()->mosque_id;
+
         $debug = [];
         $debug['db_connection'] = DB::getDefaultConnection();
         $debug['updates'] = [];
@@ -84,38 +155,122 @@ class SettingController extends Controller
                 default => (string) $value,
             };
 
-            // Force update using raw query builder
-            $affected = DB::table('settings')
-                ->where('key', $key)
-                ->update([
+            // Update or Create with mosque_id
+            $query = DB::table('settings')
+                ->where('key', $key);
+
+            if ($mosqueId) {
+                $query->where('mosque_id', $mosqueId);
+            } else {
+                $query->whereNull('mosque_id');
+            }
+
+            $exists = $query->exists();
+
+            if ($exists) {
+                $query->update([
                     'value' => $storedValue,
                     'type' => $type,
                     'updated_at' => now()
                 ]);
-
-            if ($affected > 0) {
-                $debug['updates'][$key] = "UPDATED ($affected)";
+                $debug['updates'][$key] = "UPDATED";
             } else {
-                $exists = DB::table('settings')->where('key', $key)->exists();
-                if (!$exists) {
-                    DB::table('settings')->insert([
-                        'key' => $key,
-                        'value' => $storedValue,
-                        'type' => $type,
-                        'created_at' => now(),
-                        'updated_at' => now()
-                    ]);
-                    $debug['updates'][$key] = 'INSERTED';
-                } else {
-                    $debug['updates'][$key] = 'NO CHANGE (identical value)';
+                DB::table('settings')->insert([
+                    'key' => $key,
+                    'value' => $storedValue,
+                    'type' => $type,
+                    'mosque_id' => $mosqueId,
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]);
+                $debug['updates'][$key] = 'INSERTED';
+            }
+
+            // Sync specific keys to mosques table
+            if ($request->user()->mosque) {
+                if ($key === 'mosque_name') {
+                    $request->user()->mosque()->update(['name' => $value]);
+                }
+                if ($key === 'mosque_address') {
+                    $request->user()->mosque()->update(['address' => $value]);
+                }
+                if ($key === 'city') {
+                    $request->user()->mosque()->update(['city' => $value]);
                 }
             }
+        }
+
+        $allSettings = Setting::getAllSettings($mosqueId);
+
+        // Refresh settings from DB state to ensure consistency in response
+        if ($request->user() && $request->user()->mosque) {
+            // Refresh is not strictly needed if we just updated, but good practice
+            $request->user()->mosque->refresh();
+            $allSettings['mosque_name'] = $request->user()->mosque->name;
+            $allSettings['mosque_address'] = $request->user()->mosque->address;
+            $allSettings['city'] = $request->user()->mosque->city;
+            $allSettings['mosque_logo'] = $request->user()->mosque->logo_url;
         }
 
         return response()->json([
             'message' => 'Settings berhasil diperbarui',
             'debug' => $debug,
-            'settings' => Setting::getAllSettings(),
+            'settings' => $allSettings,
+        ]);
+    }
+
+    /**
+     * Upload mosque logo
+     */
+    public function uploadLogo(Request $request)
+    {
+        $request->validate([
+            'logo' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+        ]);
+
+        $user = $request->user();
+
+        if (!$user || !$user->mosque) {
+            return response()->json(['error' => 'Masjid tidak ditemukan'], 404);
+        }
+
+        $mosque = $user->mosque;
+
+        // Delete old logo if exists
+        if ($mosque->logo) {
+            Storage::disk('public')->delete($mosque->logo);
+        }
+
+        // Store new logo
+        $path = $request->file('logo')->store('logos', 'public');
+        $mosque->update(['logo' => $path]);
+
+        return response()->json([
+            'message' => 'Logo berhasil diupload',
+            'logo_url' => $mosque->logo_url,
+        ]);
+    }
+
+    /**
+     * Delete mosque logo
+     */
+    public function deleteLogo(Request $request)
+    {
+        $user = $request->user();
+
+        if (!$user || !$user->mosque) {
+            return response()->json(['error' => 'Masjid tidak ditemukan'], 404);
+        }
+
+        $mosque = $user->mosque;
+
+        if ($mosque->logo) {
+            Storage::disk('public')->delete($mosque->logo);
+            $mosque->update(['logo' => null]);
+        }
+
+        return response()->json([
+            'message' => 'Logo berhasil dihapus',
         ]);
     }
 }

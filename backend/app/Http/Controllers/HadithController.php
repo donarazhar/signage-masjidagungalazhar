@@ -3,21 +3,29 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
 use App\Models\Hadith;
+use App\Http\Traits\ResolvesMosque;
 
 class HadithController extends Controller
 {
+    use ResolvesMosque;
+
     public function index()
     {
         return Hadith::orderBy('created_at', 'desc')->get();
     }
 
-    public function active()
+    public function active(Request $request)
     {
         // Return all active hadiths for frontend rotation
-        $hadiths = Hadith::where('is_active', true)->orderBy('created_at', 'desc')->get();
-        return response()->json($hadiths);
+        $query = Hadith::where('is_active', true)->orderBy('created_at', 'desc');
+
+        $mosqueId = $this->resolveMosqueId($request);
+        if ($mosqueId) {
+            $query->where('mosque_id', $mosqueId);
+        }
+
+        return response()->json($query->get());
     }
 
     public function store(Request $request)
@@ -28,6 +36,7 @@ class HadithController extends Controller
             'is_active' => 'boolean'
         ]);
 
+        $validated['mosque_id'] = $request->user()->mosque_id;
         $hadith = Hadith::create($validated);
         return response()->json($hadith, 201);
     }

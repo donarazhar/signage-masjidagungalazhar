@@ -22,7 +22,19 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
+        'mosque_id',
     ];
+
+    public function mosque()
+    {
+        return $this->belongsTo(Mosque::class);
+    }
+
+    public function hasRole($role)
+    {
+        return $this->role === $role;
+    }
 
     /**
      * The attributes that should be hidden for serialization.

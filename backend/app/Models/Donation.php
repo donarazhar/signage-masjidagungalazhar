@@ -18,7 +18,13 @@ class Donation extends Model
         'qris_image',
         'is_active',
         'priority',
+        'mosque_id',
     ];
+
+    public function mosque()
+    {
+        return $this->belongsTo(Mosque::class);
+    }
 
     protected $casts = [
         'is_active' => 'boolean',

@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Financial;
+use App\Http\Traits\ResolvesMosque;
 use Illuminate\Http\Request;
 
 class FinancialController extends Controller
 {
+    use ResolvesMosque;
+
     /**
      * List all financial records
      */
@@ -14,6 +17,11 @@ class FinancialController extends Controller
     {
         $query = Financial::with('recorder:id,name')
             ->orderBy('record_date', 'desc');
+
+        $mosqueId = $this->resolveMosqueId($request);
+        if ($mosqueId) {
+            $query->where('mosque_id', $mosqueId);
+        }
 
         if ($request->has('from') && $request->has('to')) {
             $query->whereBetween('record_date', [$request->from, $request->to]);
@@ -25,12 +33,14 @@ class FinancialController extends Controller
     /**
      * Get financial summary for display
      */
-    public function summary()
+    public function summary(Request $request)
     {
+        $mosqueId = $this->resolveMosqueId($request);
+
         return response()->json([
-            'saldo_kas' => Financial::getTotalBalance(),
-            'weekly_data' => Financial::getWeeklySummary(),
-            'last_updated' => Financial::latest('record_date')->first()?->record_date,
+            'saldo_kas' => Financial::getTotalBalance($mosqueId),
+            'weekly_data' => Financial::getWeeklySummary($mosqueId),
+            'last_updated' => Financial::where('mosque_id', $mosqueId)->latest('record_date')->first()?->record_date,
         ]);
     }
 
@@ -52,6 +62,7 @@ class FinancialController extends Controller
             'description' => $request->description,
             'type' => $request->input('type', 'infaq'),
             'recorded_by' => $request->user()->id,
+            'mosque_id' => $request->user()->mosque_id,
         ]);
 
         return response()->json([

@@ -9,18 +9,13 @@ import {
   Monitor,
   Calendar,
   CreditCard,
-  Quote
+  Quote,
+  Building2,
+  Users,
+  Activity,
+  Database,
+  Shield,
 } from 'lucide-react'
-
-const menuItems = [
-  { path: '/admin', icon: LayoutDashboard, label: 'Dashboard', end: true },
-  { path: '/admin/prayer-settings', icon: Clock, label: 'Jadwal Shalat' },
-  { path: '/admin/contents', icon: Image, label: 'Kelola Konten' },
-  { path: '/admin/events', icon: Calendar, label: 'Agenda Kegiatan' },
-  { path: '/admin/running-texts', icon: Type, label: 'Running Text' },
-  { path: '/admin/hadiths', icon: Quote, label: 'Hadits / Mutiara' },
-  { path: '/admin/donations', icon: CreditCard, label: 'Donasi' },
-]
 
 export default function AdminLayout() {
   const { user, logout } = useAuth()
@@ -31,16 +26,68 @@ export default function AdminLayout() {
     navigate('/admin/login')
   }
 
+  const getMenuItems = () => {
+    if (user?.role === 'superadmin') {
+        return [
+            { path: '/admin', icon: LayoutDashboard, label: 'Dashboard', end: true },
+            { path: '/admin/mosques', icon: Building2, label: 'Data Masjid' },
+            { path: '/admin/users', icon: Users, label: 'Pengguna' },
+            { path: '/admin/activity-log', icon: Activity, label: 'Activity Log' },
+            { path: '/admin/backups', icon: Database, label: 'Backup Data' },
+        ];
+    }
+
+    // Default: Admin Masjid
+    return [
+        { path: '/admin', icon: LayoutDashboard, label: 'Dashboard', end: true },
+        { path: '/admin/prayer-settings', icon: Clock, label: 'Jadwal Shalat' },
+        { path: '/admin/contents', icon: Image, label: 'Kelola Konten' },
+        { path: '/admin/events', icon: Calendar, label: 'Agenda Kegiatan' },
+        { path: '/admin/running-texts', icon: Type, label: 'Running Text' },
+        { path: '/admin/hadiths', icon: Quote, label: 'Hadits / Mutiara' },
+        { path: '/admin/donations', icon: CreditCard, label: 'Donasi' },
+    ];
+  }
+
+  const menuItems = getMenuItems();
+
   return (
     <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--slate-50)' }}>
       {/* Sidebar */}
       <aside className="admin-sidebar">
         {/* Logo */}
         <div className="logo-area">
-          <img src="/logo-alazhar.png" alt="Logo" />
+          {user?.role === 'superadmin' ? (
+            <div style={{
+              width: '40px',
+              height: '40px',
+              borderRadius: '8px',
+              background: 'var(--primary-100)',
+              color: 'var(--primary-600)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              <Shield size={24} />
+            </div>
+          ) : (
+            <img 
+              src={user?.mosque?.logo_url || "/logo-alazhar.png"} 
+              alt="Logo" 
+              style={{ width: '40px', height: '40px', objectFit: 'contain' }}
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.src = "/logo-alazhar.png";
+              }}
+            />
+          )}
           <div>
-            <div className="title">Masjid Al Azhar</div>
-            <div className="subtitle">Panel Admin</div>
+            <div className="title">
+              {user?.role === 'superadmin' ? 'Super Admin' : (user?.mosque?.name || 'Masjid Al Azhar')}
+            </div>
+            <div className="subtitle">
+                {user?.role === 'superadmin' ? 'Panel Kontrol' : 'Panel Admin'}
+            </div>
           </div>
         </div>
 
@@ -62,16 +109,18 @@ export default function AdminLayout() {
         {/* Footer */}
         <div style={{ padding: '1rem', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
           {/* Display Preview */}
-          <a
-            href="/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="nav-item"
-            style={{ marginBottom: '0.5rem' }}
-          >
-            <Monitor size={20} />
-            Lihat Display
-          </a>
+          {user?.role !== 'superadmin' && (
+            <a
+              href={user?.mosque?.slug ? `/${user.mosque.slug}` : `/?mosque_id=${user?.mosque_id}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="nav-item"
+              style={{ marginBottom: '0.5rem' }}
+            >
+              <Monitor size={20} />
+              Lihat Display
+            </a>
+          )}
 
           {/* User Info */}
           <div style={{ 

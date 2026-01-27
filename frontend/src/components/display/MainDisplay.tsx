@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { displayService } from '../../services/displayService'
 import ContentCarousel from './ContentCarousel'
@@ -54,15 +55,24 @@ function getNextPrayer(prayerTimes: PrayerTimes): { key: string; name: string; t
 }
 
 export default function MainDisplay() {
+  const { mosqueSlug } = useParams<{ mosqueSlug?: string }>()
   const [displayMode, setDisplayMode] = useState<DisplayMode>('normal')
   const [currentPrayer, setCurrentPrayer] = useState<PrayerName | null>(null)
   const [currentTime, setCurrentTime] = useState(new Date())
 
-  const { data: settings } = useQuery({ queryKey: ['settings'], queryFn: displayService.getSettings })
-  const { data: prayerTimes } = useQuery({ queryKey: ['prayerTimes'], queryFn: displayService.getPrayerTimes, refetchInterval: 1000 * 60 * 30 })
-  const { data: contents } = useQuery({ queryKey: ['activeContents'], queryFn: displayService.getActiveContents, refetchInterval: 1000 * 60 * 5 })
-  const { data: runningTexts } = useQuery({ queryKey: ['activeRunningTexts'], queryFn: displayService.getActiveRunningTexts, refetchInterval: 1000 * 60 * 5 })
-  const { data: events } = useQuery({ queryKey: ['upcomingEvents'], queryFn: displayService.getUpcomingEvents, refetchInterval: 1000 * 60 * 15 })
+  // Get mosque identifier from URL path or query params for cache keys
+  const mosqueKey = mosqueSlug 
+    || new URLSearchParams(window.location.search).get('mosque_id') 
+    || new URLSearchParams(window.location.search).get('m') 
+    || 'default'
+
+  const { data: settings, isLoading: isSettingsLoading } = useQuery({ queryKey: ['settings', mosqueKey], queryFn: () => displayService.getSettings(mosqueSlug) })
+  const { data: prayerTimes } = useQuery({ queryKey: ['prayerTimes', mosqueKey], queryFn: () => displayService.getPrayerTimes(mosqueSlug), refetchInterval: 1000 * 60 * 30 })
+  const { data: contents } = useQuery({ queryKey: ['activeContents', mosqueKey], queryFn: () => displayService.getActiveContents(mosqueSlug), refetchInterval: 1000 * 30 }) // Check every 30s
+  const { data: runningTexts } = useQuery({ queryKey: ['activeRunningTexts', mosqueKey], queryFn: () => displayService.getActiveRunningTexts(mosqueSlug), refetchInterval: 1000 * 30 }) // Check every 30s
+  const { data: events } = useQuery({ queryKey: ['upcomingEvents', mosqueKey], queryFn: () => displayService.getUpcomingEvents(mosqueSlug), refetchInterval: 1000 * 60 }) // Check every 1m
+
+
 
   useEffect(() => {
     const interval = setInterval(() => setCurrentTime(new Date()), 1000)
@@ -89,6 +99,26 @@ export default function MainDisplay() {
     const interval = setInterval(check, 10000)
     return () => clearInterval(interval)
   }, [prayerTimes])
+
+  // Show loading state while settings are being fetched to prevent "Masjid Agung Al Azhar" flash
+  if (isSettingsLoading) {
+    return (
+      <div style={{ 
+        height: '100vh', 
+        width: '100vw', 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center', 
+        background: '#0f172a', 
+        color: 'white',
+        flexDirection: 'column',
+        gap: '1rem'
+      }}>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
+        <div className="animate-pulse text-xl font-semibold">Memuat Display Masjid...</div>
+      </div>
+    )
+  }
 
   if (displayMode === 'iqamah' && currentPrayer && prayerTimes) {
     const dur = prayerTimes.iqamah_duration[currentPrayer as keyof typeof prayerTimes.iqamah_duration] || 10
@@ -131,11 +161,19 @@ export default function MainDisplay() {
     <div className="display-container">
       {/* Header */}
       <header className="header-bar">
-        <div className="logo-section">
-          <img src="/logo-alazhar.png" alt="Logo YPI Al Azhar" />
+        <div className="logo-section" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <img 
+            src={settings?.mosque_logo || '/logo-alazhar.png'} 
+            alt="Logo Masjid" 
+            style={{ height: '80px', width: 'auto', objectFit: 'contain' }}
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.src = '/logo-alazhar.png';
+            }}
+          />
           <div className="mosque-info">
-            <h1>{mosqueName}</h1>
-            <p>{mosqueAddress}</p>
+            <h1 style={{ margin: 0, fontSize: '1.8rem', fontWeight: 700, lineHeight: 1.2 }}>{mosqueName}</h1>
+            <p style={{ margin: 0, fontSize: '1rem', opacity: 0.9 }}>{mosqueAddress}</p>
           </div>
         </div>
         
