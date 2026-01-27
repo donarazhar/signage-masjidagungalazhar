@@ -38,7 +38,7 @@ function App() {
   return (
     <Routes>
       {/* Display Mode */}
-      <Route path="/" element={<MainDisplay />} />
+      <Route path="/" element={<Navigate to="/admin/login" replace />} />
       <Route path="/display" element={<MainDisplay />} />
       <Route path="/display/:mosqueSlug" element={<MainDisplay />} />
 
