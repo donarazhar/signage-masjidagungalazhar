@@ -608,7 +608,7 @@ export default function MainDisplay() {
 
         {/* Events Sidebar */}
         <aside className="right-sidebar">
-          <EventsPanel events={events || []} />
+          <EventsPanel events={events || []} mosqueName={mosqueName} />
         </aside>
       </main>
 

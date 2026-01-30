@@ -4,12 +4,16 @@ import type { Event } from "../../types";
 
 interface EventsPanelProps {
   events: Event[];
+  mosqueName?: string;
 }
 
 const ITEMS_PER_PAGE = 3;
 const ROTATION_INTERVAL = 15000; // 15 seconds
 
-export default function EventsPanel({ events }: EventsPanelProps) {
+export default function EventsPanel({
+  events,
+  mosqueName = "Masjid Agung Al Azhar",
+}: EventsPanelProps) {
   const [currentPage, setCurrentPage] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
 
@@ -106,7 +110,7 @@ export default function EventsPanel({ events }: EventsPanelProps) {
             Agenda Kegiatan
           </h3>
           <p style={{ fontSize: "0.75rem", color: "var(--slate-500)" }}>
-            Masjid Agung Al Azhar
+            {mosqueName}
           </p>
         </div>
         {/* Page indicator */}
