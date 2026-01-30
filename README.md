@@ -1,135 +1,172 @@
 # Digital Signage Masjid Agung Al Azhar
 
-Aplikasi Digital Signage untuk Masjid Agung Al Azhar berbasis web dengan fitur:
+Aplikasi **Digital Signage & Manajemen Informasi Masjid** modern berbasis web yang dirancang untuk menampilkan informasi jadwal shalat, agenda kegiatan, laporan keuangan, dan konten dakwah secara real-time di layar TV/Monitor masjid.
+
+Sistem ini mendukung **Multi-Masjid** (satu sistem untuk banyak masjid) dengan panel admin yang terpusat dan role management yang aman.
+
+---
 
 ## ✨ Fitur Utama
 
-### Display Mode (untuk TV/Signage)
+### 🖥️ Display Mode (Tampilan TV)
 
-- 🕌 Jadwal shalat 5 waktu + Syuruq (API Aladhan)
-- ⏱️ Countdown sebelum waktu shalat
-- 🔔 Mode Iqamah dengan countdown
-- 🙏 Mode "Shalat Berlangsung" (layar gelap)
-- 🖼️ Carousel poster/video dengan auto-play
-- 📢 Running text ticker
-- 🕐 Jam digital real-time
-- 📅 Tanggal Masehi + Hijriyah
+Interface visual yang menawan untuk jamaah:
 
-### Admin Panel
+- **Jadwal Shalat Otomatis**: Terintegrasi dengan API Aladhan, akurat sesuai lokasi koordinat masjid.
+- **Smart Countdown**: Hitung mundur menuju waktu Adzan dan Iqamah.
+- **Mode Shalat**: Layar otomatis gelap/hening saat waktu shalat tiba agar tidak mengganggu kekhusyukan.
+- **Konten Visual Menarik**: Carousel gambar dan video (YouTube/Upload) untuk pengumuman atau poster dakwah.
+- **Running Text**: Informasi berjalan untuk berita singkat (Normal/Urgent/Berita Duka).
+- **Agenda Kegiatan**: Menampilkan jadwal kajian atau acara mendatang (limit deskripsi otomatis agar rapi).
+- **Informasi Keuangan**: Menampilkan saldo kas, QRIS, dan Nomor Rekening Donasi.
+- **Hadits Harian**: Penampilan kutipan hadits atau kata mutiara secara bergantian.
+- **Layout Adaptif**: Mendukung berbagai ukuran layar.
 
-- 🔐 Login dengan Laravel Sanctum
-- 📊 Dashboard statistik
-- ⚙️ Pengaturan lokasi & jadwal shalat
-- 🖼️ Manajemen konten (upload poster/video)
-- 📝 Manajemen running text
-- 💰 Manajemen keuangan/infaq
+### ⚙️ Admin Panel (Dashboard)
 
-## 🛠️ Tech Stack
+Pusat kontrol berbasis web untuk pengurus masjid:
 
-- **Backend**: Laravel 11 + MySQL + Sanctum
-- **Frontend**: React + TypeScript + Vite + TailwindCSS
-- **API**: Aladhan.com (Prayer Times)
+- **Dashboard Statistik**: Ringkasan konten, petugas, dan status perangkat.
+- **Manajemen Konten**: Upload poster, video, dan atur durasi tayang slide.
+- **Pengaturan Shalat**: Koreksi waktu shalat per-menit dan durasi jeda Iqamah.
+- **Agenda & Running Text**: Input data kegiatan dan teks berjalan dengan mudah.
+- **Laporan Keuangan**: Update laporan pemasukan/pengeluaran mingguan/bulanan.
+- **Personalisasi**: Ganti logo masjid, nama, dan alamat visual.
+- **Security**: Login aman dengan enkripsi password.
 
-## 🚀 Quick Start
+### 🛡️ Fitur Super Admin & Keamanan
 
-### Prerequisites
+- **Multi-Masjid Management**: Kelola banyak masjid dalam satu instalasi.
+- **Activity Log**: Rekam jejak aktivitas admin (Siapa melakukan apa dan kapan).
+- **Database Backup**: Fitur backup database manual & download file SQL langsung dari dashboard.
+- **User Management**: Tambah/Hapus/Edit akun admin masjid.
+
+---
+
+## 🛠️ Teknologi
+
+Aplikasi ini dibangun menggunakan teknologi modern untuk performa tinggi dan kemudahan pengembangan:
+
+**Backend (API Server)**
+
+- **Framework**: Laravel 11
+- **Language**: PHP 8.2+
+- **Database**: MySQL 8.0+
+- **Auth**: Laravel Sanctum (Token based authentication)
+- **Features**: RESTful API, Eloquent ORM, Migration, Seeder
+
+**Frontend (Client)**
+
+- **Framework**: React 18
+- **Build Tool**: Vite
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS + Framer Motion (Animasi)
+- **State Management**: React Query (TanStack Query)
+- **Icons**: Lucide React
+- **HTTP Client**: Axios
+
+---
+
+## 🚀 Panduan Instalasi & Deployment
+
+### Persyaratan Minimum
 
 - PHP 8.2+
 - Composer
 - Node.js 18+
 - MySQL 8.0+
 
-### 1. Clone Repository
+### 1. Instalasi Backend (Server)
 
 ```bash
+# Clone repository
 git clone https://github.com/donarazhar/signage-masjidagungalazhar.git
-cd signage-masjidagungalazhar
-```
+cd signage-masjidagungalazhar/backend
 
-### 2. Setup Database
-
-```sql
-CREATE DATABASE signage_masjid;
-```
-
-### 3. Setup Backend
-
-```bash
-cd backend
+# Install dependencies
 composer install
+
+# Setup Environment
 cp .env.example .env
-# Edit .env with your database credentials
+# Edit .env sesuaikan database (DB_DATABASE, DB_USERNAME, DB_PASSWORD)
+
+# Generate Key & Migrate
 php artisan key:generate
 php artisan migrate --seed
 php artisan storage:link
+
+# Jalankan Server (Development)
 php artisan serve
 ```
 
-### 4. Setup Frontend
+### 2. Instalasi Frontend (Client)
 
 ```bash
-cd frontend
+cd ../frontend
+
+# Install dependencies
 npm install
-```
 
-**Konfigurasi API Endpoint:**
+# Setup Environment
+cp .env.example .env
+# Edit .env: VITE_API_URL=http://localhost:8000/api (atau URL domain anda)
 
-Buat file `.env` di folder `frontend/` dengan isi:
-
-```env
-# Untuk development lokal
-VITE_API_URL=http://localhost:8000/api
-
-# Untuk production (sesuaikan dengan domain server)
-# VITE_API_URL=https://your-domain.com/api
-```
-
-> ⚠️ **Penting:** Jika API URL tidak dikonfigurasi, frontend akan menggunakan `http://localhost:8000/api` sebagai default.
-
-Jalankan development server:
-
-```bash
+# Jalankan (Development)
 npm run dev
 ```
 
-**Build untuk Production:**
+### 3. Deployment ke Production (Cpanel/VPS)
 
-```bash
-npm run build
-# Hasil build ada di folder dist/
-# Upload isi folder dist/ ke server hosting
-```
+**Backend:**
 
-### 5. Open in Browser
+1. Upload isi folder `backend` ke server.
+2. Arahkan domain/subdomain ke folder `backend/public`.
+3. Pastikan folder `storage` dan `bootstrap/cache` memiliki permission write (775).
+4. Import database atau jalankan migration di server.
 
-- Display Mode: http://localhost:5173/
-- Admin Panel: http://localhost:5173/admin
+**Frontend:**
 
-### Default Admin Login
+1. Pastikan `VITE_API_URL` di `.env` frontend sudah mengarah ke domain backend production.
+2. Build frontend:
+   ```bash
+   npm run build
+   ```
+3. Upload isi folder `frontend/dist` ke hosting (root public_html atau subfolder).
+4. **PENTING**: File `.htaccess` di dalam folder public sudah menyertakan konfigurasi untuk SPA Routing (React Router). Pastikan file ini ikut terupload.
 
-- Email: `admin@masjid.local`
-- Password: `password`
+---
 
-## 📁 Project Structure
+## 📁 Struktur Project
 
 ```
 signage-masjidagungalazhar/
-├── backend/              # Laravel 11 Backend
-│   ├── app/
-│   ├── database/
-│   └── routes/
-└── frontend/             # React Frontend
+├── backend/                  # Laravel API Source Code
+│   ├── app/Http/Controllers  # Logic Handler (API)
+│   ├── database/migrations   # Skema Database
+│   └── routes/api.php        # Definisi Route API
+│
+└── frontend/                 # React UI Source Code
+    ├── public/               # Static assets & .htaccess
     ├── src/
     │   ├── components/
-    │   ├── hooks/
-    │   └── services/
-    └── public/
+    │   │   ├── admin/        # Komponen Dashboard Admin
+    │   │   └── display/      # Komponen Tampilan TV
+    │   ├── services/         # Konfigurasi API (Axios)
+    │   └── types/            # Definisi TypeScript
+    └── dist/                 # Hasil build production
 ```
 
-## 📄 License
+## 🔐 Akun Default
 
-MIT License
+- **Email**: `admin@masjid.local`
+- **Password**: `password`
+
+---
 
 ## 👤 Author
 
-YPI Al Azhar
+**YPI Al Azhar** - Dikembangkan untuk kebutuhan syiar dan informasi Masjid Agung Al Azhar dan cabangnya.
+
+---
+
+**License**: MIT
