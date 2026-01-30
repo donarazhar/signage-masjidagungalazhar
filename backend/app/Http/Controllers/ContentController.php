@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Content;
+use App\Models\ActivityLog;
 use App\Http\Traits\ResolvesMosque;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -111,6 +112,9 @@ class ContentController extends Controller
             ]);
         }
 
+        // Log the activity
+        ActivityLog::logCreate($content, "Menambahkan konten: {$content->title}");
+
         return response()->json([
             'message' => 'Konten berhasil ditambahkan',
             'content' => $content->load('uploader:id,name'),
@@ -160,7 +164,11 @@ class ContentController extends Controller
             }
         }
 
+        $oldValues = $content->toArray();
         $content->update($data);
+
+        // Log the activity
+        ActivityLog::logUpdate($content, $oldValues, "Memperbarui konten: {$content->title}");
 
         return response()->json([
             'message' => 'Konten berhasil diperbarui',
@@ -173,6 +181,9 @@ class ContentController extends Controller
      */
     public function destroy(Content $content)
     {
+        // Log before delete
+        ActivityLog::logDelete($content, "Menghapus konten: {$content->title}");
+
         // Delete file from storage if it exists
         if ($content->file_path) {
             Storage::disk('public')->delete($content->file_path);
@@ -190,7 +201,12 @@ class ContentController extends Controller
      */
     public function toggle(Content $content)
     {
+        $oldStatus = $content->is_enabled;
         $content->update(['is_enabled' => !$content->is_enabled]);
+
+        // Log the toggle action
+        $action = $content->is_enabled ? 'mengaktifkan' : 'menonaktifkan';
+        ActivityLog::log('update', "Mengubah status konten: {$content->title} ({$action})", Content::class, $content->id, ['is_enabled' => $oldStatus], ['is_enabled' => $content->is_enabled]);
 
         return response()->json([
             'message' => $content->is_enabled ? 'Konten diaktifkan' : 'Konten dinonaktifkan',

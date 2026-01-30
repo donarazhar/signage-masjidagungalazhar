@@ -15,7 +15,7 @@ class SuperAdminSeeder extends Seeder
         // 1. Create Super Admin
         \App\Models\User::create([
             'name' => 'Super Admin',
-            'email' => 'superadmin@example.com',
+            'email' => 'superadmin@demo.com',
             'password' => bcrypt('password'),
             'role' => 'superadmin',
             'mosque_id' => null,
@@ -40,7 +40,7 @@ class SuperAdminSeeder extends Seeder
             // Create Admin for the Mosque
             \App\Models\User::create([
                 'name' => 'Admin ' . $mosqueName,
-                'email' => 'admin.masjid' . ($index + 1) . '@example.com',
+                'email' => 'masjid_' . ($index + 1) . '@demo.com',
                 'password' => bcrypt('password'),
                 'role' => 'admin_masjid',
                 'mosque_id' => $mosque->id,

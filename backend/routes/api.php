@@ -10,6 +10,8 @@ use App\Http\Controllers\DonationController;
 use App\Http\Controllers\PrayerTimeController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\HadithController;
+use App\Http\Controllers\ActivityLogController;
+use App\Http\Controllers\BackupController;
 
 use App\Http\Controllers\Api\MosqueController;
 use App\Http\Controllers\Api\UserController;
@@ -24,6 +26,7 @@ use App\Http\Controllers\Api\UserController;
 Route::get('/settings', [SettingController::class, 'index']);
 Route::get('/prayer-times', [PrayerTimeController::class, 'today']);
 Route::get('/prayer-times/month', [PrayerTimeController::class, 'month']);
+Route::get('/prayer-times/cities', [PrayerTimeController::class, 'cities']);
 Route::get('/contents/active', [ContentController::class, 'active']);
 Route::get('/running-texts/active', [RunningTextController::class, 'active']);
 Route::get('/donations/active', [DonationController::class, 'active']);
@@ -32,7 +35,12 @@ Route::get('/events/upcoming', [EventController::class, 'upcoming']);
 Route::get('/hadiths/active', [HadithController::class, 'active']);
 
 // Authentication
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login'])->name('login');
+
+// Handle unauthenticated API requests (return JSON instead of redirect)
+Route::get('/login', function () {
+    return response()->json(['message' => 'Unauthenticated'], 401);
+})->name('login.get');
 
 // Protected routes (Admin Panel)
 Route::middleware('auth:sanctum')->group(function () {
@@ -92,4 +100,16 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/hadiths/{hadith}', [HadithController::class, 'update']);
     Route::delete('/hadiths/{hadith}', [HadithController::class, 'destroy']);
     Route::put('/hadiths/{hadith}/toggle', [HadithController::class, 'toggle']);
+
+    // Activity Logs (Super Admin)
+    Route::get('/activity-logs', [ActivityLogController::class, 'index']);
+    Route::get('/activity-logs/action-types', [ActivityLogController::class, 'actionTypes']);
+    Route::get('/activity-logs/stats', [ActivityLogController::class, 'stats']);
+    Route::get('/activity-logs/export', [ActivityLogController::class, 'export']);
+
+    // Backups (Super Admin)
+    Route::get('/backups', [BackupController::class, 'index']);
+    Route::post('/backups', [BackupController::class, 'create']);
+    Route::get('/backups/{filename}/download', [BackupController::class, 'download']);
+    Route::delete('/backups/{filename}', [BackupController::class, 'destroy']);
 });

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Setting;
 use App\Models\Mosque;
+use App\Models\ActivityLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
@@ -117,6 +118,10 @@ class SettingController extends Controller
             }
         }
 
+        // Log the activity
+        $oldValue = Setting::getValue($key, null, $mosqueId);
+        ActivityLog::log('update', "Memperbarui pengaturan: {$key}", Setting::class, null, ['value' => $oldValue], ['value' => $request->value]);
+
         return response()->json([
             'message' => 'Setting berhasil diperbarui',
             'key' => $key,
@@ -212,6 +217,9 @@ class SettingController extends Controller
             $allSettings['mosque_logo'] = $request->user()->mosque->logo_url;
         }
 
+        // Log the activity
+        ActivityLog::log('update', "Memperbarui banyak pengaturan sekaligus", Setting::class, null, null, ['keys' => array_keys($debug['updates'])]);
+
         return response()->json([
             'message' => 'Settings berhasil diperbarui',
             'debug' => $debug,
@@ -245,6 +253,9 @@ class SettingController extends Controller
         $path = $request->file('logo')->store('logos', 'public');
         $mosque->update(['logo' => $path]);
 
+        // Log the activity
+        ActivityLog::log('update', "Mengupload logo masjid baru", Mosque::class, $mosque->id, null, ['logo' => $path]);
+
         return response()->json([
             'message' => 'Logo berhasil diupload',
             'logo_url' => $mosque->logo_url,
@@ -268,6 +279,9 @@ class SettingController extends Controller
             Storage::disk('public')->delete($mosque->logo);
             $mosque->update(['logo' => null]);
         }
+
+        // Log the activity
+        ActivityLog::log('delete', "Menghapus logo masjid", Mosque::class, $mosque->id, ['logo' => $mosque->logo], null);
 
         return response()->json([
             'message' => 'Logo berhasil dihapus',

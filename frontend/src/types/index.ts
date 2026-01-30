@@ -23,8 +23,10 @@ export interface Settings {
   latitude: number;
   longitude: number;
   city: string;
+  city_id?: string;
   calculation_method: number;
   iqamah_duration: IqamahDuration;
+  prayer_time_offset?: PrayerTimeOffset;
   prayer_duration: number;
   countdown_before: number;
   carousel_duration: number;
@@ -32,10 +34,21 @@ export interface Settings {
   show_hijri_date: boolean;
   theme: "dark" | "light" | "auto";
   mosque_logo?: string | null;
+  display_template?: string;
+  display_layout?: string;
 }
 
 export interface IqamahDuration {
   fajr: number;
+  dhuhr: number;
+  asr: number;
+  maghrib: number;
+  isha: number;
+}
+
+export interface PrayerTimeOffset {
+  fajr: number;
+  sunrise: number;
   dhuhr: number;
   asr: number;
   maghrib: number;
@@ -69,6 +82,13 @@ export interface PrayerTimes {
       month: { number: number; en: string; ar: string };
       year: string;
     };
+  };
+  lokasi?: string;
+  daerah?: string;
+  timezone?: {
+    code: string;
+    name: string;
+    offset: string;
   };
   iqamah_duration: IqamahDuration;
   prayer_duration: number;

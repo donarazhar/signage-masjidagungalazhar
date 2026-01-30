@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Models\ActivityLog;
 use App\Http\Traits\ResolvesMosque;
 use Illuminate\Http\Request;
 
@@ -63,6 +64,9 @@ class EventController extends Controller
             'mosque_id' => $request->user()->mosque_id,
         ]);
 
+        // Log the activity
+        ActivityLog::logCreate($event, "Menambahkan kegiatan: {$event->title}");
+
         return response()->json([
             'message' => 'Kegiatan berhasil ditambahkan',
             'event' => $event->load('creator:id,name'),
@@ -83,6 +87,7 @@ class EventController extends Controller
             'is_enabled' => 'sometimes|boolean',
         ]);
 
+        $oldValues = $event->toArray();
         $event->update($request->only([
             'title',
             'event_date',
@@ -91,6 +96,9 @@ class EventController extends Controller
             'location',
             'is_enabled',
         ]));
+
+        // Log the activity
+        ActivityLog::logUpdate($event, $oldValues, "Memperbarui kegiatan: {$event->title}");
 
         return response()->json([
             'message' => 'Kegiatan berhasil diperbarui',
@@ -103,6 +111,9 @@ class EventController extends Controller
      */
     public function destroy(Event $event)
     {
+        // Log before delete
+        ActivityLog::logDelete($event, "Menghapus kegiatan: {$event->title}");
+
         $event->delete();
 
         return response()->json([
@@ -115,7 +126,12 @@ class EventController extends Controller
      */
     public function toggle(Event $event)
     {
+        $oldStatus = $event->is_enabled;
         $event->update(['is_enabled' => !$event->is_enabled]);
+
+        // Log the toggle action
+        $action = $event->is_enabled ? 'mengaktifkan' : 'menonaktifkan';
+        ActivityLog::log('update', "Mengubah status kegiatan ({$action})", Event::class, $event->id, ['is_enabled' => $oldStatus], ['is_enabled' => $event->is_enabled]);
 
         return response()->json([
             'message' => $event->is_enabled ? 'Kegiatan diaktifkan' : 'Kegiatan dinonaktifkan',

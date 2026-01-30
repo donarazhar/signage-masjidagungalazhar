@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\RunningText;
+use App\Models\ActivityLog;
 use App\Http\Traits\ResolvesMosque;
 use Illuminate\Http\Request;
 
@@ -66,6 +67,9 @@ class RunningTextController extends Controller
             'mosque_id' => $request->user()->mosque_id,
         ]);
 
+        // Log the activity
+        ActivityLog::logCreate($text, "Menambahkan running text: " . substr($text->content, 0, 50) . "...");
+
         return response()->json([
             'message' => 'Running text berhasil ditambahkan',
             'running_text' => $text->load('creator:id,name'),
@@ -88,6 +92,7 @@ class RunningTextController extends Controller
             'show_on_days.*' => 'integer|min:0|max:6',
         ]);
 
+        $oldValues = $runningText->toArray();
         $runningText->update($request->only([
             'content',
             'type',
@@ -97,6 +102,9 @@ class RunningTextController extends Controller
             'end_date',
             'show_on_days'
         ]));
+
+        // Log the activity
+        ActivityLog::logUpdate($runningText, $oldValues, "Memperbarui running text: " . substr($runningText->content, 0, 50) . "...");
 
         return response()->json([
             'message' => 'Running text berhasil diperbarui',
@@ -109,6 +117,9 @@ class RunningTextController extends Controller
      */
     public function destroy(RunningText $runningText)
     {
+        // Log before delete
+        ActivityLog::logDelete($runningText, "Menghapus running text: " . substr($runningText->content, 0, 50) . "...");
+
         $runningText->delete();
 
         return response()->json([
@@ -121,7 +132,12 @@ class RunningTextController extends Controller
      */
     public function toggle(RunningText $runningText)
     {
+        $oldStatus = $runningText->is_enabled;
         $runningText->update(['is_enabled' => !$runningText->is_enabled]);
+
+        // Log the toggle action
+        $action = $runningText->is_enabled ? 'mengaktifkan' : 'menonaktifkan';
+        ActivityLog::log('update', "Mengubah status running text ({$action})", RunningText::class, $runningText->id, ['is_enabled' => $oldStatus], ['is_enabled' => $runningText->is_enabled]);
 
         return response()->json([
             'message' => $runningText->is_enabled ? 'Running text diaktifkan' : 'Running text dinonaktifkan',
