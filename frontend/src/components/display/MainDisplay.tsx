@@ -524,7 +524,12 @@ export default function MainDisplay() {
           >
             <div
               className="clock-time"
-              style={{ color: template.colors.textPrimary }}
+              style={{
+                color: template.colors.textPrimary,
+                fontSize: "4.5rem", // Increased from default (likely 3rem or similar based on CSS class)
+                lineHeight: "1",
+                fontWeight: "700",
+              }}
             >
               {hours}
               <span style={{ color: template.colors.accent }}>:</span>
