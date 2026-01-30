@@ -6,6 +6,7 @@ import { Save, MapPin, Upload, Image, Trash2, Clock } from "lucide-react";
 import { toast } from "react-hot-toast";
 import api from "../../services/api";
 import type { Settings } from "../../types";
+import SearchableSelect from "../ui/SearchableSelect";
 
 interface City {
   id: string;
@@ -480,17 +481,12 @@ export default function PrayerSettings() {
           </h2>
           <div>
             <label className="form-label">Pilih Kota/Kabupaten</label>
-            <select
-              className="form-input"
+            <SearchableSelect
+              options={cities.map((c) => ({ id: c.id, label: c.lokasi }))}
               value={formData.city_id ?? settings?.city_id ?? "1301"}
-              onChange={(e) => handleChange("city_id", e.target.value)}
-            >
-              {cities.map((city) => (
-                <option key={city.id} value={city.id}>
-                  {city.lokasi}
-                </option>
-              ))}
-            </select>
+              onChange={(val) => handleChange("city_id", val)}
+              placeholder="Cari kota atau kabupaten..."
+            />
             <p className="text-sm text-[var(--text-muted)] mt-2">
               Data jadwal shalat diambil dari Kementerian Agama RI (Kemenag)
             </p>
