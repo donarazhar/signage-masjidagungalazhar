@@ -83,15 +83,27 @@ class ContentController extends Controller
             ]);
         } else {
             // Image upload
-            $request->validate([
-                'title' => 'required|string|max:255',
-                'file' => 'required|file|mimes:jpg,jpeg,png,webp,gif|max:10240', // 10MB max for images
-                'duration' => 'sometimes|integer|min:1',
-                'priority' => 'sometimes|integer',
-                'is_enabled' => 'sometimes|boolean',
-                'start_date' => 'sometimes|nullable|date',
-                'end_date' => 'sometimes|nullable|date|after_or_equal:start_date',
-            ]);
+            \Illuminate\Support\Facades\Log::info('Content Upload Request:', $request->all());
+            if ($request->hasFile('file')) {
+                \Illuminate\Support\Facades\Log::info('File present: ' . $request->file('file')->getClientOriginalName() . ' Size: ' . $request->file('file')->getSize());
+            } else {
+                \Illuminate\Support\Facades\Log::info('File NOT present in request');
+            }
+
+            try {
+                $request->validate([
+                    'title' => 'required|string|max:255',
+                    'file' => 'required|file|mimes:jpg,jpeg,png,webp,gif|max:10240', // 10MB max for images
+                    'duration' => 'sometimes|integer|min:1',
+                    'priority' => 'sometimes|integer',
+                    'is_enabled' => 'sometimes|boolean',
+                    'start_date' => 'sometimes|nullable|date',
+                    'end_date' => 'sometimes|nullable|date|after_or_equal:start_date',
+                ]);
+            } catch (\Illuminate\Validation\ValidationException $e) {
+                \Illuminate\Support\Facades\Log::error('Content Validation Failed:', $e->errors());
+                throw $e;
+            }
 
             $file = $request->file('file');
             $path = $file->store('contents', 'public');
