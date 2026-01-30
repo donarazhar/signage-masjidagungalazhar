@@ -100,6 +100,11 @@ export default function PrayerSettings() {
         type: "string",
       },
       {
+        key: "city",
+        value: formData.city ?? settings?.city ?? "",
+        type: "string",
+      },
+      {
         key: "prayer_duration",
         value: formData.prayer_duration ?? settings?.prayer_duration ?? 15,
         type: "number",
