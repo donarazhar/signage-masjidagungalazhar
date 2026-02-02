@@ -9,6 +9,7 @@ import PrayerInProgressMode from "./PrayerInProgressMode";
 import EventsPanel from "./EventsPanel";
 import DonationWidget from "./DonationWidget";
 import HadithWidget from "./HadithWidget";
+import FullscreenSplash from "./FullscreenSplash";
 import { getTemplate } from "../../styles/displayTemplates";
 import { LayoutCinematic, LayoutFocus, LayoutDashboard } from "./layouts";
 import type { DisplayMode, PrayerName, PrayerTimes } from "../../types";
@@ -87,6 +88,7 @@ export default function MainDisplay() {
   const [displayMode, setDisplayMode] = useState<DisplayMode>("normal");
   const [currentPrayer, setCurrentPrayer] = useState<PrayerName | null>(null);
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [showSplash, setShowSplash] = useState(true); // Show fullscreen splash on load
 
   // Check if in preview mode (no data, just layout preview)
   const searchParams = new URLSearchParams(window.location.search);
@@ -178,6 +180,16 @@ export default function MainDisplay() {
     const interval = setInterval(check, 10000);
     return () => clearInterval(interval);
   }, [prayerTimes]);
+
+  // Show fullscreen splash screen for Smart TV users (skip in preview mode)
+  if (showSplash && !isPreviewMode) {
+    return (
+      <FullscreenSplash
+        mosqueName={settings?.mosque_name || "Signage Masjid"}
+        onEnterFullscreen={() => setShowSplash(false)}
+      />
+    );
+  }
 
   // Show loading state while settings are being fetched to prevent "Masjid Agung Al Azhar" flash
   if (isSettingsLoading) {
