@@ -57,6 +57,11 @@ export const displayLayouts: Record<string, DisplayLayout> = {
     name: 'TV',
     description: 'Carousel kiri, jadwal sholat kanan, gaya info TV',
   },
+  qris: {
+    id: 'qris',
+    name: 'QRIS Donasi',
+    description: 'Carousel + QR Code donasi besar, jadwal horizontal',
+  },
 };
 
 export const getLayout = (layoutId: string): DisplayLayout => {

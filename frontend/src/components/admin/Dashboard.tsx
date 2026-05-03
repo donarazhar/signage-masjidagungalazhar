@@ -1585,6 +1585,45 @@ export default function Dashboard() {
                             </div>
                           </>
                         )}
+                        {layout.id === "qris" && (
+                          <>
+                            <div
+                              style={{
+                                flex: 7,
+                                background: "rgba(255,255,255,0.05)",
+                              }}
+                            />
+                            <div
+                              style={{
+                                flex: 3,
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                gap: 2,
+                                padding: 2,
+                                background: "rgba(0,0,0,0.3)",
+                              }}
+                            >
+                              <div
+                                style={{
+                                  width: 14,
+                                  height: 14,
+                                  background: "white",
+                                  borderRadius: 2,
+                                }}
+                              />
+                              <div
+                                style={{
+                                  width: 10,
+                                  height: 2,
+                                  background: templateColors.accent,
+                                  borderRadius: 1,
+                                }}
+                              />
+                            </div>
+                          </>
+                        )}
                       </div>
                       <div
                         style={{
@@ -2062,6 +2101,113 @@ export default function Dashboard() {
                         />
                       </div>
                     ))}
+                  </div>
+                </>
+              )}
+              {currentLayout === "qris" && (
+                <>
+                  <div
+                    style={{
+                      flex: 7,
+                      background: "rgba(255,255,255,0.02)",
+                      borderRadius: 4,
+                      position: "relative",
+                    }}
+                  >
+                    {/* Date bar */}
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        height: 8,
+                        background: "rgba(0,0,0,0.4)",
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        padding: "0 4px",
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: 20,
+                          height: 4,
+                          background: "rgba(255,255,255,0.3)",
+                          borderRadius: 1,
+                        }}
+                      />
+                      <div
+                        style={{
+                          width: 16,
+                          height: 4,
+                          background:
+                            displayTemplates[currentTemplate]?.colors.accent,
+                          borderRadius: 1,
+                          opacity: 0.6,
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <div
+                    style={{
+                      flex: 3,
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 4,
+                      padding: 4,
+                      background:
+                        displayTemplates[currentTemplate]?.colors.cardBg,
+                      borderRadius: 4,
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    {/* Countdown */}
+                    <div
+                      style={{
+                        width: "100%",
+                        textAlign: "center",
+                        padding: "2px 0",
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: 16,
+                          height: 3,
+                          background: "rgba(255,255,255,0.2)",
+                          borderRadius: 1,
+                          margin: "0 auto 2px",
+                        }}
+                      />
+                      <div
+                        style={{
+                          width: 20,
+                          height: 5,
+                          background:
+                            displayTemplates[currentTemplate]?.colors.accent,
+                          borderRadius: 1,
+                          margin: "0 auto",
+                        }}
+                      />
+                    </div>
+                    {/* QR placeholder */}
+                    <div
+                      style={{
+                        width: 28,
+                        height: 28,
+                        background: "white",
+                        borderRadius: 3,
+                      }}
+                    />
+                    <div
+                      style={{
+                        width: 16,
+                        height: 3,
+                        background: "rgba(255,255,255,0.2)",
+                        borderRadius: 1,
+                      }}
+                    />
                   </div>
                 </>
               )}

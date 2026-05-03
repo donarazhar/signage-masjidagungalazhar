@@ -11,7 +11,7 @@ import DonationWidget from "./DonationWidget";
 import HadithWidget from "./HadithWidget";
 import FullscreenSplash from "./FullscreenSplash";
 import { getTemplate } from "../../styles/displayTemplates";
-import { LayoutCinematic, LayoutFocus, LayoutDashboard, LayoutFullscreen, LayoutTV } from "./layouts";
+import { LayoutCinematic, LayoutFocus, LayoutDashboard, LayoutFullscreen, LayoutTV, LayoutQRIS } from "./layouts";
 import type { DisplayMode, PrayerName, PrayerTimes } from "../../types";
 
 const PRAYER_DISPLAY: Array<{
@@ -367,6 +367,10 @@ export default function MainDisplay() {
 
   if (currentLayout === "tv") {
     return <LayoutTV {...layoutProps} />;
+  }
+
+  if (currentLayout === "qris") {
+    return <LayoutQRIS {...layoutProps} />;
   }
 
   // Default: Classic Layout
