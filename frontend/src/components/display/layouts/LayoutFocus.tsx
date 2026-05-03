@@ -55,11 +55,22 @@ export default function LayoutFocus({
       className="display-container layout-focus"
       style={{
         background: template.colors.bodyBg,
-        display: "flex",
-        flexDirection: "column",
         height: "100vh",
+        width: "100vw",
+        padding: "30px",
+        overflow: "hidden",
       }}
     >
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          height: "100%",
+          width: "100%",
+          borderRadius: "12px",
+          overflow: "hidden",
+        }}
+      >
       {/* Header */}
       <header
         style={{
@@ -285,6 +296,7 @@ export default function LayoutFocus({
           accentColor={template.colors.accent}
         />
       </footer>
+      </div>
     </div>
   );
 }

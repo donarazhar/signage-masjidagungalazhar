@@ -11,7 +11,7 @@ import DonationWidget from "./DonationWidget";
 import HadithWidget from "./HadithWidget";
 import FullscreenSplash from "./FullscreenSplash";
 import { getTemplate } from "../../styles/displayTemplates";
-import { LayoutCinematic, LayoutFocus, LayoutDashboard } from "./layouts";
+import { LayoutCinematic, LayoutFocus, LayoutDashboard, LayoutFullscreen, LayoutTV } from "./layouts";
 import type { DisplayMode, PrayerName, PrayerTimes } from "../../types";
 
 const PRAYER_DISPLAY: Array<{
@@ -361,6 +361,14 @@ export default function MainDisplay() {
     return <LayoutDashboard {...layoutProps} />;
   }
 
+  if (currentLayout === "fullscreen") {
+    return <LayoutFullscreen {...layoutProps} />;
+  }
+
+  if (currentLayout === "tv") {
+    return <LayoutTV {...layoutProps} />;
+  }
+
   // Default: Classic Layout
   return (
     <div
@@ -380,9 +388,14 @@ export default function MainDisplay() {
           "--template-prayer-bar-text": template.colors.prayerBarText,
           "--template-prayer-bar-active": template.colors.prayerBarActive,
           background: template.colors.bodyBg,
+          height: "100vh",
+          width: "100vw",
+          padding: "30px",
+          overflow: "hidden",
         } as React.CSSProperties
       }
     >
+      <div style={{ display: "flex", flexDirection: "column", height: "100%", width: "100%", borderRadius: "12px", overflow: "hidden" }}>
       {/* Header */}
       <header
         className="header-bar"
@@ -670,6 +683,7 @@ export default function MainDisplay() {
           accentColor={template.colors.accent}
         />
       </footer>
+      </div>
     </div>
   );
 }

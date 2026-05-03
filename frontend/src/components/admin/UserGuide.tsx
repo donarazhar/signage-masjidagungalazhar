@@ -116,6 +116,10 @@ export default function UserGuide({ isOpen, onClose }: UserGuideProps) {
               <li>
                 <strong>Dashboard</strong> - Layout grid untuk informasi lengkap
               </li>
+              <li>
+                <strong>Fullscreen</strong> - Konten fullscreen dengan header
+                overlay transparan
+              </li>
             </ul>
           </div>
         </div>

@@ -465,7 +465,7 @@ export default function Dashboard() {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(4, 1fr)",
+              gridTemplateColumns: "repeat(5, 1fr)",
               gap: "0.75rem",
             }}
           >
@@ -868,6 +868,104 @@ export default function Dashboard() {
                         ))}
                       </div>
                     </div>
+                  </div>
+                ),
+                fullscreen: (
+                  <div
+                    style={{
+                      position: "relative",
+                      height: 48,
+                      background: `linear-gradient(45deg, ${bodyBg}, #333)`,
+                      borderRadius: 4,
+                      overflow: "hidden",
+                      border: `1px solid ${accent}30`,
+                    }}
+                  >
+                    {/* Full screen background */}
+                    <div
+                      style={{
+                        position: "absolute",
+                        inset: 0,
+                        background:
+                          "linear-gradient(180deg, rgba(0,0,0,0.4) 0%, transparent 40%, transparent 60%, rgba(0,0,0,0.5) 100%)",
+                      }}
+                    />
+                    {/* Top bar: clock | name | date */}
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: 2,
+                        left: 2,
+                        right: 2,
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: 10,
+                          height: 5,
+                          background: "rgba(0,0,0,0.5)",
+                          borderRadius: 1,
+                        }}
+                      />
+                      <div
+                        style={{
+                          width: 20,
+                          height: 5,
+                          background: "rgba(0,0,0,0.5)",
+                          borderRadius: 1,
+                        }}
+                      />
+                      <div
+                        style={{
+                          width: 10,
+                          height: 5,
+                          background: "rgba(0,0,0,0.5)",
+                          borderRadius: 1,
+                        }}
+                      />
+                    </div>
+                    {/* Bottom prayer bar */}
+                    <div
+                      style={{
+                        position: "absolute",
+                        bottom: 6,
+                        left: 0,
+                        right: 0,
+                        height: 8,
+                        background: "rgba(0,0,0,0.5)",
+                        display: "flex",
+                        gap: 1,
+                        padding: "0 2px",
+                        alignItems: "center",
+                      }}
+                    >
+                      {[1, 2, 3, 4, 5].map((i) => (
+                        <div
+                          key={i}
+                          style={{
+                            flex: 1,
+                            height: 4,
+                            background:
+                              i === 3 ? accent : "rgba(255,255,255,0.2)",
+                            borderRadius: 1,
+                          }}
+                        />
+                      ))}
+                    </div>
+                    {/* Running text */}
+                    <div
+                      style={{
+                        position: "absolute",
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        height: 5,
+                        background: headerBg,
+                      }}
+                    />
                   </div>
                 ),
               };
@@ -1419,6 +1517,74 @@ export default function Dashboard() {
                             />
                           </>
                         )}
+                        {layout.id === "fullscreen" && (
+                          <div
+                            style={{
+                              flex: 1,
+                              background: "rgba(255,255,255,0.05)",
+                              position: "relative",
+                            }}
+                          >
+                            <div
+                              style={{
+                                position: "absolute",
+                                top: 1,
+                                left: 1,
+                                right: 1,
+                                height: 3,
+                                display: "flex",
+                                justifyContent: "space-between",
+                              }}
+                            >
+                              <div style={{ width: 5, background: "rgba(0,0,0,0.4)", borderRadius: 1 }} />
+                              <div style={{ width: 10, background: "rgba(0,0,0,0.4)", borderRadius: 1 }} />
+                              <div style={{ width: 5, background: "rgba(0,0,0,0.4)", borderRadius: 1 }} />
+                            </div>
+                            <div
+                              style={{
+                                position: "absolute",
+                                bottom: 0,
+                                left: 0,
+                                right: 0,
+                                height: 4,
+                                background: "rgba(0,0,0,0.4)",
+                              }}
+                            />
+                          </div>
+                        )}
+                        {layout.id === "tv" && (
+                          <>
+                            <div
+                              style={{
+                                flex: 7,
+                                background: "rgba(255,255,255,0.05)",
+                              }}
+                            />
+                            <div
+                              style={{
+                                flex: 3,
+                                display: "flex",
+                                flexDirection: "column",
+                                gap: 1,
+                                padding: 1,
+                              }}
+                            >
+                              {[0, 1, 2, 3, 4, 5].map((i) => (
+                                <div
+                                  key={i}
+                                  style={{
+                                    flex: 1,
+                                    background:
+                                      i === 2
+                                        ? templateColors.accent
+                                        : `${templateColors.accent}30`,
+                                    borderRadius: 1,
+                                  }}
+                                />
+                              ))}
+                            </div>
+                          </>
+                        )}
                       </div>
                       <div
                         style={{
@@ -1719,6 +1885,182 @@ export default function Dashboard() {
                           borderRadius: 2,
                         }}
                       />
+                    ))}
+                  </div>
+                </>
+              )}
+              {currentLayout === "fullscreen" && (
+                <div
+                  style={{
+                    flex: 1,
+                    position: "relative",
+                    background: "rgba(255,255,255,0.02)",
+                    borderRadius: 4,
+                  }}
+                >
+                  {/* Top overlay bar */}
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: 3,
+                      left: 4,
+                      right: 4,
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 20,
+                        height: 8,
+                        background: "rgba(0,0,0,0.5)",
+                        borderRadius: 2,
+                      }}
+                    />
+                    <div
+                      style={{
+                        width: 40,
+                        height: 8,
+                        background: "rgba(0,0,0,0.5)",
+                        borderRadius: 2,
+                      }}
+                    />
+                    <div
+                      style={{
+                        width: 20,
+                        height: 8,
+                        background: "rgba(0,0,0,0.5)",
+                        borderRadius: 2,
+                      }}
+                    />
+                  </div>
+                  {/* Bottom prayer bar */}
+                  <div
+                    style={{
+                      position: "absolute",
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      height: 14,
+                      background: "rgba(0,0,0,0.5)",
+                      display: "flex",
+                      gap: 2,
+                      padding: "2px 3px",
+                      alignItems: "center",
+                    }}
+                  >
+                    {[0, 1, 2, 3, 4].map((i) => (
+                      <div
+                        key={i}
+                        style={{
+                          flex: 1,
+                          height: 6,
+                          background:
+                            i === 2
+                              ? displayTemplates[currentTemplate]?.colors.accent
+                              : "rgba(255,255,255,0.15)",
+                          borderRadius: 2,
+                        }}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
+              {currentLayout === "tv" && (
+                <>
+                  <div
+                    style={{
+                      flex: 7,
+                      background: "rgba(255,255,255,0.02)",
+                      borderRadius: 4,
+                      position: "relative",
+                    }}
+                  >
+                    {/* Date bar */}
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        height: 8,
+                        background: "rgba(0,0,0,0.4)",
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        padding: "0 4px",
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: 20,
+                          height: 4,
+                          background: "rgba(255,255,255,0.3)",
+                          borderRadius: 1,
+                        }}
+                      />
+                      <div
+                        style={{
+                          width: 16,
+                          height: 4,
+                          background:
+                            displayTemplates[currentTemplate]?.colors.accent,
+                          borderRadius: 1,
+                          opacity: 0.6,
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <div
+                    style={{
+                      flex: 3,
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 2,
+                      padding: 3,
+                      background:
+                        displayTemplates[currentTemplate]?.colors.cardBg,
+                      borderRadius: 4,
+                    }}
+                  >
+                    {[0, 1, 2, 3, 4, 5].map((i) => (
+                      <div
+                        key={i}
+                        style={{
+                          flex: 1,
+                          background:
+                            i === 2
+                              ? displayTemplates[currentTemplate]?.colors.accent
+                              : `${displayTemplates[currentTemplate]?.colors.accent}25`,
+                          borderRadius: 2,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          padding: "0 3px",
+                        }}
+                      >
+                        <div
+                          style={{
+                            width: 12,
+                            height: 3,
+                            background: "rgba(255,255,255,0.3)",
+                            borderRadius: 1,
+                          }}
+                        />
+                        <div
+                          style={{
+                            width: 10,
+                            height: 3,
+                            background:
+                              i === 2
+                                ? "rgba(255,255,255,0.5)"
+                                : displayTemplates[currentTemplate]?.colors
+                                    .accent,
+                            borderRadius: 1,
+                          }}
+                        />
+                      </div>
                     ))}
                   </div>
                 </>

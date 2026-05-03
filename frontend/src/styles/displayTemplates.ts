@@ -47,6 +47,16 @@ export const displayLayouts: Record<string, DisplayLayout> = {
     name: 'Dashboard',
     description: '50/50 split dengan prayer times besar',
   },
+  fullscreen: {
+    id: 'fullscreen',
+    name: 'Fullscreen',
+    description: 'Konten fullscreen, header overlay transparan',
+  },
+  tv: {
+    id: 'tv',
+    name: 'TV',
+    description: 'Carousel kiri, jadwal sholat kanan, gaya info TV',
+  },
 };
 
 export const getLayout = (layoutId: string): DisplayLayout => {
