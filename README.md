@@ -169,4 +169,15 @@ signage-masjidagungalazhar/
 
 ---
 
+## 📞 Kontak
+
+Untuk penggunaan aplikasi bisa menghubungi:
+
+| Channel | Detail |
+|---------|--------|
+| 📧 **Email** | [donarazhar@gmail.com](mailto:donarazhar@gmail.com) |
+| 💬 **WhatsApp** | [088214740182](https://wa.me/6288214740182) |
+
+---
+
 **License**: MIT

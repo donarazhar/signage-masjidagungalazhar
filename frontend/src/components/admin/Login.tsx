@@ -350,6 +350,79 @@ export default function Login() {
               </a>
             </div>
           </form>
+
+          {/* Contact Info */}
+          <div
+            style={{
+              marginTop: "24px",
+              padding: "16px",
+              background: "rgba(255,255,255,0.85)",
+              borderRadius: "16px",
+              border: `1px solid ${colors.primaryBlue}15`,
+              backdropFilter: "blur(4px)",
+            }}
+          >
+            <p
+              style={{
+                fontSize: "12px",
+                color: colors.gray,
+                marginBottom: "10px",
+                fontWeight: 600,
+              }}
+            >
+              Untuk penggunaan aplikasi hubungi:
+            </p>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "6px",
+              }}
+            >
+              <a
+                href="mailto:donarazhar@gmail.com"
+                style={{
+                  fontSize: "12px",
+                  color: colors.primaryBlue,
+                  textDecoration: "none",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  transition: "all 0.3s ease",
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.color = colors.primaryGreen;
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.color = colors.primaryBlue;
+                }}
+              >
+                📧 donarazhar@gmail.com
+              </a>
+              <a
+                href="https://wa.me/6288214740182"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  fontSize: "12px",
+                  color: colors.primaryBlue,
+                  textDecoration: "none",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  transition: "all 0.3s ease",
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.color = colors.primaryGreen;
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.color = colors.primaryBlue;
+                }}
+              >
+                💬 088214740182
+              </a>
+            </div>
+          </div>
         </div>
       </div>
 
