@@ -5,9 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Carbon\Carbon;
+use App\Models\Traits\ScopedToMosque;
 
 class RunningText extends Model
 {
+    use ScopedToMosque;
+
     protected $fillable = [
         'content',
         'type',

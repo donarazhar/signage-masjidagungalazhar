@@ -27,7 +27,7 @@ class PrayerTimeController extends Controller
         $cacheKey = "prayer_times_myquran_{$cityId}_" . $today->format('Y-m-d');
 
         $prayerTimes = Cache::remember($cacheKey, 3600, function () use ($cityId, $today) {
-            $response = Http::get("https://api.myquran.com/v2/sholat/jadwal/{$cityId}/{$today->year}/{$today->month}/{$today->day}");
+            $response = Http::withoutVerifying()->get("https://api.myquran.com/v2/sholat/jadwal/{$cityId}/{$today->year}/{$today->month}/{$today->day}");
 
             if ($response->successful()) {
                 $data = $response->json()['data'];
@@ -193,7 +193,7 @@ class PrayerTimeController extends Controller
         $cacheKey = 'myquran_cities';
 
         $cities = Cache::remember($cacheKey, 86400 * 7, function () {
-            $response = Http::get('https://api.myquran.com/v2/sholat/kota/semua');
+            $response = Http::withoutVerifying()->get('https://api.myquran.com/v2/sholat/kota/semua');
 
             if ($response->successful()) {
                 return $response->json()['data'];
@@ -218,7 +218,7 @@ class PrayerTimeController extends Controller
         $cacheKey = "prayer_times_month_myquran_{$cityId}_{$year}_{$month}";
 
         $monthlyTimes = Cache::remember($cacheKey, 86400, function () use ($cityId, $month, $year) {
-            $response = Http::get("https://api.myquran.com/v2/sholat/jadwal/{$cityId}/{$year}/{$month}");
+            $response = Http::withoutVerifying()->get("https://api.myquran.com/v2/sholat/jadwal/{$cityId}/{$year}/{$month}");
 
             if ($response->successful()) {
                 return $response->json()['data'];

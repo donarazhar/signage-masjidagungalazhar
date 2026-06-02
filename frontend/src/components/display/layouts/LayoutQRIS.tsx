@@ -103,9 +103,8 @@ export default function LayoutQRIS({
 
   return (
     <div
-      className="display-container layout-qris"
       style={{
-        background: "#0a0a0a",
+        background: template.colors.bodyBg,
         height: "100vh",
         width: "100vw",
         padding: "30px",
@@ -131,8 +130,7 @@ export default function LayoutQRIS({
             alignItems: "center",
             justifyContent: "space-between",
             padding: "0.6rem 1.5rem",
-            background:
-              "linear-gradient(180deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.85) 100%)",
+            background: template.colors.headerBg,
             borderBottom: `2px solid ${template.colors.accent}40`,
             flexShrink: 0,
             minHeight: "70px",
@@ -358,7 +356,7 @@ export default function LayoutQRIS({
               width: "320px",
               display: "flex",
               flexDirection: "column",
-              background: "rgba(0,0,0,0.9)",
+              background: template.colors.prayerBarBg,
               flexShrink: 0,
               overflow: "hidden",
             }}
@@ -506,7 +504,7 @@ export default function LayoutQRIS({
           style={{
             display: "flex",
             flexShrink: 0,
-            background: "rgba(0,0,0,0.9)",
+            background: template.colors.prayerBarBg,
             borderTop: `1px solid ${template.colors.accent}20`,
           }}
         >
@@ -568,8 +566,7 @@ export default function LayoutQRIS({
         <div
           style={{
             flexShrink: 0,
-            background: "rgba(0,0,0,0.85)",
-            backdropFilter: "blur(8px)",
+            background: template.colors.headerBg,
             padding: "0.5rem 0",
             borderTop: `1px solid ${template.colors.accent}30`,
             position: "relative",

@@ -33,17 +33,7 @@ interface LayoutTVProps {
   timezone?: string;
 }
 
-// Color palette for prayer rows - each gets a distinct vibrant color
-const PRAYER_ROW_COLORS: Record<string, string> = {
-  imsak: "#6366f1",   // indigo
-  fajr: "#22c55e",    // green
-  sunrise: "#f97316", // orange
-  dhuha: "#eab308",   // yellow
-  dhuhr: "#3b82f6",   // blue
-  asr: "#8b5cf6",     // violet
-  maghrib: "#ef4444", // red
-  isha: "#06b6d4",    // cyan
-};
+
 
 export default function LayoutTV({
   settings,
@@ -74,9 +64,8 @@ export default function LayoutTV({
 
   return (
     <div
-      className="display-container layout-tv"
       style={{
-        background: "#0a0a0a",
+        background: template.colors.bodyBg,
         height: "100vh",
         width: "100vw",
         padding: "30px",
@@ -102,7 +91,7 @@ export default function LayoutTV({
           alignItems: "center",
           justifyContent: "space-between",
           padding: "0.6rem 1.5rem",
-          background: "linear-gradient(180deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.85) 100%)",
+          background: template.colors.headerBg,
           borderBottom: `2px solid ${template.colors.accent}40`,
           flexShrink: 0,
           zIndex: 10,
@@ -373,15 +362,14 @@ export default function LayoutTV({
             width: "300px",
             display: "flex",
             flexDirection: "column",
-            background: "rgba(0,0,0,0.9)",
+            background: template.colors.prayerBarBg,
             flexShrink: 0,
             overflow: "hidden",
           }}
         >
           {prayerDisplay.map((p) => {
             const isNext = nextPrayer?.key === p.key;
-            const rowColor =
-              PRAYER_ROW_COLORS[p.key] || template.colors.accent;
+            const rowColor = template.colors.accent;
             return (
               <div
                 key={p.key}
@@ -452,8 +440,7 @@ export default function LayoutTV({
       <div
         style={{
           flexShrink: 0,
-          background: "rgba(0,0,0,0.85)",
-          backdropFilter: "blur(8px)",
+          background: template.colors.headerBg,
           padding: "0.5rem 0",
           borderTop: `1px solid ${template.colors.accent}30`,
           position: "relative",
