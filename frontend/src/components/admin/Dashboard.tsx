@@ -1019,179 +1019,6 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Info Cards Row */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "1.5rem",
-            marginTop: "1.5rem",
-          }}
-        >
-          {/* Mosque Info */}
-          <div
-            style={{
-              background: "white",
-              borderRadius: "16px",
-              padding: "1.25rem",
-              boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
-              border: "1px solid #f1f5f9",
-            }}
-          >
-            <h2
-              style={{
-                fontSize: "1rem",
-                fontWeight: 600,
-                color: "#1e293b",
-                marginBottom: "1rem",
-              }}
-            >
-              🕌 Detail Masjid
-            </h2>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "0.75rem",
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  padding: "0.5rem 0",
-                  borderBottom: "1px solid #f1f5f9",
-                }}
-              >
-                <span style={{ color: "#64748b" }}>Nama</span>
-                <span style={{ fontWeight: 600 }}>
-                  {settings?.mosque_name || "-"}
-                </span>
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  padding: "0.5rem 0",
-                  borderBottom: "1px solid #f1f5f9",
-                }}
-              >
-                <span style={{ color: "#64748b" }}>Alamat</span>
-                <span
-                  style={{
-                    fontWeight: 600,
-                    textAlign: "right",
-                    maxWidth: "60%",
-                    fontSize: "0.875rem",
-                  }}
-                >
-                  {settings?.mosque_address || "-"}
-                </span>
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  padding: "0.5rem 0",
-                }}
-              >
-                <span style={{ color: "#64748b" }}>Jadwal Shalat</span>
-                <a
-                  href="/admin/prayer-settings"
-                  style={{
-                    color: "var(--primary-600)",
-                    fontSize: "0.875rem",
-                    fontWeight: 600,
-                    textDecoration: "none",
-                  }}
-                >
-                  Atur Jadwal →
-                </a>
-              </div>
-            </div>
-          </div>
-
-          {/* Display Preview */}
-          <div
-            style={{
-              background: "white",
-              borderRadius: "16px",
-              padding: "1.25rem",
-              boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
-              border: "1px solid #f1f5f9",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginBottom: "1rem",
-              }}
-            >
-              <h2
-                style={{
-                  fontSize: "1rem",
-                  fontWeight: 600,
-                  color: "#1e293b",
-                }}
-              >
-                📺 Preview Display
-              </h2>
-              <a
-                href="/display"
-                target="_blank"
-                style={{
-                  color: "var(--primary-600)",
-                  fontSize: "0.75rem",
-                  fontWeight: 600,
-                  textDecoration: "none",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "0.25rem",
-                }}
-              >
-                Buka Display <ExternalLink size={12} />
-              </a>
-            </div>
-            {/* Live Preview */}
-            <div
-              style={{
-                borderRadius: "8px",
-                overflow: "hidden",
-                border: "1px solid #e2e8f0",
-                aspectRatio: "16/9",
-                background:
-                  displayTemplates[currentTemplate]?.colors.bodyBg || "#0f172a",
-              }}
-            >
-              <iframe
-                src="/display"
-                title="Display Preview"
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  border: "none",
-                  transform: "scale(1)",
-                  transformOrigin: "0 0",
-                  pointerEvents: "none",
-                }}
-              />
-            </div>
-            <p
-              style={{
-                fontSize: "0.7rem",
-                color: "#94a3b8",
-                marginTop: "0.5rem",
-                textAlign: "center",
-              }}
-            >
-              Layout: {displayLayouts[currentLayout]?.name} • Template:{" "}
-              {displayTemplates[currentTemplate]?.name}
-            </p>
-          </div>
-        </div>
       </div>
     );
   }
@@ -1267,397 +1094,15 @@ export default function Dashboard() {
         ))}
       </div>
 
-      {/* Main Grid - Template, Layout, Preview */}
+      {/* Main Grid - Preview, Template, Layout */}
       <div
         style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr 1fr",
+          display: "flex",
+          flexDirection: "column",
           gap: "1.5rem",
           marginBottom: "1.5rem",
         }}
       >
-        {/* Template Tampilan */}
-        <div
-          style={{
-            background: "white",
-            borderRadius: "16px",
-            padding: "1.25rem",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
-            border: "1px solid #f1f5f9",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "0.5rem",
-              marginBottom: "1rem",
-            }}
-          >
-            <Palette size={20} style={{ color: "#64748b" }} />
-            <h2 style={{ fontSize: "1rem", fontWeight: 600, color: "#1e293b" }}>
-              Template Tampilan
-            </h2>
-          </div>
-          <div
-            style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}
-          >
-            {Object.values(displayTemplates).map((tmpl) => {
-              const isSelected = currentTemplate === tmpl.id;
-              return (
-                <div
-                  key={tmpl.id}
-                  onClick={() => handleTemplateChange(tmpl.id)}
-                  style={{
-                    cursor: "pointer",
-                    padding: "0.75rem",
-                    borderRadius: "10px",
-                    border: isSelected
-                      ? "2px solid #22c55e"
-                      : "1px solid #e2e8f0",
-                    background: isSelected ? "#f0fdf4" : "#fafafb",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "0.75rem",
-                    transition: "all 0.2s",
-                  }}
-                >
-                  <div
-                    style={{
-                      width: 32,
-                      height: 32,
-                      borderRadius: "8px",
-                      background: tmpl.colors.headerBg,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: 12,
-                        height: 12,
-                        borderRadius: "50%",
-                        background: tmpl.colors.accent,
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <div
-                      style={{
-                        fontWeight: 600,
-                        fontSize: "0.85rem",
-                        color: "#1e293b",
-                      }}
-                    >
-                      {isSelected && (
-                        <span style={{ color: "#22c55e", marginRight: 4 }}>
-                          ✓
-                        </span>
-                      )}
-                      {tmpl.name}
-                    </div>
-                    <div style={{ fontSize: "0.7rem", color: "#94a3b8" }}>
-                      {tmpl.description}
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Layout Tampilan */}
-        <div
-          style={{
-            background: "white",
-            borderRadius: "16px",
-            padding: "1.25rem",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
-            border: "1px solid #f1f5f9",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "0.5rem",
-              marginBottom: "1rem",
-            }}
-          >
-            <Monitor size={20} style={{ color: "#64748b" }} />
-            <h2 style={{ fontSize: "1rem", fontWeight: 600, color: "#1e293b" }}>
-              Layout Tampilan
-            </h2>
-          </div>
-          <div
-            style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}
-          >
-            {Object.values(displayLayouts).map((layout) => {
-              const isSelected = currentLayout === layout.id;
-              const templateColors =
-                displayTemplates[currentTemplate]?.colors ||
-                displayTemplates.classic.colors;
-              return (
-                <div
-                  key={layout.id}
-                  onClick={() => handleLayoutChange(layout.id)}
-                  style={{
-                    cursor: "pointer",
-                    padding: "0.75rem",
-                    borderRadius: "10px",
-                    border: isSelected
-                      ? "2px solid #22c55e"
-                      : "1px solid #e2e8f0",
-                    background: isSelected ? "#f0fdf4" : "#fafafb",
-                    transition: "all 0.2s",
-                  }}
-                >
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "0.75rem",
-                    }}
-                  >
-                    {/* Mini layout preview */}
-                    <div
-                      style={{
-                        width: 48,
-                        height: 32,
-                        borderRadius: 4,
-                        background: templateColors.bodyBg,
-                        border: `1px solid ${templateColors.accent}40`,
-                        overflow: "hidden",
-                        display: "flex",
-                        flexDirection: "column",
-                      }}
-                    >
-                      <div
-                        style={{
-                          height: 4,
-                          background: templateColors.headerBg,
-                        }}
-                      />
-                      <div
-                        style={{ flex: 1, display: "flex", gap: 1, padding: 1 }}
-                      >
-                        {layout.id === "classic" && (
-                          <>
-                            <div
-                              style={{
-                                width: 6,
-                                background: templateColors.cardBg,
-                              }}
-                            />
-                            <div
-                              style={{
-                                flex: 1,
-                                background: "rgba(255,255,255,0.05)",
-                              }}
-                            />
-                            <div
-                              style={{
-                                width: 8,
-                                background: templateColors.cardBg,
-                              }}
-                            />
-                          </>
-                        )}
-                        {layout.id === "cinematic" && (
-                          <div
-                            style={{
-                              flex: 1,
-                              background: "rgba(255,255,255,0.05)",
-                              position: "relative",
-                            }}
-                          >
-                            <div
-                              style={{
-                                position: "absolute",
-                                bottom: 1,
-                                right: 1,
-                                width: 10,
-                                height: 12,
-                                background: "rgba(0,0,0,0.3)",
-                                borderRadius: 1,
-                              }}
-                            />
-                          </div>
-                        )}
-                        {layout.id === "focus" && (
-                          <>
-                            <div
-                              style={{
-                                flex: 7,
-                                background: "rgba(255,255,255,0.05)",
-                              }}
-                            />
-                            <div
-                              style={{
-                                flex: 3,
-                                background: templateColors.cardBg,
-                              }}
-                            />
-                          </>
-                        )}
-                        {layout.id === "dashboard" && (
-                          <>
-                            <div
-                              style={{
-                                flex: 1,
-                                background: "rgba(255,255,255,0.05)",
-                              }}
-                            />
-                            <div
-                              style={{
-                                flex: 1,
-                                background: templateColors.cardBg,
-                              }}
-                            />
-                          </>
-                        )}
-                        {layout.id === "fullscreen" && (
-                          <div
-                            style={{
-                              flex: 1,
-                              background: "rgba(255,255,255,0.05)",
-                              position: "relative",
-                            }}
-                          >
-                            <div
-                              style={{
-                                position: "absolute",
-                                top: 1,
-                                left: 1,
-                                right: 1,
-                                height: 3,
-                                display: "flex",
-                                justifyContent: "space-between",
-                              }}
-                            >
-                              <div style={{ width: 5, background: "rgba(0,0,0,0.4)", borderRadius: 1 }} />
-                              <div style={{ width: 10, background: "rgba(0,0,0,0.4)", borderRadius: 1 }} />
-                              <div style={{ width: 5, background: "rgba(0,0,0,0.4)", borderRadius: 1 }} />
-                            </div>
-                            <div
-                              style={{
-                                position: "absolute",
-                                bottom: 0,
-                                left: 0,
-                                right: 0,
-                                height: 4,
-                                background: "rgba(0,0,0,0.4)",
-                              }}
-                            />
-                          </div>
-                        )}
-                        {layout.id === "tv" && (
-                          <>
-                            <div
-                              style={{
-                                flex: 7,
-                                background: "rgba(255,255,255,0.05)",
-                              }}
-                            />
-                            <div
-                              style={{
-                                flex: 3,
-                                display: "flex",
-                                flexDirection: "column",
-                                gap: 1,
-                                padding: 1,
-                              }}
-                            >
-                              {[0, 1, 2, 3, 4, 5].map((i) => (
-                                <div
-                                  key={i}
-                                  style={{
-                                    flex: 1,
-                                    background:
-                                      i === 2
-                                        ? templateColors.accent
-                                        : `${templateColors.accent}30`,
-                                    borderRadius: 1,
-                                  }}
-                                />
-                              ))}
-                            </div>
-                          </>
-                        )}
-                        {layout.id === "qris" && (
-                          <>
-                            <div
-                              style={{
-                                flex: 7,
-                                background: "rgba(255,255,255,0.05)",
-                              }}
-                            />
-                            <div
-                              style={{
-                                flex: 3,
-                                display: "flex",
-                                flexDirection: "column",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                gap: 2,
-                                padding: 2,
-                                background: "rgba(0,0,0,0.3)",
-                              }}
-                            >
-                              <div
-                                style={{
-                                  width: 14,
-                                  height: 14,
-                                  background: "white",
-                                  borderRadius: 2,
-                                }}
-                              />
-                              <div
-                                style={{
-                                  width: 10,
-                                  height: 2,
-                                  background: templateColors.accent,
-                                  borderRadius: 1,
-                                }}
-                              />
-                            </div>
-                          </>
-                        )}
-                      </div>
-                      <div
-                        style={{
-                          height: 3,
-                          background: templateColors.headerBg,
-                        }}
-                      />
-                    </div>
-                    <div>
-                      <div
-                        style={{
-                          fontWeight: 600,
-                          fontSize: "0.85rem",
-                          color: "#1e293b",
-                        }}
-                      >
-                        {isSelected && (
-                          <span style={{ color: "#22c55e", marginRight: 4 }}>
-                            ✓
-                          </span>
-                        )}
-                        {layout.name}
-                      </div>
-                      <div style={{ fontSize: "0.7rem", color: "#94a3b8" }}>
-                        {layout.description}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
         {/* Preview Display - Static (No Live Data) */}
         <div
           style={{
@@ -2365,6 +1810,388 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
+        {/* Template Tampilan */}
+        <div
+          style={{
+            background: "white",
+            borderRadius: "16px",
+            padding: "1.25rem",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+            border: "1px solid #f1f5f9",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "0.5rem",
+              marginBottom: "1rem",
+            }}
+          >
+            <Palette size={20} style={{ color: "#64748b" }} />
+            <h2 style={{ fontSize: "1rem", fontWeight: 600, color: "#1e293b" }}>
+              Template Tampilan
+            </h2>
+          </div>
+          <div
+            style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "1rem" }}
+          >
+            {Object.values(displayTemplates).map((tmpl) => {
+              const isSelected = currentTemplate === tmpl.id;
+              return (
+                <div
+                  key={tmpl.id}
+                  onClick={() => handleTemplateChange(tmpl.id)}
+                  style={{
+                    cursor: "pointer",
+                    padding: "0.75rem",
+                    borderRadius: "10px",
+                    border: isSelected
+                      ? "2px solid #22c55e"
+                      : "1px solid #e2e8f0",
+                    background: isSelected ? "#f0fdf4" : "#fafafb",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.75rem",
+                    transition: "all 0.2s",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: 32,
+                      height: 32,
+                      borderRadius: "8px",
+                      background: tmpl.colors.headerBg,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 12,
+                        height: 12,
+                        borderRadius: "50%",
+                        background: tmpl.colors.accent,
+                      }}
+                    />
+                  </div>
+                  <div>
+                    <div
+                      style={{
+                        fontWeight: 600,
+                        fontSize: "0.85rem",
+                        color: "#1e293b",
+                      }}
+                    >
+                      {isSelected && (
+                        <span style={{ color: "#22c55e", marginRight: 4 }}>
+                          ✓
+                        </span>
+                      )}
+                      {tmpl.name}
+                    </div>
+                    <div style={{ fontSize: "0.7rem", color: "#94a3b8" }}>
+                      {tmpl.description}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Layout Tampilan */}
+        <div
+          style={{
+            background: "white",
+            borderRadius: "16px",
+            padding: "1.25rem",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+            border: "1px solid #f1f5f9",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "0.5rem",
+              marginBottom: "1rem",
+            }}
+          >
+            <Monitor size={20} style={{ color: "#64748b" }} />
+            <h2 style={{ fontSize: "1rem", fontWeight: 600, color: "#1e293b" }}>
+              Layout Tampilan
+            </h2>
+          </div>
+          <div
+            style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "1rem" }}
+          >
+            {Object.values(displayLayouts).map((layout) => {
+              const isSelected = currentLayout === layout.id;
+              const templateColors =
+                displayTemplates[currentTemplate]?.colors ||
+                displayTemplates.classic.colors;
+              return (
+                <div
+                  key={layout.id}
+                  onClick={() => handleLayoutChange(layout.id)}
+                  style={{
+                    cursor: "pointer",
+                    padding: "0.75rem",
+                    borderRadius: "10px",
+                    border: isSelected
+                      ? "2px solid #22c55e"
+                      : "1px solid #e2e8f0",
+                    background: isSelected ? "#f0fdf4" : "#fafafb",
+                    transition: "all 0.2s",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.75rem",
+                    }}
+                  >
+                    {/* Mini layout preview */}
+                    <div
+                      style={{
+                        width: 48,
+                        height: 32,
+                        borderRadius: 4,
+                        background: templateColors.bodyBg,
+                        border: `1px solid ${templateColors.accent}40`,
+                        overflow: "hidden",
+                        display: "flex",
+                        flexDirection: "column",
+                      }}
+                    >
+                      <div
+                        style={{
+                          height: 4,
+                          background: templateColors.headerBg,
+                        }}
+                      />
+                      <div
+                        style={{ flex: 1, display: "flex", gap: 1, padding: 1 }}
+                      >
+                        {layout.id === "classic" && (
+                          <>
+                            <div
+                              style={{
+                                width: 6,
+                                background: templateColors.cardBg,
+                              }}
+                            />
+                            <div
+                              style={{
+                                flex: 1,
+                                background: "rgba(255,255,255,0.05)",
+                              }}
+                            />
+                            <div
+                              style={{
+                                width: 8,
+                                background: templateColors.cardBg,
+                              }}
+                            />
+                          </>
+                        )}
+                        {layout.id === "cinematic" && (
+                          <div
+                            style={{
+                              flex: 1,
+                              background: "rgba(255,255,255,0.05)",
+                              position: "relative",
+                            }}
+                          >
+                            <div
+                              style={{
+                                position: "absolute",
+                                bottom: 1,
+                                right: 1,
+                                width: 10,
+                                height: 12,
+                                background: "rgba(0,0,0,0.3)",
+                                borderRadius: 1,
+                              }}
+                            />
+                          </div>
+                        )}
+                        {layout.id === "focus" && (
+                          <>
+                            <div
+                              style={{
+                                flex: 7,
+                                background: "rgba(255,255,255,0.05)",
+                              }}
+                            />
+                            <div
+                              style={{
+                                flex: 3,
+                                background: templateColors.cardBg,
+                              }}
+                            />
+                          </>
+                        )}
+                        {layout.id === "dashboard" && (
+                          <>
+                            <div
+                              style={{
+                                flex: 1,
+                                background: "rgba(255,255,255,0.05)",
+                              }}
+                            />
+                            <div
+                              style={{
+                                flex: 1,
+                                background: templateColors.cardBg,
+                              }}
+                            />
+                          </>
+                        )}
+                        {layout.id === "fullscreen" && (
+                          <div
+                            style={{
+                              flex: 1,
+                              background: "rgba(255,255,255,0.05)",
+                              position: "relative",
+                            }}
+                          >
+                            <div
+                              style={{
+                                position: "absolute",
+                                top: 1,
+                                left: 1,
+                                right: 1,
+                                height: 3,
+                                display: "flex",
+                                justifyContent: "space-between",
+                              }}
+                            >
+                              <div style={{ width: 5, background: "rgba(0,0,0,0.4)", borderRadius: 1 }} />
+                              <div style={{ width: 10, background: "rgba(0,0,0,0.4)", borderRadius: 1 }} />
+                              <div style={{ width: 5, background: "rgba(0,0,0,0.4)", borderRadius: 1 }} />
+                            </div>
+                            <div
+                              style={{
+                                position: "absolute",
+                                bottom: 0,
+                                left: 0,
+                                right: 0,
+                                height: 4,
+                                background: "rgba(0,0,0,0.4)",
+                              }}
+                            />
+                          </div>
+                        )}
+                        {layout.id === "tv" && (
+                          <>
+                            <div
+                              style={{
+                                flex: 7,
+                                background: "rgba(255,255,255,0.05)",
+                              }}
+                            />
+                            <div
+                              style={{
+                                flex: 3,
+                                display: "flex",
+                                flexDirection: "column",
+                                gap: 1,
+                                padding: 1,
+                              }}
+                            >
+                              {[0, 1, 2, 3, 4, 5].map((i) => (
+                                <div
+                                  key={i}
+                                  style={{
+                                    flex: 1,
+                                    background:
+                                      i === 2
+                                        ? templateColors.accent
+                                        : `${templateColors.accent}30`,
+                                    borderRadius: 1,
+                                  }}
+                                />
+                              ))}
+                            </div>
+                          </>
+                        )}
+                        {layout.id === "qris" && (
+                          <>
+                            <div
+                              style={{
+                                flex: 7,
+                                background: "rgba(255,255,255,0.05)",
+                              }}
+                            />
+                            <div
+                              style={{
+                                flex: 3,
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                gap: 2,
+                                padding: 2,
+                                background: "rgba(0,0,0,0.3)",
+                              }}
+                            >
+                              <div
+                                style={{
+                                  width: 14,
+                                  height: 14,
+                                  background: "white",
+                                  borderRadius: 2,
+                                }}
+                              />
+                              <div
+                                style={{
+                                  width: 10,
+                                  height: 2,
+                                  background: templateColors.accent,
+                                  borderRadius: 1,
+                                }}
+                              />
+                            </div>
+                          </>
+                        )}
+                      </div>
+                      <div
+                        style={{
+                          height: 3,
+                          background: templateColors.headerBg,
+                        }}
+                      />
+                    </div>
+                    <div>
+                      <div
+                        style={{
+                          fontWeight: 600,
+                          fontSize: "0.85rem",
+                          color: "#1e293b",
+                        }}
+                      >
+                        {isSelected && (
+                          <span style={{ color: "#22c55e", marginRight: 4 }}>
+                            ✓
+                          </span>
+                        )}
+                        {layout.name}
+                      </div>
+                      <div style={{ fontSize: "0.7rem", color: "#94a3b8" }}>
+                        {layout.description}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
       </div>
     </div>
   );
