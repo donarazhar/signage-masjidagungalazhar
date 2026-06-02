@@ -6,12 +6,14 @@ interface RunningTextProps {
   speed: number;
   mosqueName?: string;
   accentColor?: string;
+  textColor?: string;
 }
 
 export default function RunningText({
   texts,
   speed,
   mosqueName,
+  textColor,
 }: RunningTextProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -55,7 +57,7 @@ export default function RunningText({
       <div
         ref={contentRef}
         className="ticker-content running-text"
-        style={{ animationDuration: `${animationDuration}s` }}
+        style={{ animationDuration: `${animationDuration}s`, color: textColor }}
       >
         {displayTexts.map((text, idx) => (
           <span key={`${text.id}-${idx}`} className="ticker-item">

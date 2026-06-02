@@ -161,14 +161,14 @@ body {
 .mosque-info h1 {
   font-size: 1.1rem;
   font-weight: 800;
-  color: white;
+  color: var(--template-header-text, white);
   letter-spacing: -0.02em;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .mosque-info p {
   font-size: 0.7rem;
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--template-header-text, rgba(255, 255, 255, 0.85));
   font-weight: 500;
 }
 
@@ -392,7 +392,7 @@ body {
 .prayer-name {
   font-size: 0.7rem;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--template-prayer-bar-text, rgba(255, 255, 255, 0.9));
   text-transform: uppercase;
   letter-spacing: 0.1em;
   margin-bottom: 0;
@@ -402,7 +402,7 @@ body {
   font-family: "Outfit", monospace;
   font-size: 2.5rem;
   font-weight: 800;
-  color: white;
+  color: var(--template-prayer-bar-text, white);
   line-height: 1;
 }
 

@@ -6,7 +6,12 @@ import { Quote } from "lucide-react";
 
 const ROTATION_INTERVAL = 15000; // 15 seconds
 
-export default function HadithWidget() {
+interface HadithWidgetProps {
+  textColor?: string;
+  accentColor?: string;
+}
+
+export default function HadithWidget({ textColor = "white", accentColor = "#fbbf24" }: HadithWidgetProps = {}) {
   const { mosqueSlug } = useParams<{ mosqueSlug?: string }>();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
@@ -75,7 +80,7 @@ export default function HadithWidget() {
           flexShrink: 0,
         }}
       >
-        <Quote size={24} style={{ color: "#fbbf24" }} />
+        <Quote size={24} style={{ color: accentColor }} />
       </div>
 
       <div style={{ flex: 1, minWidth: 0 }}>
@@ -83,7 +88,7 @@ export default function HadithWidget() {
           style={{
             fontSize: "0.95rem",
             fontStyle: "italic",
-            color: "white",
+            color: textColor,
             lineHeight: "1.3",
             marginBottom: "0.25rem",
             fontWeight: 500,
@@ -93,7 +98,7 @@ export default function HadithWidget() {
         </p>
         <p
           style={{
-            color: "#fbbf24",
+            color: accentColor,
             fontWeight: 700,
             fontSize: "0.8rem",
           }}

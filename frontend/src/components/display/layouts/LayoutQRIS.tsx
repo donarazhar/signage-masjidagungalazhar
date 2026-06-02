@@ -193,7 +193,7 @@ export default function LayoutQRIS({
             <div
               style={{
                 fontSize: "0.75rem",
-                color: "rgba(255,255,255,0.7)",
+                color: template.colors.headerText, opacity: 0.7,
                 fontWeight: 500,
                 marginTop: "0.15rem",
                 textAlign: "center",
@@ -218,7 +218,7 @@ export default function LayoutQRIS({
                 fontFamily: "'Outfit', monospace",
                 fontSize: "2.8rem",
                 fontWeight: 800,
-                color: "white",
+                color: template.colors.headerText,
                 lineHeight: 1,
                 letterSpacing: "-0.02em",
               }}
@@ -228,7 +228,7 @@ export default function LayoutQRIS({
               {minutes}
               <span style={{ color: template.colors.accent }}>:</span>
               <span
-                style={{ fontSize: "2rem", color: "rgba(255,255,255,0.7)" }}
+                style={{ fontSize: "2rem", color: template.colors.headerText, opacity: 0.7 }}
               >
                 {seconds}
               </span>
@@ -374,7 +374,7 @@ export default function LayoutQRIS({
                 style={{
                   fontSize: "0.7rem",
                   fontWeight: 600,
-                  color: "rgba(255,255,255,0.6)",
+                  color: template.colors.prayerBarText, opacity: 0.6,
                   textTransform: "uppercase",
                   letterSpacing: "0.1em",
                   marginBottom: "0.25rem",
@@ -388,7 +388,7 @@ export default function LayoutQRIS({
                     style={{
                       fontSize: "1.2rem",
                       fontWeight: 700,
-                      color: "white",
+                      color: template.colors.prayerBarText,
                       textTransform: "uppercase",
                       letterSpacing: "0.05em",
                     }}
@@ -524,8 +524,8 @@ export default function LayoutQRIS({
                     ? template.colors.accent
                     : "transparent",
                   color: isNext
-                    ? template.colors.accentText || "white"
-                    : "rgba(255,255,255,0.8)",
+                    ? template.colors.accentText
+                    : template.colors.prayerBarText,
                   borderRight: "1px solid rgba(255,255,255,0.05)",
                   transition: "all 0.3s ease",
                   borderRadius: isNext ? "8px" : "0",
@@ -578,6 +578,7 @@ export default function LayoutQRIS({
             speed={settings?.running_text_speed || 80}
             mosqueName={mosqueName}
             accentColor={template.colors.accent}
+            textColor={template.colors.headerText}
           />
         </div>
       </div>

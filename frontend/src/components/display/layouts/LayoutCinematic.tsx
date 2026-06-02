@@ -585,6 +585,7 @@ export default function LayoutCinematic({
           texts={runningTexts || []}
           speed={settings?.running_text_speed || 80}
           mosqueName={mosqueName}
+          textColor={template.colors.headerText}
           accentColor={template.colors.accent}
         />
       </div>

@@ -515,7 +515,7 @@ export default function MainDisplay() {
             justifyContent: "center",
           }}
         >
-          <HadithWidget />
+          <HadithWidget textColor={template.colors.headerText} />
         </div>
 
         <div
@@ -523,14 +523,14 @@ export default function MainDisplay() {
           style={{
             background: "rgba(255,255,255,0.15)",
             borderLeft: "none",
-            color: "white",
+            color: template.colors.headerText,
             marginLeft: "1rem",
           }}
         >
-          <div style={{ color: "white", fontWeight: 600 }}>{gregorianDate}</div>
+          <div style={{ color: template.colors.headerText, fontWeight: 600 }}>{gregorianDate}</div>
           <div
             style={{
-              color: "rgba(251,191,36,1)",
+              color: template.colors.accent,
               fontWeight: 600,
               marginTop: 4,
             }}
@@ -685,6 +685,7 @@ export default function MainDisplay() {
           speed={settings?.running_text_speed || 80}
           mosqueName={mosqueName}
           accentColor={template.colors.accent}
+          textColor={template.colors.headerText}
         />
       </footer>
       </div>

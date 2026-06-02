@@ -155,7 +155,8 @@ export default function LayoutTV({
           <div
             style={{
               fontSize: "0.75rem",
-              color: "rgba(255,255,255,0.7)",
+              color: template.colors.headerText,
+              opacity: 0.8,
               fontWeight: 500,
               marginTop: "0.15rem",
               textAlign: "center",
@@ -180,7 +181,7 @@ export default function LayoutTV({
               fontFamily: "'Outfit', monospace",
               fontSize: "2.8rem",
               fontWeight: 800,
-              color: "white",
+              color: template.colors.headerText,
               lineHeight: 1,
               letterSpacing: "-0.02em",
             }}
@@ -189,7 +190,7 @@ export default function LayoutTV({
             <span style={{ color: template.colors.accent }}>:</span>
             {minutes}
             <span style={{ color: template.colors.accent }}>:</span>
-            <span style={{ fontSize: "2rem", color: "rgba(255,255,255,0.7)" }}>
+            <span style={{ fontSize: "2rem", color: template.colors.headerText, opacity: 0.7 }}>
               {seconds}
             </span>
           </div>
@@ -406,7 +407,7 @@ export default function LayoutTV({
                   style={{
                     fontWeight: 700,
                     fontSize: isNext ? "1.1rem" : "0.95rem",
-                    color: isNext ? "white" : "rgba(255,255,255,0.85)",
+                    color: isNext ? template.colors.accentText : template.colors.prayerBarText,
                     textTransform: "uppercase",
                     letterSpacing: "0.05em",
                     position: "relative",
@@ -420,7 +421,7 @@ export default function LayoutTV({
                     fontFamily: "'Outfit', monospace",
                     fontWeight: 800,
                     fontSize: isNext ? "1.6rem" : "1.3rem",
-                    color: isNext ? "white" : `${rowColor}`,
+                    color: isNext ? template.colors.accentText : template.colors.accent,
                     position: "relative",
                     zIndex: 1,
                     textShadow: isNext
@@ -452,6 +453,7 @@ export default function LayoutTV({
           speed={settings?.running_text_speed || 80}
           mosqueName={mosqueName}
           accentColor={template.colors.accent}
+          textColor={template.colors.headerText}
         />
       </div>
 

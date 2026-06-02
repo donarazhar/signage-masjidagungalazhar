@@ -120,7 +120,8 @@ export default function LayoutFocus({
               style={{
                 margin: 0,
                 fontSize: "0.75rem",
-                color: "rgba(255,255,255,0.8)",
+                color: template.colors.headerText,
+                opacity: 0.8,
               }}
             >
               {mosqueAddress}
@@ -130,7 +131,7 @@ export default function LayoutFocus({
 
         {/* Hadith */}
         <div style={{ flex: 1, maxWidth: "500px", margin: "0 2rem" }}>
-          <HadithWidget />
+          <HadithWidget textColor={template.colors.headerText} />
         </div>
 
         {/* Clock & Date */}
@@ -147,7 +148,11 @@ export default function LayoutFocus({
               <span style={{ fontSize: "1rem", opacity: 0.7 }}>:{seconds}</span>
             </div>
             <div
-              style={{ fontSize: "0.65rem", color: "rgba(255,255,255,0.6)" }}
+              style={{
+                fontSize: "0.65rem",
+                color: template.colors.headerText,
+                opacity: 0.6,
+              }}
             >
               {timezone || "WIB"}
             </div>
@@ -293,6 +298,7 @@ export default function LayoutFocus({
           texts={runningTexts || []}
           speed={settings?.running_text_speed || 80}
           mosqueName={mosqueName}
+          textColor={template.colors.headerText}
           accentColor={template.colors.accent}
         />
       </footer>

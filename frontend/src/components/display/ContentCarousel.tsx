@@ -108,7 +108,6 @@ export default function ContentCarousel({
     );
   }
 
-  const currentContent = contents[currentIndex];
 
   return (
     <div
@@ -190,26 +189,6 @@ export default function ContentCarousel({
         </div>
       )}
 
-      {/* Content Title Overlay */}
-      {currentContent && (
-        <div
-          style={{
-            position: "absolute",
-            bottom: "4rem",
-            left: "50%",
-            transform: "translateX(-50%)",
-            background: "rgba(0,0,0,0.6)",
-            color: "white",
-            padding: "0.5rem 1.5rem",
-            borderRadius: "100px",
-            fontSize: "0.875rem",
-            fontWeight: 500,
-            zIndex: 10,
-          }}
-        >
-          {currentContent.title}
-        </div>
-      )}
     </div>
   );
 }
