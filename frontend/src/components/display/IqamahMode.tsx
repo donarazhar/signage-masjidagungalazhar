@@ -1,4 +1,6 @@
+import { useEffect } from 'react'
 import { useCountdownMinutes } from '../../hooks/useCountdown'
+import { playAlarmSound } from '../../utils/audio'
 
 interface IqamahModeProps {
   prayerName: string
@@ -8,6 +10,11 @@ interface IqamahModeProps {
 
 export default function IqamahMode({ prayerName, duration, onComplete }: IqamahModeProps) {
   const countdown = useCountdownMinutes(duration, onComplete)
+
+  useEffect(() => {
+    // Play sound when entering Waktu Shalat (Adzan)
+    playAlarmSound();
+  }, []);
 
   return (
     <div className="iqamah-overlay">
