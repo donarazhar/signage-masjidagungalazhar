@@ -118,6 +118,16 @@ body {
   overflow: hidden;
 }
 
+/* Fix overlapping columns on desktop screens by scaling down the Classic layout to 75% */
+@media (max-width: 1919px) {
+  .display-container {
+    width: 133.33vw !important;
+    height: 133.33vh !important;
+    transform: scale(0.75);
+    transform-origin: top left;
+  }
+}
+
 /* Header */
 .header-bar {
   background: var(--gradient-hero);
