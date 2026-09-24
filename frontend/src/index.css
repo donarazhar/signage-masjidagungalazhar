@@ -118,29 +118,29 @@ body {
   overflow: hidden;
 }
 
-/* Fix overlapping columns on desktop screens by scaling down the Classic layout to 75% */
+/* Fix overlapping columns on desktop screens by scaling down the Classic layout to 85% */
 @media (max-width: 1919px) {
   .display-container {
-    width: 133.33vw !important;
-    height: 133.33vh !important;
-    transform: scale(0.75);
+    width: 117.65vw !important;
+    height: 117.65vh !important;
+    transform: scale(0.85);
     transform-origin: top left;
   }
 
-  /* Perbesar font agar tidak terlihat kecil setelah terkena efek scale 75% */
-  .display-container .mosque-info h1 { font-size: 2.2rem !important; }
+  /* Perbesar font agar tidak terlihat kecil setelah terkena efek scale 85% */
+  .display-container .mosque-info h1 { font-size: 2.1rem !important; }
   .display-container .mosque-info p { font-size: 1rem !important; }
-  .display-container .clock-time { font-size: 5.5rem !important; }
-  .display-container .clock-seconds { font-size: 2rem !important; }
-  .display-container .prayer-time { font-size: 3.5rem !important; }
-  .display-container .prayer-name { font-size: 0.9rem !important; }
-  .display-container .date-card .gregorian { font-size: 1.25rem !important; }
-  .display-container .date-card .hijri { font-size: 1.1rem !important; }
-  .display-container .ticker-content { font-size: 1.3rem !important; }
-  .display-container .countdown-card .time { font-size: 2rem !important; }
-  .display-container .countdown-card .prayer-name { font-size: 1.4rem !important; }
-  .display-container .info-card .quote { font-size: 1rem !important; }
-  .display-container .info-card .source { font-size: 0.95rem !important; }
+  .display-container .clock-time { font-size: 3.8rem !important; }
+  .display-container .clock-seconds { font-size: 1.2rem !important; }
+  .display-container .prayer-time { font-size: 3rem !important; }
+  .display-container .prayer-name { font-size: 0.82rem !important; }
+  .display-container .date-card .gregorian { font-size: 1.1rem !important; }
+  .display-container .date-card .hijri { font-size: 1rem !important; }
+  .display-container .ticker-content { font-size: 1.2rem !important; }
+  .display-container .countdown-card .time { font-size: 1.4rem !important; }
+  .display-container .countdown-card .prayer-name { font-size: 1rem !important; }
+  .display-container .info-card .quote { font-size: 0.94rem !important; }
+  .display-container .info-card .source { font-size: 0.94rem !important; }
 }
 
 /* Header */
@@ -923,14 +923,14 @@ body {
 }
 
 .event-date-badge .day {
-  font-size: 0.95rem;
+  font-size: 1.1rem;
   font-weight: 800;
   color: var(--primary-600);
   line-height: 1;
 }
 
 .event-date-badge .month {
-  font-size: 0.55rem;
+  font-size: 0.65rem;
   font-weight: 700;
   color: var(--slate-500);
   margin-top: 1px;
@@ -945,7 +945,7 @@ body {
 }
 
 .event-title {
-  font-size: 0.8rem;
+  font-size: 1rem;
   font-weight: 700;
   color: var(--slate-800);
   line-height: 1.2;
@@ -966,7 +966,7 @@ body {
   display: flex;
   align-items: center;
   gap: 0.25rem;
-  font-size: 0.7rem;
+  font-size: 0.85rem;
   font-weight: 500;
   color: var(--slate-500);
   background: white;
@@ -975,7 +975,7 @@ body {
 }
 
 .event-desc {
-  font-size: 0.65rem;
+  font-size: 0.8rem;
   color: var(--slate-600);
   line-height: 1.3;
   margin-top: 1px;
