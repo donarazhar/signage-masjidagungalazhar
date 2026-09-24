@@ -126,6 +126,21 @@ body {
     transform: scale(0.75);
     transform-origin: top left;
   }
+
+  /* Perbesar font agar tidak terlihat kecil setelah terkena efek scale 75% */
+  .display-container .mosque-info h1 { font-size: 2.2rem !important; }
+  .display-container .mosque-info p { font-size: 1rem !important; }
+  .display-container .clock-time { font-size: 5.5rem !important; }
+  .display-container .clock-seconds { font-size: 2rem !important; }
+  .display-container .prayer-time { font-size: 3.5rem !important; }
+  .display-container .prayer-name { font-size: 0.9rem !important; }
+  .display-container .date-card .gregorian { font-size: 1.25rem !important; }
+  .display-container .date-card .hijri { font-size: 1.1rem !important; }
+  .display-container .ticker-content { font-size: 1.3rem !important; }
+  .display-container .countdown-card .time { font-size: 2rem !important; }
+  .display-container .countdown-card .prayer-name { font-size: 1.4rem !important; }
+  .display-container .info-card .quote { font-size: 1rem !important; }
+  .display-container .info-card .source { font-size: 0.95rem !important; }
 }
 
 /* Header */
@@ -169,7 +184,7 @@ body {
 }
 
 .mosque-info h1 {
-  font-size: 1.1rem;
+  font-size: 1.8rem;
   font-weight: 800;
   color: var(--template-header-text, white);
   letter-spacing: -0.02em;
@@ -177,7 +192,7 @@ body {
 }
 
 .mosque-info p {
-  font-size: 0.7rem;
+  font-size: 0.85rem;
   color: var(--template-header-text, rgba(255, 255, 255, 0.85));
   font-weight: 500;
 }
@@ -241,7 +256,7 @@ body {
 
 .clock-time {
   font-family: "Outfit", monospace;
-  font-size: 3.5rem;
+  font-size: 4.5rem;
   font-weight: 800;
   color: var(--primary-600);
   line-height: 1;

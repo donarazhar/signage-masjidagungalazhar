@@ -488,7 +488,7 @@ export default function MainDisplay() {
               />
             </svg>
           )}
-          <div className="mosque-info" style={{ maxWidth: "280px" }}>
+          <div className="mosque-info" style={{ maxWidth: "450px" }}>
             <h1
               style={{
                 margin: 0,
@@ -499,7 +499,7 @@ export default function MainDisplay() {
             >
               {mosqueName}
             </h1>
-            <p style={{ margin: 0, fontSize: "0.8rem", opacity: 0.9 }}>
+            <p style={{ margin: 0, fontSize: "0.85rem", opacity: 0.9, marginTop: "4px" }}>
               {mosqueAddress}
             </p>
           </div>
@@ -509,6 +509,8 @@ export default function MainDisplay() {
         <div
           style={{
             flex: 1,
+            maxWidth: "700px",
+            margin: "0 auto",
             height: "100%",
             display: "flex",
             alignItems: "center",
