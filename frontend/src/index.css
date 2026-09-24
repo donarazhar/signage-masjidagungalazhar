@@ -128,7 +128,7 @@ body {
   }
 
   /* Perbesar font agar tidak terlihat kecil setelah terkena efek scale 85% */
-  .display-container .mosque-info h1 { font-size: 2.1rem !important; }
+  .display-container .mosque-info h1 { font-size: 1.7rem !important; }
   .display-container .mosque-info p { font-size: 1rem !important; }
   .display-container .clock-time { font-size: 3.8rem !important; }
   .display-container .clock-seconds { font-size: 1.2rem !important; }

@@ -488,11 +488,11 @@ export default function MainDisplay() {
               />
             </svg>
           )}
-          <div className="mosque-info" style={{ maxWidth: "450px" }}>
+          <div className="mosque-info" style={{ maxWidth: "550px" }}>
             <h1
               style={{
                 margin: 0,
-                fontSize: "1.8rem",
+                fontSize: "1.5rem",
                 fontWeight: 700,
                 lineHeight: 1.2,
               }}
