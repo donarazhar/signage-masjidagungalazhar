@@ -110,6 +110,11 @@ export default function PrayerSettings() {
         type: "number",
       },
       {
+        key: "prayer_duration_jumat",
+        value: formData.prayer_duration_jumat ?? settings?.prayer_duration_jumat ?? 90,
+        type: "number",
+      },
+      {
         key: "countdown_before",
         value: formData.countdown_before ?? settings?.countdown_before ?? 10,
         type: "number",
@@ -585,13 +590,13 @@ export default function PrayerSettings() {
           <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-4">
             Pengaturan Lainnya
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label className="form-label">Durasi Shalat (menit)</label>
               <input
                 type="number"
                 min="5"
-                max="30"
+                max="60"
                 className="form-input"
                 value={
                   formData.prayer_duration ?? settings?.prayer_duration ?? 15
@@ -602,6 +607,24 @@ export default function PrayerSettings() {
               />
               <p className="text-xs text-[var(--text-muted)] mt-1">
                 Durasi layar gelap saat shalat berlangsung
+              </p>
+            </div>
+            <div>
+              <label className="form-label">🕌 Durasi Shalat Jum'at (menit)</label>
+              <input
+                type="number"
+                min="30"
+                max="180"
+                className="form-input"
+                value={
+                  formData.prayer_duration_jumat ?? settings?.prayer_duration_jumat ?? 90
+                }
+                onChange={(e) =>
+                  handleChange("prayer_duration_jumat", parseInt(e.target.value))
+                }
+              />
+              <p className="text-xs text-[var(--text-muted)] mt-1">
+                Durasi layar gelap khusus Jum'at (khutbah + shalat)
               </p>
             </div>
             <div>

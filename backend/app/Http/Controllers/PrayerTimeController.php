@@ -114,6 +114,7 @@ class PrayerTimeController extends Controller
 
         $prayerTimes['iqamah_duration'] = $iqamahDuration;
         $prayerTimes['prayer_duration'] = Setting::getValue('prayer_duration', 15, $mosqueId);
+        $prayerTimes['prayer_duration_jumat'] = Setting::getValue('prayer_duration_jumat', 90, $mosqueId);
         $prayerTimes['countdown_before'] = Setting::getValue('countdown_before', 15, $mosqueId);
         $prayerTimes['prayer_time_offset'] = $prayerTimeOffset;
         $prayerTimes['is_friday'] = ($today->dayOfWeek === 5); // 5 = Friday

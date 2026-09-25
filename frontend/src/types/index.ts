@@ -28,6 +28,7 @@ export interface Settings {
   iqamah_duration: IqamahDuration;
   prayer_time_offset?: PrayerTimeOffset;
   prayer_duration: number;
+  prayer_duration_jumat?: number;
   countdown_before: number;
   carousel_duration: number;
   running_text_speed: number;
@@ -93,6 +94,7 @@ export interface PrayerTimes {
   };
   iqamah_duration: IqamahDuration;
   prayer_duration: number;
+  prayer_duration_jumat?: number;
   countdown_before: number;
   is_friday?: boolean;
 }

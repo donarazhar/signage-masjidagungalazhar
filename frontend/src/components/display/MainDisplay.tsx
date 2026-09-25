@@ -156,7 +156,12 @@ export default function MainDisplay() {
           prayerTimes.iqamah_duration[
             iqKey as keyof typeof prayerTimes.iqamah_duration
           ] ?? 10;
-        const pd = prayerTimes.prayer_duration || 15;
+
+        // Gunakan durasi shalat Jumat jika hari Jumat dan shalat Dzuhur
+        const isJumatDhuhr = (p === "dhuhr" && isFriday);
+        const pd = isJumatDhuhr
+          ? (prayerTimes.prayer_duration_jumat || 90)
+          : (prayerTimes.prayer_duration || 15);
 
         // Phase 1: Layar Adzan (3 menit pertama) — selalu tampil termasuk saat iq=0
         if (curr >= pm && curr < pm + ADHAN_DURATION) {
