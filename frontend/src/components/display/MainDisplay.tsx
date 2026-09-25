@@ -158,22 +158,22 @@ export default function MainDisplay() {
           ] ?? 10;
         const pd = prayerTimes.prayer_duration || 15;
 
-        // If iqamah duration is 0, skip adhan & iqamah modes entirely
+        // Phase 1: Layar Adzan (3 menit pertama) — selalu tampil termasuk saat iq=0
+        if (curr >= pm && curr < pm + ADHAN_DURATION) {
+          setDisplayMode("adzan");
+          setCurrentPrayer(p);
+          return;
+        }
+
         if (iq === 0) {
-          // Go directly from adhan time to prayer mode
-          if (curr >= pm && curr < pm + pd) {
+          // Iqamah = 0: setelah adzan langsung Shalat Berlangsung (tanpa menunggu iqamah)
+          if (curr >= pm + ADHAN_DURATION && curr < pm + ADHAN_DURATION + pd) {
             setDisplayMode("prayer");
             setCurrentPrayer(p);
             return;
           }
         } else {
-          // Phase 1: Adzan berlangsung (3 menit pertama)
-          if (curr >= pm && curr < pm + ADHAN_DURATION) {
-            setDisplayMode("adzan");
-            setCurrentPrayer(p);
-            return;
-          }
-          // Phase 2: Menunggu Iqamah (setelah adzan, sebelum shalat)
+          // Phase 2: Menunggu Iqamah
           if (curr >= pm + ADHAN_DURATION && curr < pm + ADHAN_DURATION + iq) {
             setDisplayMode("iqamah");
             setCurrentPrayer(p);
