@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { displayService } from "../../services/displayService";
 import ContentCarousel from "./ContentCarousel";
 import RunningText from "./RunningText";
+import AdhanMode from "./AdhanMode";
 import IqamahMode from "./IqamahMode";
 import PrayerInProgressMode from "./PrayerInProgressMode";
 import EventsPanel from "./EventsPanel";
@@ -136,6 +137,8 @@ export default function MainDisplay() {
     return () => clearInterval(interval);
   }, []);
 
+  const ADHAN_DURATION = 3; // 3 menit durasi adzan sebelum masuk menunggu iqamah
+
   useEffect(() => {
     if (!prayerTimes) return;
     const check = () => {
@@ -151,7 +154,7 @@ export default function MainDisplay() {
           ] ?? 10;
         const pd = prayerTimes.prayer_duration || 15;
 
-        // If iqamah duration is 0, skip iqamah mode entirely
+        // If iqamah duration is 0, skip adhan & iqamah modes entirely
         if (iq === 0) {
           // Go directly from adhan time to prayer mode
           if (curr >= pm && curr < pm + pd) {
@@ -160,13 +163,20 @@ export default function MainDisplay() {
             return;
           }
         } else {
-          // Normal flow: adhan -> iqamah -> prayer
-          if (curr >= pm && curr < pm + iq) {
+          // Phase 1: Adzan berlangsung (3 menit pertama)
+          if (curr >= pm && curr < pm + ADHAN_DURATION) {
+            setDisplayMode("adzan");
+            setCurrentPrayer(p);
+            return;
+          }
+          // Phase 2: Menunggu Iqamah (setelah adzan, sebelum shalat)
+          if (curr >= pm + ADHAN_DURATION && curr < pm + ADHAN_DURATION + iq) {
             setDisplayMode("iqamah");
             setCurrentPrayer(p);
             return;
           }
-          if (curr >= pm + iq && curr < pm + iq + pd) {
+          // Phase 3: Shalat Sedang Berlangsung
+          if (curr >= pm + ADHAN_DURATION + iq && curr < pm + ADHAN_DURATION + iq + pd) {
             setDisplayMode("prayer");
             setCurrentPrayer(p);
             return;
@@ -215,6 +225,19 @@ export default function MainDisplay() {
     );
   }
 
+  // Phase 1: Adzan (3 menit pertama setelah masuk waktu shalat)
+  if (displayMode === "adzan" && currentPrayer && prayerTimes) {
+    const prayerTimeStr = prayerTimes.timings[currentPrayer]?.substring(0, 5) || "--:--";
+    return (
+      <AdhanMode
+        prayerName={PRAYER_NAMES_ID[currentPrayer] || currentPrayer}
+        prayerTime={prayerTimeStr}
+        onComplete={() => setDisplayMode("iqamah")}
+      />
+    );
+  }
+
+  // Phase 2: Menunggu Iqamah
   if (displayMode === "iqamah" && currentPrayer && prayerTimes) {
     const dur =
       prayerTimes.iqamah_duration[
@@ -223,11 +246,14 @@ export default function MainDisplay() {
     return (
       <IqamahMode
         prayerName={PRAYER_NAMES_ID[currentPrayer]}
+        mosqueName={settings?.mosque_name}
         duration={dur}
         onComplete={() => setDisplayMode("prayer")}
       />
     );
   }
+
+  // Phase 3: Shalat Berlangsung
   if (displayMode === "prayer" && prayerTimes) {
     return (
       <PrayerInProgressMode

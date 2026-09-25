@@ -1,43 +1,53 @@
-import { useEffect } from 'react'
+import { useRef } from 'react'
 import { useCountdownMinutes } from '../../hooks/useCountdown'
 import { playAlarmSound } from '../../utils/audio'
 
 interface IqamahModeProps {
   prayerName: string
   duration: number
+  mosqueName?: string
   onComplete: () => void
 }
 
-export default function IqamahMode({ prayerName, duration, onComplete }: IqamahModeProps) {
-  const countdown = useCountdownMinutes(duration, onComplete)
+export default function IqamahMode({ prayerName, duration, mosqueName = 'Masjid Agung Al Azhar', onComplete }: IqamahModeProps) {
+  const alarmFiredRef = useRef(false)
 
-  useEffect(() => {
-    // Play sound when entering Waktu Shalat (Adzan)
-    playAlarmSound();
-  }, []);
+  // Wrap onComplete to fire alarm BEFORE transitioning
+  const handleComplete = () => {
+    if (!alarmFiredRef.current) {
+      alarmFiredRef.current = true
+      playAlarmSound()
+    }
+    // Delay transition slightly so alarm starts playing first
+    setTimeout(() => {
+      onComplete()
+    }, 1000)
+  }
+
+  const countdown = useCountdownMinutes(duration, handleComplete)
 
   return (
     <div className="iqamah-overlay">
       {/* Content */}
       <div style={{ position: 'relative', zIndex: 10, textAlign: 'center' }}>
-        <img 
-          src="/logo-alazhar.png" 
-          alt="Logo" 
+        <img
+          src="/logo-alazhar.png"
+          alt="Logo"
           style={{ height: '100px', marginBottom: '2rem', filter: 'drop-shadow(0 4px 20px rgba(0,0,0,0.2))' }}
         />
 
-        <h1 style={{ 
-          fontSize: '3.5rem', 
-          fontWeight: 800, 
-          color: 'white', 
+        <h1 style={{
+          fontSize: '3.5rem',
+          fontWeight: 800,
+          color: 'white',
           marginBottom: '0.5rem',
           textShadow: '0 4px 20px rgba(0,0,0,0.2)'
         }}>
           Waktu Shalat {prayerName}
         </h1>
 
-        <div style={{ fontSize: '1.5rem', color: 'rgba(255,255,255,0.9)', marginBottom: '3rem' }}>
-          Masjid Agung Al Azhar
+        <div style={{ fontSize: '1.25rem', color: 'rgba(255,255,255,0.85)', marginBottom: '2rem' }}>
+          {mosqueName}
         </div>
 
         <div style={{
@@ -53,7 +63,7 @@ export default function IqamahMode({ prayerName, duration, onComplete }: IqamahM
           </span>
         </div>
 
-        <div style={{ 
+        <div style={{
           fontFamily: 'Outfit, monospace',
           fontSize: '12rem',
           fontWeight: 800,
@@ -68,9 +78,9 @@ export default function IqamahMode({ prayerName, duration, onComplete }: IqamahM
         </div>
 
         <div style={{ marginTop: '3rem' }}>
-          <div style={{ 
-            fontSize: '1.5rem', 
-            color: 'white', 
+          <div style={{
+            fontSize: '1.5rem',
+            color: 'white',
             fontWeight: 600,
             display: 'flex',
             alignItems: 'center',
