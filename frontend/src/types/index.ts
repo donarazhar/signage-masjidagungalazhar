@@ -41,6 +41,7 @@ export interface Settings {
 export interface IqamahDuration {
   fajr: number;
   dhuhr: number;
+  jumat: number;
   asr: number;
   maghrib: number;
   isha: number;
@@ -93,6 +94,7 @@ export interface PrayerTimes {
   iqamah_duration: IqamahDuration;
   prayer_duration: number;
   countdown_before: number;
+  is_friday?: boolean;
 }
 
 export type PrayerName =

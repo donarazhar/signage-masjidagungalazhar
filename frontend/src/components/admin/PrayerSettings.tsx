@@ -120,6 +120,7 @@ export default function PrayerSettings() {
           settings?.iqamah_duration ?? {
             fajr: 10,
             dhuhr: 10,
+            jumat: 15,
             asr: 10,
             maghrib: 5,
             isha: 10,
@@ -174,6 +175,7 @@ export default function PrayerSettings() {
       settings?.iqamah_duration || {
         fajr: 10,
         dhuhr: 10,
+        jumat: 15,
         asr: 10,
         maghrib: 5,
         isha: 10,
@@ -274,6 +276,7 @@ export default function PrayerSettings() {
     settings?.iqamah_duration || {
       fajr: 10,
       dhuhr: 10,
+      jumat: 15,
       asr: 10,
       maghrib: 5,
       isha: 10,
@@ -538,13 +541,17 @@ export default function PrayerSettings() {
 
         {/* Iqamah Duration */}
         <div className="admin-card">
-          <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-4">
+          <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-1">
             Durasi Iqamah (menit)
           </h2>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+          <p className="text-sm text-[var(--text-muted)] mb-4">
+            Durasi menunggu iqamah setelah adzan. Jumat digunakan khusus pada hari Jum'at saat waktu Dzuhur.
+          </p>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
             {[
               { key: "fajr", label: "Subuh" },
               { key: "dhuhr", label: "Dzuhur" },
+              { key: "jumat", label: "🕌 Jum'at" },
               { key: "asr", label: "Ashar" },
               { key: "maghrib", label: "Maghrib" },
               { key: "isha", label: "Isya" },
@@ -554,10 +561,10 @@ export default function PrayerSettings() {
                 <input
                   type="number"
                   min="0"
-                  max="30"
+                  max="60"
                   className="form-input"
                   value={
-                    iqamahDuration[key as keyof typeof iqamahDuration] ?? 10
+                    iqamahDuration[key as keyof typeof iqamahDuration] ?? (key === 'jumat' ? 15 : 10)
                   }
                   onChange={(e) =>
                     handleIqamahChange(key, parseInt(e.target.value))
@@ -565,6 +572,11 @@ export default function PrayerSettings() {
                 />
               </div>
             ))}
+          </div>
+          <div className="p-3 rounded-lg" style={{ background: 'var(--primary-50)', border: '1px solid var(--primary-200)' }}>
+            <p className="text-xs" style={{ color: 'var(--primary-700)' }}>
+              💡 <strong>Catatan:</strong> Pada hari Jum'at, durasi iqamah Dzuhur akan otomatis diganti dengan durasi <strong>Jum'at</strong>.
+            </p>
           </div>
         </div>
 

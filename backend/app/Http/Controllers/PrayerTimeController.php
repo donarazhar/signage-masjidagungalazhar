@@ -101,15 +101,22 @@ class PrayerTimeController extends Controller
         $iqamahDuration = Setting::getValue('iqamah_duration', [
             'fajr' => 10,
             'dhuhr' => 10,
+            'jumat' => 15,
             'asr' => 10,
             'maghrib' => 5,
             'isha' => 10,
         ], $mosqueId);
 
+        // Pastikan key jumat selalu ada (backward compatibility)
+        if (!isset($iqamahDuration['jumat'])) {
+            $iqamahDuration['jumat'] = $iqamahDuration['dhuhr'] ?? 10;
+        }
+
         $prayerTimes['iqamah_duration'] = $iqamahDuration;
         $prayerTimes['prayer_duration'] = Setting::getValue('prayer_duration', 15, $mosqueId);
         $prayerTimes['countdown_before'] = Setting::getValue('countdown_before', 15, $mosqueId);
         $prayerTimes['prayer_time_offset'] = $prayerTimeOffset;
+        $prayerTimes['is_friday'] = ($today->dayOfWeek === 5); // 5 = Friday
 
         return response()->json($prayerTimes);
     }

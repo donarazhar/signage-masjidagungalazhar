@@ -144,13 +144,17 @@ export default function MainDisplay() {
     const check = () => {
       const now = new Date();
       const curr = now.getHours() * 60 + now.getMinutes();
+      const isFriday = prayerTimes.is_friday ?? (now.getDay() === 5);
       const prayers: PrayerName[] = ["fajr", "dhuhr", "asr", "maghrib", "isha"];
       for (const p of prayers) {
         const [h, m] = prayerTimes.timings[p].split(":").map(Number);
         const pm = h * 60 + m;
+
+        // Gunakan durasi iqamah Jumat jika hari Jumat dan shalat Dzuhur
+        const iqKey = (p === "dhuhr" && isFriday) ? "jumat" : p;
         const iq =
           prayerTimes.iqamah_duration[
-            p as keyof typeof prayerTimes.iqamah_duration
+            iqKey as keyof typeof prayerTimes.iqamah_duration
           ] ?? 10;
         const pd = prayerTimes.prayer_duration || 15;
 
