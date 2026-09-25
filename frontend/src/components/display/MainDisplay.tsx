@@ -225,6 +225,13 @@ export default function MainDisplay() {
     );
   }
 
+  // Compute template and mosqueName early (needed by adzan/iqamah screens)
+  const mosqueName = settings?.mosque_name || "Masjid Agung Al Azhar";
+  const previewTemplate = searchParams.get("template") || "classic";
+  const template = getTemplate(
+    isPreviewMode ? previewTemplate : settings?.display_template || "classic",
+  );
+
   // Phase 1: Adzan (3 menit pertama setelah masuk waktu shalat)
   if (displayMode === "adzan" && currentPrayer && prayerTimes) {
     const prayerTimeStr = prayerTimes.timings[currentPrayer]?.substring(0, 5) || "--:--";
@@ -232,6 +239,8 @@ export default function MainDisplay() {
       <AdhanMode
         prayerName={PRAYER_NAMES_ID[currentPrayer] || currentPrayer}
         prayerTime={prayerTimeStr}
+        mosqueName={mosqueName}
+        template={template}
         onComplete={() => setDisplayMode("iqamah")}
       />
     );
@@ -246,7 +255,8 @@ export default function MainDisplay() {
     return (
       <IqamahMode
         prayerName={PRAYER_NAMES_ID[currentPrayer]}
-        mosqueName={settings?.mosque_name}
+        mosqueName={mosqueName}
+        template={template}
         duration={dur}
         onComplete={() => setDisplayMode("prayer")}
       />
@@ -263,17 +273,12 @@ export default function MainDisplay() {
     );
   }
 
-  const mosqueName = settings?.mosque_name || "Masjid Agung Al Azhar";
   const mosqueAddress =
     settings?.mosque_address ||
     "Jl. Sisingamangaraja, Kebayoran Baru, Jakarta Selatan";
 
-  // In preview mode, read template and layout from URL params
-  const previewTemplate = searchParams.get("template") || "classic";
+  // In preview mode, read layout from URL params (template already computed above)
   const previewLayout = searchParams.get("layout") || "classic";
-  const template = getTemplate(
-    isPreviewMode ? previewTemplate : settings?.display_template || "classic",
-  );
 
   const rawDate = currentTime.toLocaleDateString("id-ID", {
     weekday: "long",
