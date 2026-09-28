@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { useCountdownMinutes } from '../../hooks/useCountdown'
-import { playAlarmSound } from '../../utils/audio'
 
 interface PrayerInProgressModeProps {
   duration: number // minutes
@@ -12,9 +11,6 @@ export default function PrayerInProgressMode({ duration, onComplete }: PrayerInP
   const countdown = useCountdownMinutes(duration, onComplete)
 
   useEffect(() => {
-    // Play sound when entering Waktu Shalat / Iqamah
-    playAlarmSound();
-    
     const interval = setInterval(() => setTime(new Date()), 1000)
     return () => clearInterval(interval)
   }, [])
