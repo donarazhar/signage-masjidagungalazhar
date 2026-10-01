@@ -156,7 +156,8 @@ export default function MainDisplay() {
     return { enabled, server, startSurahId, surahList };
   })();
 
-  useMurottal(murottalConfig, displayMode === "normal");
+  useMurottal(murottalConfig, displayMode === "normal" && !showSplash);
+  // !showSplash ensures user has interacted first (browser autoplay policy requires user gesture)
   // ───────────────────────────────────────────────────────────────────────────
 
   useEffect(() => {
