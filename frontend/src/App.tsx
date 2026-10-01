@@ -13,6 +13,7 @@ import MosqueManager from "./components/admin/superadmin/MosqueManager";
 import UserManager from "./components/admin/superadmin/UserManager";
 import ActivityLog from "./components/admin/superadmin/ActivityLog";
 import BackupManager from "./components/admin/superadmin/BackupManager";
+import MurottalSettings from "./components/admin/MurottalSettings";
 
 import Login from "./components/admin/Login";
 import { useAuth } from "./hooks/useAuth";
@@ -59,6 +60,7 @@ function App() {
 
           {/* Admin Masjid Routes */}
           <Route path="prayer-settings" element={<PrayerSettings />} />
+          <Route path="murottal" element={<MurottalSettings />} />
           <Route path="contents" element={<ContentManager />} />
           <Route path="events" element={<EventManager />} />
           <Route path="running-texts" element={<RunningTextManager />} />

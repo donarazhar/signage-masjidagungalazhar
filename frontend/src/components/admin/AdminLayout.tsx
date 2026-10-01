@@ -18,6 +18,7 @@ import {
   Database,
   Shield,
   HelpCircle,
+  Music,
 } from "lucide-react";
 
 export default function AdminLayout() {
@@ -50,6 +51,7 @@ export default function AdminLayout() {
     return [
       { path: "/admin", icon: LayoutDashboard, label: "Dashboard", end: true },
       { path: "/admin/prayer-settings", icon: Clock, label: "Jadwal Shalat" },
+      { path: "/admin/murottal", icon: Music, label: "Murottal" },
       { path: "/admin/contents", icon: Image, label: "Kelola Konten" },
       { path: "/admin/events", icon: Calendar, label: "Agenda Kegiatan" },
       { path: "/admin/running-texts", icon: Type, label: "Running Text" },

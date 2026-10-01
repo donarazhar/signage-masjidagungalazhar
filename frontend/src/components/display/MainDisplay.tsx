@@ -14,6 +14,7 @@ import FullscreenSplash from "./FullscreenSplash";
 import { getTemplate } from "../../styles/displayTemplates";
 import { LayoutCinematic, LayoutFocus, LayoutDashboard, LayoutFullscreen, LayoutTV, LayoutQRIS } from "./layouts";
 import type { DisplayMode, PrayerName, PrayerTimes } from "../../types";
+import { useMurottal } from "../../hooks/useMurottal";
 
 const PRAYER_DISPLAY: Array<{
   key: string;
@@ -91,6 +92,9 @@ export default function MainDisplay() {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [showSplash, setShowSplash] = useState(true); // Show fullscreen splash on load
 
+  // ─── Murottal ──────────────────────────────────────────────────────────────
+  // Build murottal config from settings (after settings query runs)
+  // useMurottal will pause when not in 'normal' mode and resume automatically
   // Check if in preview mode (no data, just layout preview)
   const searchParams = new URLSearchParams(window.location.search);
   const isPreviewMode = searchParams.get("preview") === "true";
@@ -131,6 +135,29 @@ export default function MainDisplay() {
     refetchInterval: 1000 * 60,
     enabled: !isPreviewMode,
   }); // Check every 1m
+
+  // ─── Murottal config (built from settings) ─────────────────────────────────
+  const murottalConfig = (() => {
+    if (!settings) return null;
+    const s = settings as any;
+    const enabled = s.murottal_enabled !== false && s.murottal_enabled !== 'false';
+    const server: string = s.murottal_server || "";
+    const startSurahId: number = Number(s.murottal_surah_id) || 0;
+    const moshafId: number = Number(s.murottal_moshaf_id) || 0;
+    if (!server || !startSurahId || !moshafId) return null;
+
+    // Surah list will be fetched from API on the hook side — here we just pass the starting point
+    // We store surah_list as comma-separated in settings if needed; for now loop from startSurahId..114
+    const rawList: string = s.murottal_surah_list || "";
+    const surahList = rawList
+      ? rawList.split(",").map(Number).filter(Boolean)
+      : Array.from({ length: 114 - startSurahId + 1 }, (_, i) => startSurahId + i);
+
+    return { enabled, server, startSurahId, surahList };
+  })();
+
+  useMurottal(murottalConfig, displayMode === "normal");
+  // ───────────────────────────────────────────────────────────────────────────
 
   useEffect(() => {
     const interval = setInterval(() => setCurrentTime(new Date()), 1000);
